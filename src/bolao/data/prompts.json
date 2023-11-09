@@ -1,0 +1,24 @@
+{
+  "admin": {
+    "welcome": "Conectando com o WhatsApp, aguarde...",
+    "no_owner": "ERRO: Você precisa configurar um administrador antes de iniciar o bot. Leia as instruções em https://bolao.devsakae.tech",
+    "cancelled": "Bolão cancelado, mas dados salvos.",
+    "verifyIdOrName": "Verifique o ID ou nome do bolão que você está querendo cancelar",
+    "not_specified_bolao": "Bolão(ões) ativo(s)\n",
+    "help": "🐯 TigreBot versão 2.0 - Lista de comandos",
+    "mod_quotes": "\n\n✅ Módulo *Quotes* ✔️\n\n !quote ➤ _Publico uma quote aleatória_\n !quote <trecho> ➤ _Publico uma quote contendo <trecho>_\n !addquote <autor>, <data>: <quote> ➤ _Salvo a frase <quote> dita por <autor> em <data<_\n !autor <autor> ➤ _Publico uma quote aleatória dita por <autor<_\n !data ➤ _Publico uma quote aleatória do dia/mês/ano <data<_\n !delquote <id> ➤ (admin) _Deleta a quote de ID <id<_",
+    "mod_jogounotigre": "\n\n✅ Módulo *Jogadores do Tigre* ✔️\n\n !jogounotigre <nome> ➤ _Pesquisa se <atleta> já jogou no Criciúma_",
+    "mod_jokes": "\n\n✅ Módulo *Eu sou engraçadinho* ✔️\n\nCitar o bot + <piada> ➤ Eu conto uma dad joke (em inglês) em dois tempos\nCitar o bot + <?> ➤ _Me transformo num oráculo e respondo a sua pergunta_\nApenas citar o bot ➤ _Respondo com um fato inútil aleatório (em inglês)_",
+    "mod_stats": "\n\n✅ Módulo *Tristão Garcia* ✔️\n\n !stats ➤ _Publico as estatísticas do próximo jogo (se tiver bolão aberto), ou do último jogo (sem bolão ou rodada de bolão fechada)_",
+    "mod_narrador": "\n\n✅ Módulo *Narração* ✔️\n\n !highlights ➤ _Publico os melhores lances do jogo do Criciúma ao vivo (e ainda coloco o placar no tópico)_",
+    "mod_bolao": "\n\n✅ Módulo *Bolão*\n\n !palpites ➤ _Publico todos os palpites cadastrados_\n !ranking ➤ _Publico o ranking consolidado_\n !bolao start <time> ➤ (admin) _Inicio um bolão do <time<_\n !bolao restart ➤ (admin) _Arrumo tudo aqui em casa esse bolão bagunçado_"
+  },
+  "bolao": {
+    "no_team": "Nenhum time encontrado! Veja a lista de times:\n",
+    "no_matches": "Nenhuma partida encontrada! Verifique com o administrador.",
+    "no_round": "Nenhuma rodada programada. Verifique com o administrador.",
+    "start_header": "🚨🚨 Bolão aberto para",
+    "active_bolao": "Já existe um bolão ativo para este time.",
+    "encerra_bolao": "E essa foi a última rodada!\n\nVeja como ficou o ranking escrevendo !ranking no canal"
+  }
+}
