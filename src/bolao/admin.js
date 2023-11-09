@@ -98,7 +98,7 @@ const abreRodada = async (grupo) => {
   const today = new Date();
   const timeoutProgramado = (nextMatch.hora - today.getTime()) - (36 * 3600000)
   const publicacaoProgramada = setTimeout(() => publicaRodada({ grupo: grupo, match: nextMatch }), timeoutProgramado);
-  return sendAdmin(`Agendamento de ${nextMatch.homeTeam} x ${nextMatch.awayTeam} (ID (${nextMatch.id}) realizado.\n\nJogo ocorrerá em ${new Date(nextMatch.hora)} \nPublicação no grupo em ${new Date(today.getTime() + timeoutProgramado)}`)
+  return sendAdmin(`Agendamento de ${nextMatch.homeTeam} x ${nextMatch.awayTeam} (matchId ${nextMatch.id}) realizado.\n\nJogo ocorrerá em ${new Date(nextMatch.hora)} \nPublicação no grupo em ${new Date(today.getTime() + timeoutProgramado)}`)
 };
 
 const publicaRodada = ({ grupo, match }) => {
@@ -243,32 +243,10 @@ const fechaRodada = async (grupo) => {
   return client.sendMessage(grupo, response);
 };
 
-const predictions = async (m) => {
-  const today = new Date();
-  if (!data[m.from].activeRound.matchId) return m.reply('Nenhuma rodada aberta no momento!')
-  const nextMatch = data[m.from][data[m.from].activeRound.team.slug][today.getFullYear()][data[m.from].activeRound.matchId];
-  if (data[m.from].activeRound.listening && nextMatch && Object.hasOwn(nextMatch, 'predictions')) return client.sendMessage(m.from, nextMatch.predictions)
-  try {
-    const getPredictions = await fetchWithParams({
-      url: process.env.FOOTBALL_API_URL + '/predictions',
-      host: process.env.FOOTBALL_API_HOST,
-      params: { fixture: data[m.from].activeRound.matchId },
-    });
-    const superStats = formatPredicts(getPredictions.response[0]);
-    data[m.from][data[m.from].activeRound.team][today.getFullYear()][data[m.from].activeRound.matchId].predictions = superStats;
-    writeData(data);
-    return client.sendMessage(m.from, superStats);
-  } catch (err) {
-    console.error(err);
-    return sendAdmin(err);
-  }
-};
-
 module.exports = {
   start,
   abreRodada,
   publicaRodada,
   fechaRodada,
   pegaProximaRodada,
-  predictions,
 };

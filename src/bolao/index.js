@@ -6,34 +6,7 @@ const { start, abreRodada, fechaRodada, pegaProximaRodada, publicaRodada } = req
 const { habilitaPalpite, listaPalpites, getRanking } = require('./user');
 
 const bolao = async (m) => {
-  if (!Object.keys(data).some((key) => key === m.from)) return;
-  if (m.hasQuotedMsg && Object.hasOwn(data[m.from], 'activeRound') && data[m.from].activeRound.listening) {
-    const isTopic = await m.getQuotedMessage();
-    const matchingRegex = isTopic.body.match(/partida:\s\d+/);
-    if (isTopic && isTopic.fromMe && matchingRegex) {
-      const sender = await m.getContact(m.from);
-      const matchId = matchingRegex[0].split(':')[1].trim();
-      if (data[m.from].activeRound.matchId === Number(matchId)
-        && data[m.from].activeRound.listening) {
-        if (data[m.from].activeRound.palpiteiros.some((p) => p === m.author)) return m.reply('Já palpitou pô')
-        const check = habilitaPalpite({ m: m, user: sender.pushname || sender.name, matchId: matchId })
-        return check.error ? m.reply('Esse palpite não é válido') : m.react('🎟');
-      }
-      return m.reply('Essa rodada não está ativa!');
-    }
-    return;
-  }
-  if (m.body.startsWith('!palpites') && data[m.from].activeRound && data[m.from].activeRound.listening) {
-    console.info('Acessando comando !palpites');
-    const palpiteList = listaPalpites(m.from);
-    return client.sendMessage(m.from, palpiteList);
-  };
-  if (m.body.startsWith('!ranking')) {
-    console.info('Acessando comando !ranking');
-    const ranking = getRanking(m.from)
-    client.sendMessage(m.from, ranking);
-  }
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!bolao')) {
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!sabao')) {
     const command = getCommand(m.body);
     const grupo = m.from.split('@')[0];
     if (command && command.startsWith('start')) {
@@ -62,6 +35,33 @@ const bolao = async (m) => {
       return client.sendMessage(m.from, `Bolão programado para abertura de rodada em ${quandoAbre.toLocaleString('pt-br')}`);
     }
     return;
+  }
+  if (!Object.keys(data).some((key) => key === m.from)) return;
+  if (m.hasQuotedMsg && Object.hasOwn(data[m.from], 'activeRound') && data[m.from].activeRound.listening) {
+    const isTopic = await m.getQuotedMessage();
+    const matchingRegex = isTopic.body.match(/partida:\s\d+/);
+    if (isTopic && isTopic.fromMe && matchingRegex) {
+      const sender = await m.getContact(m.from);
+      const matchId = matchingRegex[0].split(':')[1].trim();
+      if (data[m.from].activeRound.matchId === Number(matchId)
+        && data[m.from].activeRound.listening) {
+        if (data[m.from].activeRound.palpiteiros.some((p) => p === m.author)) return m.reply('Já palpitou pô')
+        const check = habilitaPalpite({ m: m, user: sender.pushname || sender.name, matchId: matchId })
+        return check.error ? m.reply('Esse palpite não é válido') : m.react('🎟');
+      }
+      return m.reply('Essa rodada não está ativa!');
+    }
+    return;
+  }
+  if (m.body.startsWith('!palpites') && data[m.from].activeRound && data[m.from].activeRound.listening) {
+    console.info('Acessando comando !palpites');
+    const palpiteList = listaPalpites(m.from);
+    return client.sendMessage(m.from, palpiteList);
+  };
+  if (m.body.startsWith('!ranking')) {
+    console.info('Acessando comando !ranking');
+    const ranking = getRanking(m.from)
+    client.sendMessage(m.from, ranking);
   }
   return;
 }

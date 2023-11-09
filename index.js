@@ -2,9 +2,12 @@ const { client, mongoclient } = require('./src/connections');
 const prompts = require('./src/bolao/data/prompts.json');
 const { bolao } = require('./src/bolao');
 const { quotes } = require('./src/quotes');
-const { predictions } = require('./src/bolao/admin');
 const { replyUser } = require('./src/jokes');
 const { narrador } = require('./src/narrador');
+const { help } = require('./utils/index');
+const { sendAdmin, getCommand } = require('./src/bolao/utils/functions');
+const { predictions } = require('./src/futebol');
+const { canal } = require('./src/canal');
 
 (async () => {
   try {
@@ -28,52 +31,49 @@ const { narrador } = require('./src/narrador');
 })();
 
 client.on('message', async (m) => {
-  // Help system
-  if (m.body === '!help') {
-    let response = prompts.admin.help;
-    response += prompts.admin.mod_quotes;
-    response += prompts.admin.mod_jogounotigre;
-    response += prompts.admin.mod_jokes;
-    response += prompts.admin.mod_stats;
-    response += prompts.admin.mod_narrador;
-    response += prompts.admin.mod_bolao;
-    return m.reply(response);
-  }
 
-  // Módulo Quotes (usa: MongoDB)
-  if (
-    m.body.startsWith('!quote') ||
-    m.body.startsWith('!addquote') ||
-    m.body.startsWith('!jogounotigre') ||
-    m.body.startsWith('!autor') ||
-    m.body.startsWith('!data') ||
-    m.body.startsWith('!delquote')
-  ) 
-  await quotes(m);
-  
-  // Módulo Predictions (usa: RapidApi/Football Api)
-  if (
-    m.body.startsWith('!stats') &&
-    (m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER)
-  ) {
-    console.info('Admin pediu !stats');
-    return await predictions(m);
-  }
+  // Módulo de administração de canal
+  if (m.from === process.env.BOT_OWNER && m.body.startsWith('/canal')) return await canal(m);
 
-  // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
-  if (m.mentionedIds.includes(process.env.BOT_NUMBER) && !m.hasQuotedMsg) {
-    console.log('Alguém mencionou o bot no grupo');
-    const chat = await m.getChat();
-    chat.sendStateTyping();
-    return await replyUser(m);
-  };
+  // // Help system
+  // if (m.body === '!help') return m.reply(help());
 
-  // Módulo narrador de jogo
-  if (m.body.startsWith('!highlights')) {
-    console.log('Alguém disse !highlights');
-    return await narrador(m);
-  }
+  // // Módulo Quotes (usa: MongoDB)
+  // if (
+  //   m.body.startsWith('!quote') ||
+  //   m.body.startsWith('!addquote') ||
+  //   m.body.startsWith('!jogounotigre') ||
+  //   m.body.startsWith('!autor') ||
+  //   m.body.startsWith('!data') ||
+  //   m.body.startsWith('!delquote')
+  // ) 
+  // await quotes(m);
 
-  // Módulo Bolão (usa: RapidApi/Foot Api)
-  await bolao(m);
+  // // Módulo Predictions (usa: RapidApi/Football Api)
+  // if (
+  //   m.body.startsWith('!stats') &&
+  //   (m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER)
+  // ) {
+  //   console.info('Admin pediu !stats');
+  //   const getPredictions = await predictions(m);
+  //   if (getPredictions.error) sendAdmin(getPredictions.message)
+  //   return client.sendMessage(m.from, getPredictions.message);
+  // }
+
+  // // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
+  // if (m.mentionedIds.includes(process.env.BOT_NUMBER) && !m.hasQuotedMsg) {
+  //   console.log('Alguém mencionou o bot no grupo');
+  //   const chat = await m.getChat();
+  //   chat.sendStateTyping();
+  //   return await replyUser(m);
+  // };
+
+  // // Módulo narrador de jogo
+  // if (m.body.startsWith('!highlights')) {
+  //   console.log('Alguém disse !highlights');
+  //   return await narrador(m);
+  // }
+
+  // // Módulo Bolão (usa: RapidApi/Foot Api)
+  // await bolao(m);
 });
