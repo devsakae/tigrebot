@@ -1,10 +1,10 @@
-const prompts = require('./data/prompts.json');
-const data = require('./data/data.json');
-const { client } = require('../connections');
+const prompts = require('../../data/prompts.json');
+const data = require('../../data/data.json');
+const { client } = require('../../../connections');
 const { listaPalpites } = require('./user');
-const { writeData } = require('./utils/fileHandler');
-const { forMatch, formatPredicts, sendAdmin } = require('./utils/functions');
-const { fetchWithParams } = require('../../utils/fetchApi');
+const { writeData } = require('../../utils/fileHandler');
+const { forMatch, formatPredicts, sendAdmin } = require('../../utils/functions');
+const { fetchWithParams } = require('../../../../utils/fetchApi');
 
 const start = (info) => {
   if (Object.hasOwn(data, info.grupo) && Object.hasOwn(data[info.grupo], 'activeRound')) return client.sendMessage(info.grupo, `Este grupo já tem um bolão ativo dos jogos de ${info.team.name}.`)
