@@ -1,7 +1,9 @@
 node_modules/
 .wwebjs_auth/
 .wwebjs_cache/
-tests
+tests/
+src/*data.json
+*
 *.env*
 !.env.example
 !*example.json
