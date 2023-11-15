@@ -64,6 +64,25 @@ const pegaProximaRodada = async (grupo) => {
   }
 };
 
+const verificaRodada = async (m) => {
+  // Verifica se existe bolão cadastrado pro grupo
+  if (!Object.hasOwn(data, m.from) || Object.hasOwn(data[m.from], 'activeRound')) return client.sendMessage(m.from, prompts.bolao.no_round);
+  if (Object.hasOwn(data[m.from].activeRound, 'matchId')) {
+    // Está escutando palpites? Publica rodada
+    if (data[m.from].activeRound.listening) publicaRodada({ grupo: m.from, match: data[m.from][data[m.from].activeRound.team.slug][today.getFullYear()][data[m.from].activeRound.matchId] });
+    // Não está escutando palpites? Fecha a rodada 
+    else fechaRodada({ grupo: m.from, tentativa: 1 })
+  }
+  // Prepara publicação da próxima rodada
+  const today = new Date();
+  const nextMatch = await pegaProximaRodada(m.from);
+  if (nextMatch.error) return client.sendMessage(m.author, 'Bolão finalizado! Sem mais rodadas para disputa');
+  const calculatedTimeout = (nextMatch.hora - 115200000) - today.getTime();
+  const proximaRodada = setTimeout(() => abreRodada(m.from), calculatedTimeout);
+  const quandoAbre = new Date(today.getTime() + calculatedTimeout);
+  return client.sendMessage(m.from, `Bolão programado para abertura de rodada em ${quandoAbre.toLocaleString('pt-br')}`);
+}
+
 const abreRodada = async (grupo) => {
   const nextMatch = await pegaProximaRodada(grupo);
   if (nextMatch.error) return client.sendMessage(grupo, prompts.bolao.no_round);
@@ -117,7 +136,7 @@ const encerraPalpite = (grupo) => {
   const hours = 8; // Prazo (em horas) para buscar o resultado da partida após o encerramento dos palpites
   const hoursInMs = hours * 3600000;
   // const programaFechamento = setTimeout(() => fechaRodada(grupo), 5000) // TEST
-  const programaFechamento = setTimeout(() => fechaRodada(grupo), hoursInMs);
+  const programaFechamento = setTimeout(() => fechaRodada({ grupo: grupo, tentativa: 1 }), hoursInMs);
   const comunicaNovoModulo = setTimeout(
     () =>
       client.sendMessage(
@@ -149,9 +168,9 @@ const buscaResultado = async ({ grupo, tentativa }) => {
   return matchInfo
 }
 
-const fechaRodada = async (grupo) => {
+const fechaRodada = async ({ grupo, tentativa }) => {
   if (!data[grupo].activeRound.listening) return client.sendMessage(grupo, 'A rodada já foi fechada');
-  const matchInfo = await buscaResultado({ grupo: grupo, tentativa: 1 })
+  const matchInfo = await buscaResultado({ grupo: grupo, tentativa: tentativa })
   if (matchInfo.error) return client.sendMessage(
     grupo,
     'Erro ao buscar resultado final da partida ' + data[grupo].activeRound.matchId + '. Será feita nova busca em alguns minutos.'
@@ -225,6 +244,7 @@ const fechaRodada = async (grupo) => {
 module.exports = {
   start,
   abreRodada,
+  verificaRodada,
   publicaRodada,
   fechaRodada,
   pegaProximaRodada,

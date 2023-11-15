@@ -2,7 +2,7 @@ const data = require('./data/data.json');
 const prompts = require('./data/prompts.json');
 const { client } = require('../connections');
 const { getCommand } = require('./utils/functions');
-const { start, abreRodada, pegaProximaRodada, publicaRodada } = require('./admin');
+const { start, abreRodada, pegaProximaRodada, publicaRodada, verificaRodada } = require('./admin');
 const { getRanking, habilitaPalpite, listaPalpites } = require('./user');
 
 const bolao = async (m) => {
@@ -24,15 +24,7 @@ const bolao = async (m) => {
     if (command && command.startsWith('restart')) {
       console.info('Acessando comando !bolao restart');
       const today = new Date();
-      if (data[m.from].activeRound.listening) {
-        return publicaRodada({ grupo: m.from, match: data[m.from][data[m.from].activeRound.team.slug][today.getFullYear()][data[m.from].activeRound.matchId] });
-      }
-      const nextMatch = await pegaProximaRodada(m.from);
-      if (nextMatch.error) return client.sendMessage(m.author, 'Bolão finalizado! Sem mais rodadas para disputa');
-      const calculatedTimeout = (nextMatch.hora - 115200000) - today.getTime();
-      const proximaRodada = setTimeout(() => abreRodada(m.from), calculatedTimeout);
-      const quandoAbre = new Date(today.getTime() + calculatedTimeout);
-      return client.sendMessage(m.from, `Bolão programado para abertura de rodada em ${quandoAbre.toLocaleString('pt-br')}`);
+      return verificaRodada(m);
     }
     return;
   }

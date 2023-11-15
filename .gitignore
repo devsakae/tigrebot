@@ -3,6 +3,6 @@ node_modules/
 .wwebjs_cache/
 *.env*
 !.env.example
-src/*.json
+*/*.json
 !*example.json
 !*prompts.json

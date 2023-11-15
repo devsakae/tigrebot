@@ -26,7 +26,7 @@ const predictions = async (m) => {
   }
 };
 
-atualizaRodada = async (m) => {
+const atualizaRodada = async (m) => {
   const rodada = m.body.substring(9).trimStart();
   if (!rodada.length < 1) return { message: 'Você precisa especificar qual rodada (ex.: !atualiza 24)' }
   const changeMe = {
