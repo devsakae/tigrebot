@@ -1,0 +1,201 @@
+{
+    "activeRound": null,
+    "ranking": [],
+    "teams": [
+        {
+            "id": 21838,
+            "name": "ABC",
+            "slug": "abc"
+        },
+        {
+            "id": 1973,
+            "name": "América Mineiro",
+            "slug": "america-mineiro"
+        },
+        {
+            "id": 1967,
+            "name": "Athletico",
+            "slug": "athletico"
+        },
+        {
+            "id": 7314,
+            "name": "Atlético Goianiense",
+            "slug": "atletico-goianiense"
+        },
+        {
+            "id": 1977,
+            "name": "Atlético Mineiro",
+            "slug": "atletico-mineiro"
+        },
+        {
+            "id": 7315,
+            "name": "Avaí",
+            "slug": "avai"
+        },
+        {
+            "id": 1955,
+            "name": "Bahia",
+            "slug": "bahia"
+        },
+        {
+            "id": 1958,
+            "name": "Botafogo",
+            "slug": "botafogo"
+        },
+        {
+            "id": 1979,
+            "name": "Botafogo-SP",
+            "slug": "botafogo-sp"
+        },
+        {
+            "id": 2001,
+            "name": "Ceará",
+            "slug": "ceara"
+        },
+        {
+            "id": 21845,
+            "name": "Chapecoense",
+            "slug": "chapecoense"
+        },
+        {
+            "id": 1957,
+            "name": "Corinthians",
+            "slug": "corinthians"
+        },
+        {
+            "id": 1982,
+            "name": "Coritiba",
+            "slug": "coritiba"
+        },
+        {
+            "id": 22032,
+            "name": "CRB",
+            "slug": "crb"
+        },
+        {
+            "id": 1984,
+            "name": "Criciúma",
+            "slug": "criciuma"
+        },
+        {
+            "id": 1954,
+            "name": "Cruzeiro",
+            "slug": "cruzeiro"
+        },
+        {
+            "id": 49202,
+            "name": "Cuiabá",
+            "slug": "cuiaba"
+        },
+        {
+            "id": 2020,
+            "name": "Fortaleza",
+            "slug": "fortaleza"
+        },
+        {
+            "id": 5981,
+            "name": "Flamengo",
+            "slug": "flamengo"
+        },
+        {
+            "id": 1961,
+            "name": "Fluminense",
+            "slug": "fluminense"
+        },
+        {
+            "id": 1960,
+            "name": "Goiás",
+            "slug": "goias"
+        },
+        {
+            "id": 5926,
+            "name": "Grêmio",
+            "slug": "gremio"
+        },
+        {
+            "id": 1972,
+            "name": "Guarani",
+            "slug": "guarani"
+        },
+        {
+            "id": 1966,
+            "name": "Internacional",
+            "slug": "internacional"
+        },
+        {
+            "id": 1980,
+            "name": "Juventude",
+            "slug": "juventude"
+        },
+        {
+            "id": 2022,
+            "name": "Londrina",
+            "slug": "londrina"
+        },
+        {
+            "id": 21982,
+            "name": "Mirassol",
+            "slug": "mirassol"
+        },
+        {
+            "id": 135514,
+            "name": "Novorizontino",
+            "slug": "novorizontino"
+        },
+        {
+            "id": 1963,
+            "name": "Palmeiras",
+            "slug": "palmeiras"
+        },
+        {
+            "id": 1969,
+            "name": "Ponte Preta",
+            "slug": "ponte-preta"
+        },
+        {
+            "id": 1999,
+            "name": "Red Bull Bragantino",
+            "slug": "red-bull-bragantino"
+        },
+        {
+            "id": 2005,
+            "name": "Sampaio Corrêa",
+            "slug": "sampaio-correa"
+        },
+        {
+            "id": 1981,
+            "name": "São Paulo",
+            "slug": "sao-paulo"
+        },
+        {
+            "id": 1968,
+            "name": "Santos",
+            "slug": "santos"
+        },
+        {
+            "id": 1959,
+            "name": "Sport Recife",
+            "slug": "sport-recife"
+        },
+        {
+            "id": 87202,
+            "name": "Tombense",
+            "slug": "tombense"
+        },
+        {
+            "id": 2021,
+            "name": "Vila Nova",
+            "slug": "vila-nova"
+        },
+        {
+            "id": 1974,
+            "name": "Vasco da Gama",
+            "slug": "vasco-da-gama"
+        },
+        {
+            "id": 1962,
+            "name": "Vitória",
+            "slug": "vitoria"
+        }
+    ]
+}

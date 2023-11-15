@@ -1,0 +1,49 @@
+{
+  "name": "tigrebot",
+  "version": "1.0.0",
+  "description": "Um bot exclusivo pra quem é apaixonado pelo Tigre",
+  "main": "index.js",
+  "scripts": {
+    "start": "./install.sh",
+    "production": "pm2 start npm --name \"TigreBot\" -- start && pm2 monit",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devsakae/tigrebot.git"
+  },
+  "keywords": [
+    "bot",
+    "chatbot",
+    "futebol",
+    "série",
+    "A",
+    "série",
+    "B",
+    "série",
+    "C",
+    "série",
+    "D",
+    "campeonato",
+    "brasileiro",
+    "brasileirão"
+  ],
+  "author": "devsakae",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devsakae/tigrebot/issues"
+  },
+  "homepage": "https://github.com/devsakae/tigrebot#readme",
+  "dependencies": {
+    "axios": "^1.6.1",
+    "fs": "^0.0.1-security",
+    "mongodb": "^6.2.0",
+    "prompt-sync": "^4.2.0",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "github:alechkos/whatsapp-web.js#channels"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "pm2": "^5.3.0"
+  }
+}

@@ -1,5 +1,5 @@
-const data = require('../../data/data.json');
-const { writeData } = require('../../utils/fileHandler');
+const data = require('./data/data.json');
+const { writeData } = require('./utils/fileHandler');
 
 const habilitaPalpite = (info) => {
   const today = new Date();

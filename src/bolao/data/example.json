@@ -1,29 +1,10 @@
 {
     "teams": [
         {
-            "id": 754,
-            "name": "ABC",
-            "slug": "abc"
-        },
-        {
-            "id": 2618,
-            "name": "Botafogo SP",
-            "slug": "botafogo-sp"
-        },
-        {
-            "id": 140,
+            "id_apifootball": 140,
+            "id_footapi": 1984,
             "name": "Criciúma",
             "slug": "criciuma"
-        },
-        {
-            "id": 138,
-            "name": "Guarani Campinas",
-            "slug": "guarani-SP"
-        },
-        {
-            "id": 152,
-            "name": "Juventude",
-            "slug": "juventude"
         }
     ]
 }
