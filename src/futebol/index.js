@@ -27,8 +27,9 @@ const predictions = async (m) => {
 };
 
 const atualizaRodada = async (m) => {
-  const rodada = m.body.substring(9).trimStart();
-  if (!rodada.length < 1) return { message: 'Você precisa especificar qual rodada (ex.: !atualiza 24)' }
+  const rodada = m.body.split(' ')[1].trim();
+  console.log('Buscando rodada', rodada)
+  if (!rodada || rodada.length < 1) return { message: 'Você precisa especificar qual rodada (ex.: !atualiza 24)' }
   const changeMe = {
     leagueId: 390,
     seasonId: 49058

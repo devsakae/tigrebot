@@ -50,8 +50,8 @@ client.on('message', async (m) => {
 
   // Módulo Futebol (usa: Api-Football e FootApi7)
   if (m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) {
-    if (m.body.startsWith('!atualiza')) {
-      console.info('Admin disse !atualiza');
+    if (m.body.startsWith('!resultadosdarodada')) {
+      console.info('Admin disse !resultadosdarodada');
       const getAtualizacao = await atualizaRodada(m);
       if (getAtualizacao.error) sendAdmin(getAtualizacao.message);
       return client.sendMessage(m.from, getAtualizacao.message);
