@@ -65,12 +65,9 @@ const pegaProximaRodada = async (grupo) => {
 };
 
 const verificaRodada = async (m) => {
-  console.log('Verificando rodada...');
   // Verifica se existe bolão cadastrado pro grupo
   if (!Object.hasOwn(data, m.from) || !Object.hasOwn(data[m.from], 'activeRound')) return client.sendMessage(m.from, prompts.bolao.no_round);
-  console.log('Grupo tem bolão rodando')
   if (Object.hasOwn(data[m.from].activeRound, 'matchId')) {
-    console.log('Tem MatchId')
     // Está escutando palpites? Publica rodada
     if (data[m.from].activeRound.listening) await publicaRodada({ grupo: m.from, match: data[m.from][data[m.from].activeRound.team.slug][today.getFullYear()][data[m.from].activeRound.matchId] });
     // Não está escutando palpites? Fecha a rodada 
@@ -173,7 +170,6 @@ const buscaResultado = async ({ grupo, tentativa }) => {
 }
 
 const fechaRodada = async ({ grupo, tentativa }) => {
-  if (!data[grupo].activeRound.listening) return client.sendMessage(grupo, 'A rodada já foi fechada');
   const matchInfo = await buscaResultado({ grupo: grupo, tentativa: tentativa })
   if (matchInfo.error) return client.sendMessage(
     grupo,
