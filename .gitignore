@@ -3,7 +3,6 @@ node_modules/
 .wwebjs_cache/
 tests/
 **/*.json
-*
 *.env*
 !.env.example
 !*example.json
