@@ -67,7 +67,7 @@ const pegaProximaRodada = async (grupo) => {
 const verificaRodada = async (m) => {
   console.log('Verificando rodada...');
   // Verifica se existe bolão cadastrado pro grupo
-  if (!Object.hasOwn(data, m.from) || Object.hasOwn(data[m.from], 'activeRound')) return client.sendMessage(m.from, prompts.bolao.no_round);
+  if (!Object.hasOwn(data, m.from) || !Object.hasOwn(data[m.from], 'activeRound')) return client.sendMessage(m.from, prompts.bolao.no_round);
   console.log('Grupo tem bolão rodando')
   if (Object.hasOwn(data[m.from].activeRound, 'matchId')) {
     console.log('Tem MatchId')
