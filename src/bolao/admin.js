@@ -81,6 +81,7 @@ const verificaRodada = async (m) => {
   const calculatedTimeout = (nextMatch.hora - 115200000) - today.getTime();
   const proximaRodada = setTimeout(() => abreRodada(m.from), calculatedTimeout);
   const quandoAbre = new Date(today.getTime() + calculatedTimeout);
+  sendAdmin(`Bolão programado para abertura de rodada em ${quandoAbre.toLocaleString('pt-br')}`);
   return client.sendMessage(m.from, `Bolão programado para abertura de rodada em ${quandoAbre.toLocaleString('pt-br')}`);
 }
 

@@ -28,7 +28,6 @@ const predictions = async (m) => {
 
 const atualizaRodada = async (m) => {
   const rodada = m.body.split(' ')[1].trim();
-  console.log('Buscando rodada', rodada)
   if (!rodada || rodada.length < 1) return { message: 'Você precisa especificar qual rodada (ex.: !atualiza 24)' }
   const changeMe = {
     leagueId: 390,
@@ -42,8 +41,10 @@ const atualizaRodada = async (m) => {
     if (getRodada.events.length < 1) return { message: 'Nenhuma rodada encontrada na API. Favor verificar com admin' };
     let response = `👁 Resultados da ${rodada}ª rodada da Série B 2023\n`;
     getRodada.events.forEach((r) => {
-      const matchDate = new Date(r.startTimestamp);
-      response += `[${matchDate.toLocaleDateString('pt-br')}] ${r.homeTeam.name} ${r.homeScore.current} x ${r.awayScore.current} ${r.awayTeam.name} 👉 (1ºT) ${r.homeScore.period1}-${r.awayScore.period1}, (2ºT) ${r.homeScore.period1}-${r.awayScore.period1}`
+      if (r.status.code === 100) {
+        const matchDate = new Date(r.startTimestamp * 1000);
+        response += `\n[${matchDate.toLocaleDateString('pt-br')}] ${r.homeTeam.name} ${Number(r.homeScore.current)} x ${Number(r.awayScore.current)} ${r.awayTeam.name} 👉 (1ºT) ${Number(r.homeScore.period1)}-${Number(r.awayScore.period1)}, (2ºT) ${Number(r.homeScore.period1)}-${Number(r.awayScore.period1)}`
+      }
     })
     return { message: response };
   } catch (err) {
