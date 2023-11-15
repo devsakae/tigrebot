@@ -65,14 +65,18 @@ const pegaProximaRodada = async (grupo) => {
 };
 
 const verificaRodada = async (m) => {
+  console.log('Verificando rodada...');
   // Verifica se existe bolão cadastrado pro grupo
   if (!Object.hasOwn(data, m.from) || Object.hasOwn(data[m.from], 'activeRound')) return client.sendMessage(m.from, prompts.bolao.no_round);
+  console.log('Grupo tem bolão rodando')
   if (Object.hasOwn(data[m.from].activeRound, 'matchId')) {
+    console.log('Tem MatchId')
     // Está escutando palpites? Publica rodada
-    if (data[m.from].activeRound.listening) publicaRodada({ grupo: m.from, match: data[m.from][data[m.from].activeRound.team.slug][today.getFullYear()][data[m.from].activeRound.matchId] });
+    if (data[m.from].activeRound.listening) await publicaRodada({ grupo: m.from, match: data[m.from][data[m.from].activeRound.team.slug][today.getFullYear()][data[m.from].activeRound.matchId] });
     // Não está escutando palpites? Fecha a rodada 
-    else fechaRodada({ grupo: m.from, tentativa: 1 })
+    else await fechaRodada({ grupo: m.from, tentativa: 1 })
   }
+  console.log('Preparando publicação da próxima rodada')
   // Prepara publicação da próxima rodada
   const today = new Date();
   const nextMatch = await pegaProximaRodada(m.from);
