@@ -18,8 +18,8 @@ const canais = mongoclient.db('canal_whatsapp');
 const client = new Client({
   authStrategy: new LocalAuth(),
   puppeteer: {
-    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', //Macos
-    // executablePath: '/usr/bin/google-chrome-stable', // Linux
+    // executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', //Macos
+    executablePath: '/usr/bin/google-chrome-stable', // Linux
   }
 });
 client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
