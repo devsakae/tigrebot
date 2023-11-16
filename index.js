@@ -8,6 +8,7 @@ const { help } = require('./utils/index');
 const { sendAdmin } = require('./src/bolao/utils/functions');
 const { predictions, atualizaRodada } = require('./src/futebol');
 const { canal } = require('./src/canal');
+const { instagram } = require('./src/instagram');
 
 (async () => {
   try {
@@ -77,6 +78,11 @@ client.on('message', async (m) => {
   //   console.info('Alguém disse !highlights');
   //   return await narrador(m);
   // }
+
+  // Módulo instagram
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!instagram')) {
+    return await instagram(m);
+  }
 
   // Módulo Bolão
   bolao(m) // (API-FOOTBALL - https://rapidapi.com/api-sports/api/api-football/)
