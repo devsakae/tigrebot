@@ -1,7 +1,7 @@
 const prompts = require('../src/bolao/data/prompts.json');
 
 const help = () => {
-  let response = promps.admin.help;
+  let response = prompts.admin.help;
   response += prompts.admin.mod_quotes;
   response += prompts.admin.mod_jogounotigre;
   response += prompts.admin.mod_jokes;

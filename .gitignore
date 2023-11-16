@@ -7,3 +7,4 @@ tests/
 !.env.example
 !*example.json
 !*prompts.json
+!*canal.json
