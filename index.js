@@ -7,8 +7,7 @@ const { narrador } = require('./src/narrador');
 const { help } = require('./utils/index');
 const { sendAdmin } = require('./src/bolao/utils/functions');
 const { predictions, atualizaRodada } = require('./src/futebol');
-const { canal } = require('./src/canal');
-const { instagram } = require('./src/instagram');
+const { canal, instagram } = require('./src/canal');
 
 (async () => {
   try {

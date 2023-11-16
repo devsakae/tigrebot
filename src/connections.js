@@ -12,6 +12,7 @@ const mongoclient = new MongoClient(process.env.MONGODB_URI, {
 
 const db = mongoclient.db('quotes');
 const tigrebot = mongoclient.db('tigrebot');
+const canais = mongoclient.db('canal_whatsapp');
 
 // Connection with QR Code
 const client = new Client({
@@ -34,4 +35,5 @@ module.exports = {
   db,
   tigrebot,
   mongoclient,
+  canais,
 }
