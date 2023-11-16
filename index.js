@@ -32,7 +32,10 @@ const { canal, instagram } = require('./src/canal');
 
 client.on('message', async (m) => {
   // Módulo de administração de canal
-  if (m.from === process.env.BOT_OWNER && m.body.startsWith('/')) return await canal(m);
+  if (m.from === process.env.BOT_OWNER && m.body.startsWith('/')) {
+    console.info('Admin pediu /canal')
+    return await canal(m);
+  } 
 
   // Help system
   if (m.body === '!help') return m.reply(help());

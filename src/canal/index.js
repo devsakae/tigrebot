@@ -6,51 +6,51 @@ const { saveUpdates } = require('./utils/fileHandler');
 const { canais } = require('../connections');
 
 const canal = async (m) => {
-  console.log('Entrou em canal')
   const command = m.body.split(' ')
-  if (command[1] === 'criar') {
-    const collections = await canais.listCollections().toArray();
-    const collection = collections.find((col) => col.name === command[2]);
-    if (collection) return client.sendMessage(m.from, 'Este canal já existe');
-    console.log('colections', collections);
-    // await canais.collection(command[2]).getColl().then((res) => {
-    //   console.log(res);
-    //   return client.sendMessage(m.from, 'Já existe o canal', command[2]);
-    // })
-    // const chanId = (await client.createChannel(command[2]))?.nid._serialized;
-    // console.info(`Administrador criou o canal ${command[2]} (${chanId})`);
-    // await canais.collection('0_conf').insertOne({ name: command[2], chanId: chanId });
-    // return client.sendMessage(m.from, 'Canal criado! ID:' + chanId);
-  }
-  if (command[1] === 'marketing' && data.canal) {
-    console.info('Editor solicitou mensagem de marketing no canal')
-    const random = Math.floor(Math.random() * data.marketing.length);
-    return client.sendMessage(data.canal.id, data.marketing[random]);
-  }
-  if (m.body.startsWith('/publicar')) {
-    if (m.hasQuotedMsg) {
-      console.info('Tem quoted message');;
-      const quotedm = await m.getQuotedMessage();
-      if (quotedm.hasMedia) {
-        const attachmentData = await quotedm.downloadMedia();
-        client.sendMessage(data.canal.id, attachmentData, { caption: 'Here\'s your requested media.' });
-      }
-      if (quotedm.hasMedia && quotedm.type === 'audio') {
-        const audio = await quotedm.downloadMedia();
-        await client.sendMessage(data.canal.id, audio, { sendAudioAsVoice: true });
-      }
+  if (command[1] === 'criar' || command[2].toLowerCase() === 'config') {
+    try {
+      const collections = await canais.listCollections().toArray();
+      const collection = collections.find((col) => col.name === command[2]);
+      if (collection) return client.sendMessage(m.from, 'Este canal já existe ou é inválido');
+      const chanId = (await client.createChannel(command[2]))?.nid._serialized;
+      const canalCriado = { name: command[2], chanId: chanId };
+      console.info(`Criação do canal ${command[2]} (${chanId})`);
+      data.canais.push(canalCriado);
+      saveUpdates(data);
+      await canais.collection('config').insertOne(canalCriado);
+      return client.sendMessage(m.from, 'Canal criado! ID: ' + chanId);
+    } catch (err) {
+      console.error(err);
+      return client.sendMessage(process.env.BOT_OWNER, err);
     }
-    const msg = m.body.substring(9).trimStart();
-    console.log('Você vai publicar no canal', data.canal.id, msg)
-    data.updates.push({
-      data: new Date(),
-      msg: msg,
-    });
-    saveUpdates(data);
-    client.sendMessage(m.from, 'Enviando...');
-    return await client.sendMessage(data.canal.id, msg);
+  }
+  if (m.body.startsWith('/pub')) {
+    const details = m.body.split(' ');
+    const canal = data.canais.find((c) => c.name.toLowerCase() === details[1].toLowerCase());
+    if (!canal) return client.sendMessage(m.from, 'Nenhum canal encontrado! Verifique o nome');
+    const conteudo = details.splice(2).join(' ');
+    console.log(conteudo);
+    console.info('Publicando conteúdo no canal ', canal.name);
+    return publicaConteudo({ canal, conteudo });
+    // if (m.hasQuotedMsg) {
+    //   console.info('Tem quoted message');
+    //   const quotedm = await m.getQuotedMessage();
+    //   if (quotedm.hasMedia) {
+    //     const attachmentData = await quotedm.downloadMedia();
+    //     client.sendMessage(data.canal.id, attachmentData, { caption: 'Here\'s your requested media.' });
+    //   }
+    //   if (quotedm.hasMedia && quotedm.type === 'audio') {
+    //     const audio = await quotedm.downloadMedia();
+    //     await client.sendMessage(data.canal.id, audio, { sendAudioAsVoice: true });
+    //   }
+    // }
   }
   return;
+}
+
+const publicaConteudo = ({ canal, conteudo }) => {
+  console.info(`Publicando no canal *${canal.name}* o conteúdo abaixo:\n\n` + conteudo);
+  return client.sendMessage(canal.chanId, conteudo);
 }
 
 // Exclusivo da conta @criciumaoficial
