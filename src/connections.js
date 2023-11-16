@@ -14,12 +14,16 @@ const db = mongoclient.db('quotes');
 const tigrebot = mongoclient.db('tigrebot');
 const canais = mongoclient.db('canal_whatsapp');
 
+console.log('Plataform:', process.platform);
+const executablePath = process.platform == 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : '/usr/bin/google-chrome-stable';
+
 // Connection with QR Code
 const client = new Client({
   authStrategy: new LocalAuth(),
   puppeteer: {
+    executablePath: executablePath
     // executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', //Macos
-    executablePath: '/usr/bin/google-chrome-stable', // Linux
+    // executablePath: '/usr/bin/google-chrome-stable', // Linux
   }
 });
 client.on('qr', (qr) => qrcode.generate(qr, { small: true }));

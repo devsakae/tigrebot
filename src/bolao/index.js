@@ -23,7 +23,6 @@ const bolao = async (m) => {
     };
     if (command && command.startsWith('restart')) {
       console.info('Acessando comando !bolao restart');
-      const today = new Date();
       return verificaRodada(m);
     }
     return;
