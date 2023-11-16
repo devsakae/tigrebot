@@ -7,7 +7,7 @@ const { narrador } = require('./src/narrador');
 const { help } = require('./utils/index');
 const { sendAdmin } = require('./src/bolao/utils/functions');
 const { predictions, atualizaRodada } = require('./src/futebol');
-const { canal, instagram } = require('./src/canal');
+const { canal } = require('./src/canal');
 
 (async () => {
   try {
@@ -33,7 +33,8 @@ const { canal, instagram } = require('./src/canal');
 client.on('message', async (m) => {
   // Módulo de administração de canal
   if (m.from === process.env.BOT_OWNER && m.body.startsWith('/')) {
-    console.info('Admin pediu /canal')
+    console.info('Admin solicitou', m.body)
+    console.log(m);
     return await canal(m);
   } 
 
@@ -80,11 +81,6 @@ client.on('message', async (m) => {
   //   console.info('Alguém disse !highlights');
   //   return await narrador(m);
   // }
-
-  // Módulo instagram
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!insta')) {
-    return await instagram(m);
-  }
 
   // Módulo Bolão
   bolao(m) // (API-FOOTBALL - https://rapidapi.com/api-sports/api/api-football/)
