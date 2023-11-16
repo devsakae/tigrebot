@@ -80,7 +80,7 @@ client.on('message', async (m) => {
   // }
 
   // Módulo instagram
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!instagram')) {
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!insta')) {
     return await instagram(m);
   }
 

@@ -14,7 +14,13 @@ const db = mongoclient.db('quotes');
 const tigrebot = mongoclient.db('tigrebot');
 
 // Connection with QR Code
-const client = new Client({ authStrategy: new LocalAuth() });
+const client = new Client({
+  authStrategy: new LocalAuth(),
+  puppeteer: {
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', //Macos
+    // executablePath: '/usr/bin/google-chrome-stable', // Linux
+  }
+});
 client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
 
 client.on('ready', () => {
