@@ -31,41 +31,37 @@ const { canal } = require('./src/canal');
 })();
 
 client.on('message', async (m) => {
-  // Módulo de administração de canal
-  if (m.from === process.env.BOT_OWNER && m.body.startsWith('/')) {
-    console.info('Admin solicitou', m.body)
-    console.log(m);
-    return await canal(m);
-  } 
 
-  // Help system
-  if (m.body === '!help') return m.reply(help());
+  if (m.body.startsWith('!') || m.body.startsWith('/')) {
+    // Módulo de administração de canal
+    if (m.from === process.env.BOT_OWNER && m.body.startsWith('/')) {
+      console.info('Admin solicitou', m.body)
+      return await canal(m);
+    }
 
-  // Módulo Quotes (usa: MongoDB)
-  if (
-    m.body.startsWith('!quote') ||
-    m.body.startsWith('!addquote') ||
-    m.body.startsWith('!jogounotigre') ||
-    m.body.startsWith('!autor') ||
-    m.body.startsWith('!data') ||
-    m.body.startsWith('!delquote')
-  ) 
-  await quotes(m);
+    // Help system
+    if (m.body === '!help') {
+      console.info('Alguém solicitou !help');
+      const response = help();
+      return m.reply(response);
+    }
 
-  // Módulo Futebol (usa: Api-Football e FootApi7)
-  if (m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) {
+    // Módulo Futebol (usa: Api-Football e FootApi7)
     if (m.body.startsWith('!resultadosdarodada')) {
       console.info('Admin disse !resultadosdarodada');
       const getAtualizacao = await atualizaRodada(m);
       if (getAtualizacao.error) sendAdmin(getAtualizacao.message);
       return client.sendMessage(m.from, getAtualizacao.message);
     }
-    if (m.body.startsWith('!stats')) {
+    if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && m.body.startsWith('!stats')) {
       console.info('Admin disse !stats');
       const getPredictions = await predictions(m);
       if (getPredictions.error) sendAdmin(getPredictions.message)
       return client.sendMessage(m.from, getPredictions.message);
     }
+
+    // Módulo Quotes (usa: MongoDB)
+    await quotes(m);
   }
 
   // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
@@ -76,13 +72,6 @@ client.on('message', async (m) => {
     return await replyUser(m);
   };
 
-  // // Módulo narrador de jogo
-  // if (m.body.startsWith('!highlights')) {
-  //   console.info('Alguém disse !highlights');
-  //   return await narrador(m);
-  // }
-
   // Módulo Bolão
   bolao(m) // (API-FOOTBALL - https://rapidapi.com/api-sports/api/api-football/)
-  // (FootApi - https://rapidapi.com/fluis.lacasse/api/footapi7)
 });

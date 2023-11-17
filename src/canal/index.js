@@ -136,7 +136,7 @@ const fetchInstagram = async (user) => {
     },
   })
     .then(async (response) => {
-      if (response.length < 1) return { error: true };
+      if (response.length < 1) return [];
       let instaUpdates = [];
       response.forEach(({ node }) => {
         const instaPost = {
@@ -151,50 +151,33 @@ const fetchInstagram = async (user) => {
         };
         instaUpdates.push(instaPost);
       });
-      console.log('Insta updates length', instaUpdates.length);
-      const latestDbPost = await tigrebot
-        .collection('instagram_criciumaoficial')
-        .findOne();
-      if (latestDbPost && latestDbPost.id === instaUpdates[0].id) return [];
-      console.log('Latestdbposts length', latestDbPost.length);
-      await tigrebot
-        .collection('instagram_criciumaoficial')
-        .insertMany(instaUpdates);
+      console.log('api: buscou', instaUpdates.length, 'posts na conta. último:', instaUpdates[0].id)
       return instaUpdates;
+    })
+    .then((instaUpdates) => {
+      const latestDbPost = tigrebot
+        .collection('instagram_criciumaoficial')
+        .find({})
+        .sort({ _id: -1 })
+        .limit(1);
+      console.log('mongodb: último doc inserido', latestDbPost.id);
+      const latestIdx = instaUpdates.findIndex((post) => post.id === latestDbPost.id); // ex.: 3
+      console.log('este doc é o idx', latestIdx, 'do instaUpdates')
+      if (latestIdx === 0) return [];
+      return latestIdx === -1
+        ? instaUpdates
+        : instaUpdates.splice(0, latestIdx);
+    })
+    .then((instaSpliced) => {
+      console.log('mongodb: inserting', instaSpliced.length, 'documentos')
+      tigrebot
+        .collection('instagram_criciumaoficial')
+        .insertMany(instaSpliced);
+      return instaSpliced;
     })
     .catch((err) => console.error(err));
 };
 
-const getMediaFrom = async (user) => {
-  return fetchWithParams({
-    url: process.env.INSTAGRAM130_API_URL,
-    host: process.env.INSTAGRAM130_API_HOST,
-    params: {
-      username: user,
-    },
-  }).then((response) => {
-    const mediaFile =
-      response[0].node.__typename === 'GraphVideo'
-        ? response[0].node.video_url
-        : response[0].node.display_url;
-    return {
-      url: mediaFile,
-      caption: response[0].node.edge_media_to_caption.edges[0].node.text,
-    };
-  });
-};
-
-const instagram = async (m) => {
-  const grupo = m.from;
-  const user = m.body.split(' ')[1].trim();
-  getMediaFrom(user).then(async (res) => {
-    const media = await MessageMedia.fromUrl(res.url);
-    client.sendMessage(grupo, media, { caption: res.caption });
-  });
-};
-
 module.exports = {
   canal,
-  instagram,
-  getMediaFrom,
 };
