@@ -1,0 +1,15 @@
+{
+    "apifootball": {
+        "id": 140,
+        "name": "Criciuma",
+        "slug": "criciuma",
+        "official": "Criciúma Esporte Clube",
+        "url": "https://api-football-v1.p.rapidapi.com/v3",
+        "host": "api-football-v1.p.rapidapi.com",
+        "listening": false
+    },
+    "groups": [
+        {},
+        {}
+    ]
+}

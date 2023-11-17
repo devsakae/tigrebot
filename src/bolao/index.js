@@ -1,27 +1,24 @@
 const data = require('./data/data.json');
 const prompts = require('./data/prompts.json');
 const { client } = require('../connections');
-const { getCommand } = require('./utils/functions');
-const { start, abreRodada, pegaProximaRodada, publicaRodada, verificaRodada } = require('./admin');
+const { start, verificaRodada } = require('./admin');
 const { getRanking, habilitaPalpite, listaPalpites } = require('./user');
 
 const bolao = async (m) => {
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!bolao')) {
-    const command = getCommand(m.body);
-    const grupo = m.from.split('@')[0];
-    if (command && command.startsWith('start')) {
+    if (m.body.startsWith('!bolao start')) {
       console.info('Acessando comando !bolao start');
-      const searchedTeam = new RegExp(command.substring(5).trimStart(), "gi");
+      const searchedTeam = new RegExp(m.body.substring(12).trimStart(), "gi");
       const team = data.teams.find((team) => team.name.match(searchedTeam) || team.slug.match(searchedTeam));
       if (!team) {
         let teamList = prompts.bolao.no_team
         data.teams.forEach((t) => teamList += `\n▪ ${t.name}`)
         return m.reply(teamList);
       }
-      if (data[grupo] && data[grupo][team.slug]) return m.reply(prompts.bolao.active_bolao);
+      if (data[m.from] && data[m.from][team.slug]) return m.reply(prompts.bolao.active_bolao);
       return await start({ grupo: m.from, team: team });
     };
-    if (command && command.startsWith('restart')) {
+    if (m.body.startsWith('restart')) {
       console.info('Acessando comando !bolao restart');
       return verificaRodada(m);
     }
@@ -34,8 +31,7 @@ const bolao = async (m) => {
     if (isTopic && isTopic.fromMe && matchingRegex) {
       const sender = await m.getContact(m.from);
       const matchId = matchingRegex[0].split(':')[1].trim();
-      if (data[m.from].activeRound.matchId === Number(matchId)
-        && data[m.from].activeRound.listening) {
+      if (data[m.from].activeRound.matchId === Number(matchId)) {
         if (data[m.from].activeRound.palpiteiros.some((p) => p === m.author)) return m.reply('Já palpitou pô')
         const check = habilitaPalpite({ m: m, user: sender.pushname || sender.name, matchId: matchId })
         return check.error ? m.reply('Esse palpite não é válido') : m.react('🎟');
