@@ -106,32 +106,17 @@ const publicaRodada = (match) => {
   return sendAll(texto);
 };
 
-const encerraPalpite = () => {
-  return console.log('Tempo encerrado!');
-  // const today = new Date();
-  // const encerramento = '⛔️⛔️ Tempo esgotado! ⛔️⛔️\n\n';
-  // data[grupo].activeRound.listening = false;
-  // writeData(data);
-  // if (
-  //   data[grupo][data[grupo].activeRound.team.slug][today.getFullYear()][
-  //     data[grupo].activeRound.matchId
-  //   ].palpites.length < 1
-  // )
-  //   return client.sendMessage(grupo, 'Ninguém palpitou nessa rodada!');
-  // const listaDePalpites = listaPalpites(grupo);
-  // client.sendMessage(grupo, encerramento + listaDePalpites);
-  // const hours = 8; // Prazo (em horas) para buscar o resultado da partida após o encerramento dos palpites
+const encerraPalpite = async () => {
+  const palpiteList = await listaPalpites(config.apifootball.listening);
+  console.log(palpiteList);
+  config.apifootball.listening = false;
+  save(config);
+  palpiteList.forEach((pl) => client.sendMessage(pl.group, pl.list));
+  return console.log('Fim');
+  // const hours = 3; // Prazo (em horas) para buscar o resultado da partida após o encerramento dos palpites
   // const hoursInMs = hours * 3600000;
-  // // const programaFechamento = setTimeout(() => fechaRodada(grupo), 5000) // TEST
+  // const programaFechamento = setTimeout(() => fechaRodada(grupo), 5000) // TEST
   // const programaFechamento = setTimeout(() => fechaRodada({ grupo: grupo, tentativa: 1 }), hoursInMs);
-  // const comunicaNovoModulo = setTimeout(
-  //   () =>
-  //     client.sendMessage(
-  //       grupo,
-  //       'Quer acompanhar a partida?\n\nDigite *!highlights* no grupo que eu publico os melhores momentos (pra quem não fala inglês)',
-  //     ),
-  //   10 * 60000,
-  // );
 };
 
 // const verificaRodada = async (m) => {

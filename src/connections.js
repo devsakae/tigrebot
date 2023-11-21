@@ -36,11 +36,10 @@ client.on('ready', async () => {
   allChats
     .filter((chat) => chat.isGroup && !chat.isReadOnly)
     .forEach(async (group) => {
-      if (!Object.hasOwn(config.groups, group.id_serialized))
-        config.groups = {
-          ...config.groups,
-          [group.id._serialized]: { palpiteiros: [] },
-        };
+      config.groups = {
+        [group.id._serialized]: { palpiteiros: [] },
+        ...config.groups,
+      };
       console.log('✔️ Limpando mensagens do grupo', group.name);
       await group.clearMessages();
     });

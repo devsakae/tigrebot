@@ -6,7 +6,7 @@
         "official": "Criciúma Esporte Clube",
         "url": "https://api-football-v1.p.rapidapi.com/v3",
         "host": "api-football-v1.p.rapidapi.com",
-        "listening": 1006821
+        "listening": false
     },
     "groups": {
         "120363178274878131@g.us": {
