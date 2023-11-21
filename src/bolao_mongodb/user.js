@@ -1,10 +1,12 @@
 const data = require('./data/data.json');
-const { writeData } = require('./utils/fileHandler');
+const config = require('./data/config.json');
+const { writeData, save } = require('./utils/fileHandler');
+const { mongoclient } = require('../connections');
 
-const habilitaPalpite = (info) => {
+const habilitaPalpite = async (info) => {
   const today = new Date();
   const regex = /\d+\s*[x]\s*\d+/i
-  if (!info.m.body.match(regex)) return { error: true };
+  if (!info.m.body.match(regex)) return { error: 'Palpite inválido' };
   const homeScore = info.m.body.match(regex)[0].match(/^\d+/i);
   const awayScore = info.m.body.match(regex)[0].match(/\d+$/i);
   const palpiPack = ({
@@ -14,11 +16,21 @@ const habilitaPalpite = (info) => {
     homeScore: Number(homeScore),
     awayScore: Number(awayScore),
     resultado: Number(homeScore) > Number(awayScore) ? 'V' : Number(homeScore) < Number(awayScore) ? 'D' : 'E',
+    goal_diff: Number(homeScore) - Number(awayScore),
+    goal_total: Number(homeScore) + Number(awayScore),
   })
-  data[info.m.from].activeRound.palpiteiros.push(info.m.author);
-  data[info.m.from][data[info.m.from].activeRound.team.slug][today.getFullYear()][info.matchId].palpites.push(palpiPack);
-  writeData(data);
-  return { error: false };
+  config.groups[info.m.from].palpiteiros.push(info.m.author);
+  save(config);
+  try {
+    await mongoclient
+      .db(info.group)
+      .collection(info.matchId)
+      .insertOne(palpiPack);
+  } catch (err) {
+    return { error: 'Erro na conexão com o MongoDB' }
+  } finally {
+    return { error: false };
+  }
 };
 
 const listaPalpites = (grupo) => {

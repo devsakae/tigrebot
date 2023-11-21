@@ -1,10 +1,12 @@
 const prompts = require('./data/prompts.json');
+const config = require('./data/config.json');
 const { start, verificaRodada } = require('./admin');
 const { client } = require('../connections');
 const { getRanking, habilitaPalpite, listaPalpites } = require('./user');
 
 const bolao_mongodb = async (m) => {
   if (m.from === process.env.BOT_OWNER) {
+    if (m.body === '!teste') return client.sendMessage(m.from, 'Testado.');
     if (m.body.startsWith('!start bolao')) {
       console.info('Acessando comando !start bolao');
       return await start(m);
@@ -15,17 +17,16 @@ const bolao_mongodb = async (m) => {
     }
     return;
   }
-  if (m.hasQuotedMsg) {
+  if (m.hasQuotedMsg && config.apifootball.listening) {
     const isTopic = await m.getQuotedMessage();
-    const matchingRegex = isTopic.body.match(/\d+$/);
-    if (isTopic && isTopic.fromMe && matchingRegex) {
-      const sender = await m.getContact(m.from);
-      const collection = m.to.split('@')[0];
-      const matchId = matchingRegex[0].split(':')[1].trim();
-      if (data[m.from].activeRound.matchId === Number(matchId)) {
-        if (data[m.from].activeRound.palpiteiros.some((p) => p === m.author)) return m.reply('Já palpitou pô')
-        const check = habilitaPalpite({ m: m, user: sender.pushname || sender.name, matchId: matchId })
-        return check.error ? m.reply('Esse palpite não é válido') : m.react('🎟');
+    const matchingRegex = isTopic.body.match(/\d+$/)[0];
+    if (config.groups[m.from].palpiteiros.includes(m.author)) return m.reply('Já palpitou pô');
+    if (isTopic && isTopic.fromMe) {
+      const sender = await m.getContact(m.author);
+      if (Number(matchingRegex) === Number(config.apifootball.listening)) {
+        console.log('MatchId check');
+        const checkPalpite = habilitaPalpite({ group: m.from.split('@')[0], m: m, user: sender.pushname || sender.name || sender.shortname, matchId: matchingRegex });
+        return checkPalpite.error ? m.reply(checkPalpite.error) : m.react('🎟');
       }
       return m.reply('Essa rodada não está ativa!');
     }

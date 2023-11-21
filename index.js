@@ -12,19 +12,18 @@ const { bolao_mongodb } = require('./src/bolao_mongodb');
 
 (async () => {
   try {
-    await mongoclient.connect();
-    await mongoclient
+    if (!process.env.BOT_OWNER) throw Error(prompts.admin.no_owner);
+    console.info('\n✔ Admin configurado');
+    mongoclient.connect();
+    mongoclient
       .db('tigrebot')
       .command({ ping: 1 })
       .then((response) => {
-        if (response) console.info('\n✔ Conexão com MongoDB');
-        if (!process.env.BOT_OWNER)
-          return console.error(prompts.admin.no_owner);
-        console.info(
-          '✔ Telefone do administrador:',
-          process.env.BOT_OWNER.slice(2, -5),
-        );
-      });
+        if (!response) throw Error('❌ Conexão com MongoDB')
+        console.info('✔ Conexão com MongoDB');
+        console.info('\nConectando com o WhatsApp...')
+      })
+      .catch((err) => console.error(err));
   } catch (err) {
     return console.error(err);
   } finally {

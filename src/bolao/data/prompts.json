@@ -1,6 +1,6 @@
 {
   "admin": {
-    "welcome": "Conectando com o WhatsApp, aguarde...",
+    "welcome": "Conectando com o banco de dados, aguarde...",
     "no_owner": "ERRO: Você precisa configurar um administrador antes de iniciar o bot. Leia as instruções em https://bolao.devsakae.tech",
     "cancelled": "Bolão cancelado, mas dados salvos.",
     "verifyIdOrName": "Verifique o ID ou nome do bolão que você está querendo cancelar",

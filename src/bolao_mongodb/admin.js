@@ -3,10 +3,10 @@ const prompts = require('./data/prompts.json');
 const { fetchWithParams } = require('../../utils/fetchApi');
 const { client, bolao, mongoclient } = require('../connections');
 const { forMatch, sendAdmin } = require('./utils/functions');
-
+const { save } = require('./utils/fileHandler');
 const { listaPalpites } = require('./user');
 
-const sendAll = (msg) => config.groups.forEach((group) => client.sendMessage(group, '# TESTING # ' + msg));
+const sendAll = (msg) => Object.keys(config.groups).forEach((group) => client.sendMessage(group, '# TESTING # ' + msg));
 
 const start = async (m) => {
   try {
@@ -25,6 +25,7 @@ const start = async (m) => {
       .find()
       .project({ league: 1, seasons: 1 })
       .toArray();
+
     const team_leagues = season_leagues.response.filter(
       (item) =>
         !database_leagues.some(
@@ -33,19 +34,19 @@ const start = async (m) => {
             db_item.seasons[0].year === item.seasons[0].year,
         ),
     );
-    if (team_leagues.length > 0) await bolao.collection('fixtures_apifootball').insertMany(team_leagues);
+    if (team_leagues && team_leagues.length > 0) await bolao.collection('fixtures_apifootball').insertMany(team_leagues);
   } catch (err) {
     console.error(prompts.errors.no_data_fetched, '\n', err);
     return client.sendMessage(m.from, prompts.errors.no_data_fetched);
   } finally {
-    await abreRodada(m);
-    return sendAll(prompts.bolao.bolao_start);
+    sendAll(prompts.bolao.bolao_start);
+    return await abreRodada();
   }
 };
 
-const abreRodada = async (m) => {
-  const nextMatch = await pegaProximaRodada(m);
-  if (nextMatch.error) return client.sendMessage(m.from, nextMatch.error);
+const abreRodada = async () => {
+  const nextMatch = await pegaProximaRodada();
+  if (nextMatch.error) return sendAdmin(nextMatch.error);
   const today = new Date();
   const timeoutProgramado = (nextMatch.hora - today.getTime()) - (36 * 3600000)
   console.log('Publicando rodada teste em 10 segundos...');
@@ -55,7 +56,7 @@ const abreRodada = async (m) => {
   return sendAdmin(`Agendamento de ${nextMatch.homeTeam} x ${nextMatch.awayTeam} (matchId ${nextMatch.id}) realizado.\n\nJogo ocorrerá em ${new Date(nextMatch.hora)} \nPublicação nos grupos em ${new Date(today.getTime() + (nextMatch.hora - today.getTime()) - (36 * 3600000))}`)
 };
 
-const pegaProximaRodada = async (m) => {
+const pegaProximaRodada = async () => {
   try {
     const getNextMatches = await fetchWithParams({
       url: config.apifootball.url + '/fixtures',
@@ -67,23 +68,24 @@ const pegaProximaRodada = async (m) => {
     });
     if (getNextMatches.response.length === 0) return { error: prompts.errors.no_round };
     let singleMatch;
-    await getNextMatches.response.forEach((event, idx) => {
+    await getNextMatches.response.forEach(async (event, idx) => {
       const updatePack = {
-        $set: {
-          id: event.fixture.id,
-          homeTeam: event.teams.home.name,
-          awayTeam: event.teams.away.name,
-          hora: Number(event.fixture.timestamp) * 1000,
-          torneio: event.league.name,
-          torneioId: event.league.id,
-          estadio: event.fixture.venue.name,
-          status: event.fixture.status,
-          rodada: event.league.round.match(/\d+$/gi)[0],
-          palpites: [],
-        }
+        id: event.fixture.id,
+        leagueId: event.league.id,
+        leagueSeason: event.league.season,
+        homeTeam: event.teams.home.name,
+        awayTeam: event.teams.away.name,
+        hora: Number(event.fixture.timestamp) * 1000,
+        torneio: event.league.name,
+        torneioId: event.league.id,
+        estadio: event.fixture.venue.name,
+        status: event.fixture.status,
+        rodada: event.league.round.match(/\d+$/gi)[0],
       };
       if (idx === 0) singleMatch = updatePack;
-      mongoclient.db(m.from.split('@')[0]).collection('fixtures').updateOne({ id: event.fixture.id }, updatePack, { upsert: true });
+      await bolao
+        .collection('fixtures_apifootball')
+        .updateOne({ "league.id": event.league.id }, { $push: { "next_matches": updatePack } })
     });
     return singleMatch;
   } catch (err) {
@@ -95,10 +97,10 @@ const pegaProximaRodada = async (m) => {
 const publicaRodada = (match) => {
   const texto = forMatch(match);
   () => clearTimeout(encerramentoProgramado);
-  config.apifootball.listening = true;
+  config.apifootball.listening = match.id;
   save(config);
-  console.log('Encerrando rodada em 30 segundos...'); // TEST
-  const encerramentoProgramado = setTimeout(() => encerraPalpite(), 30000); // TEST
+  console.log('Encerrando rodada em 45 segundos...'); // TEST
+  const encerramentoProgramado = setTimeout(() => encerraPalpite(), 45000); // TEST
   // const today = new Date();
   // const encerramentoProgramado = setTimeout(() => encerraPalpite(), (match.hora - today.getTime() - 600000));
   return sendAll(texto);
