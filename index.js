@@ -9,6 +9,7 @@ const { sendAdmin } = require('./src/bolao/utils/functions');
 const { predictions, atualizaRodada, jogounotigre, aniversariantesDoDia } = require('./src/futebol');
 const { canal } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
+const { clima } = require('./src/weather');
 
 (async () => {
   try {
@@ -46,26 +47,25 @@ client.on('message', async (m) => {
   }
 
   // Módulo Futebol (usa: Api-Football e FootApi7)
-  if (m.body.startsWith('!resultadosdarodada')) {
-    console.info('Alguém disse !resultadosdarodada');
-    const getAtualizacao = await atualizaRodada(m);
-    if (getAtualizacao.error) sendAdmin(getAtualizacao.message);
-    return client.sendMessage(m.from, getAtualizacao.message);
-  }
-  if (
-    (m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) &&
-    m.body.startsWith('!stats')
-  ) {
-    console.info('Admin disse !stats');
-    const getPredictions = await predictions(m);
-    if (getPredictions.error) sendAdmin(getPredictions.message);
-    return client.sendMessage(m.from, getPredictions.message);
-  }
+  // if (m.body.startsWith('!resultadosdarodada')) {
+  //   console.info('Alguém disse !resultadosdarodada');
+  //   const getAtualizacao = await atualizaRodada(m);
+  //   if (getAtualizacao.error) sendAdmin(getAtualizacao.message);
+  //   return client.sendMessage(m.from, getAtualizacao.message);
+  // }
+  // if (
+  //   (m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) &&
+  //   m.body.startsWith('!stats')
+  // ) {
+  //   console.info('Admin disse !stats');
+  //   const getPredictions = await predictions(m);
+  //   if (getPredictions.error) sendAdmin(getPredictions.message);
+  //   return client.sendMessage(m.from, getPredictions.message);
+  // }
   if (m.body.startsWith('!jogounotigre')) {
     console.info('Alguém pediu !jogounotigre')
     return await jogounotigre(m);
   }
-
   if (m.body.startsWith('!aniversariantes')) {
     console.info('Alguém pediu !aniversariantes');
     return await aniversariantesDoDia(m.body.substring(16).trim());

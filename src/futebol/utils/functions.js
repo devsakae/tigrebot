@@ -30,12 +30,13 @@ const variosAtletas = (str, array) => {
   return response;
 }
 
+const icons = ['🎉', '🎁', '🪅', '🎈', '🎊']
+
 const organizaFestinha = (array) => {
-  let response =
-    'PARABÉNS para os atletas e ex atletas do Tigre que assopram velinhas na comemoração de seu aniversário na data de hoje! 🎉 🎉 \n';
+  array.sort((a, b) => a.name > b.name ? 1 : -1);
+  let response = 'Feliz aniversário para os atletas e ex atletas que assopram velinhas na data de hoje!\n';
   array.forEach(
-    (atleta) =>
-      (response += `\n🎁 ${atleta.name} (${atleta.nickname}), ${atleta.position} completando ${calculaIdade(atleta.birthday) + 1} anos`),
+    (atleta, idx) => response += `\n${icons[idx % icons.length]} ${atleta.name.toUpperCase()} (${atleta.nickname}, ${atleta.position}) completa ${calculaIdade(atleta.birthday) + 1} anos${idx !== (array.length - 1) ? ';' : ''}`
   );
   return response;
 }
