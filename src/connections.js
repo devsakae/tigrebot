@@ -1,10 +1,10 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const tigrebot_config = require('../data/tigrebot.json');
 const config = require('./bolao_mongodb/data/config.json');
 const channel_config = require('./canal/data/canal.json');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
-const { instagramThis } = require('./canal');
 
 const mongoclient = new MongoClient(process.env.MONGODB_URI, {
   serverApi: {
@@ -34,14 +34,15 @@ const client = new Client({
 client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
 
 client.on('ready', async () => {
+  console.info('Conectado!')
+  console.info('\nConfigurando canais...');
   const allChans = await client.getChannels();
   allChans
     .filter((chan) => !chan.isReadOnly)
     .forEach((mine) => {
-      channel_config.canais = {
-        [mine.id._serialized]: mine.name,
-      }
-      console.log('✔️ Configurando canal', mine.name);
+      tigrebot_config.canal = { [mine.id._serialized]: mine.name };
+      channel_config.canais = { [mine.id._serialized]: mine.name };
+      console.info('✔️ ', mine.name);
     });
   fs.writeFileSync(
     './src/canal/data/canal.json',
@@ -50,17 +51,24 @@ client.on('ready', async () => {
     (err) => console.error(err),
   );
 
+  console.info('\nConfigurando grupos...');
   const allChats = await client.getChats();
   allChats
     .filter((chat) => chat.isGroup && !chat.isMuted)
     .forEach(async (group) => {
+      tigrebot_config.grupo = {
+        [group.id._serialized]: {
+          palpiteiros: [],
+          ...tigrebot_config.grupo[group.id._serialized],
+        },
+      };
       config.groups = {
         [group.id._serialized]: {
           palpiteiros: [],
           ...config.groups[group.id._serialized],
         },
       };
-      console.log('✔️ Limpando mensagens do grupo', group.name);
+      console.log('✔️ ', group.name);
       await group.clearMessages();
     });
   fs.writeFileSync(
@@ -69,6 +77,13 @@ client.on('ready', async () => {
     'utf-8',
     (err) => console.error(err),
   );
+  fs.writeFileSync(
+    './data/tigrebot.json',
+    JSON.stringify(tigrebot_config, null, 4),
+    'utf-8',
+    (err) => console.error(err),
+  );
+
   console.info(
     '\nTigreBot rodando! Digite !help no canal para ver os comandos 😁',
   );

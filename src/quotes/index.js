@@ -20,20 +20,6 @@ const quotes = async (m) => {
 
   // Switch/case para verificar !quote, !quotefrom, !quoteby, !addquote e !delquote
   switch (quoteType) {
-    // Sistema que busca atletas que jogaram no Criciúma
-    case '!jogounotigre':
-      const atletasDoTigre = await tigrebot
-        .collection('jogadores')
-        .find({
-          $or: [
-            { 'nickname': { $regex: content, $options: 'i' } },
-            { 'name': { $regex: content, $options: 'i' } }
-          ]
-        })
-        .toArray();
-      if (atletasDoTigre.length > 0) return client.sendMessage(m.from, addStats(atletasDoTigre));
-      return m.reply('Não jogou não 😒');
-
     case '!data':
       const quotesdated = await db
         .collection('tigrelog')
