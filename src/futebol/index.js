@@ -1,7 +1,7 @@
 const { MessageMedia } = require('whatsapp-web.js');
 const { fetchWithParams, fetchApi } = require('../../utils');
 const data = require('../bolao/data/data.json');
-const { client, canais } = require('../connections');
+const { client, criciuma } = require('../connections');
 const { variosAtletas, umAtleta, organizaFestinha } = require('./utils/functions');
 const { groupSendText } = require('../../utils/sender');
 
@@ -59,7 +59,7 @@ const atualizaRodada = async (m) => {
 
 const jogounotigre = async (m) => {
   const content = m.body.substring(m.body.indexOf(' ')).trim();
-  const atletasDoTigre = await canais
+  const atletasDoTigre = await criciuma
     .collection('atletas')
     .find({
       $or: [
@@ -68,20 +68,20 @@ const jogounotigre = async (m) => {
       ]
     })
     .toArray();
-  if (atletasDoTigre.length > 1) return client.sendMessage(m.from, variosAtletas(atletasDoTigre))
+  if (atletasDoTigre.length > 1) return client.sendMessage(m.from, variosAtletas(content, atletasDoTigre))
   if (atletasDoTigre.length === 1) {
     const foto = await MessageMedia.fromUrl(atletasDoTigre[0].image);
     const caption = umAtleta(atletasDoTigre);
     return client.sendMessage(m.from, foto, { caption: caption });
   }
-  return m.reply('Não que saiba ou tenha conhecimento...');
+  return m.reply('Não que saiba ou tenha conhecimento.');
 }
 
 const aniversariantesDoDia = async (date) => {
   const today = new Date();
   const birthDate = date || today.toLocaleDateString('pt-br').substring(0, 5);
   console.log('Procurando atletas com aniversário em', birthDate);
-  const aniversariantes = await canais
+  const aniversariantes = await criciuma
     .collection('atletas')
     .find({ 'birthday': { $regex: birthDate }})
     .toArray();

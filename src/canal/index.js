@@ -1,5 +1,5 @@
 const { MessageMedia } = require('whatsapp-web.js');
-const { client, canais, tigrebot } = require('../connections');
+const { client, canais } = require('../connections');
 const { fetchWithParams } = require('../../utils');
 const data = require('./data/canal.json');
 const config = require('../bolao_mongodb/data/config.json');

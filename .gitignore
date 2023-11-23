@@ -2,6 +2,7 @@ node_modules/
 .wwebjs_auth/
 .wwebjs_cache/
 tests/
+tools/
 **/*.json
 *.env*
 !.env.example
