@@ -6,13 +6,13 @@
         "official": "Criciúma Esporte Clube",
         "url": "https://api-football-v1.p.rapidapi.com/v3",
         "host": "api-football-v1.p.rapidapi.com",
+        "nextMatch": null,
         "listening": false
     },
     "groups": {
         "120363178274878131@g.us": {
-            "palpiteiros": [
-                "554891371440@c.us"
-            ]
+            "0": "teste",
+            "palpiteiros": []
         }
     }
 }

@@ -19,9 +19,8 @@ const start = async (m) => {
       },
     });
     if (season_leagues.response.length < 1) throw new Error(prompts.errors.no_league);
-
     const database_leagues = await bolao
-      .collection('fixtures_apifootball')
+      .collection('apifootball_fixtures')
       .find()
       .project({ league: 1, seasons: 1 })
       .toArray();
@@ -34,7 +33,7 @@ const start = async (m) => {
             db_item.seasons[0].year === item.seasons[0].year,
         ),
     );
-    if (team_leagues && team_leagues.length > 0) await bolao.collection('fixtures_apifootball').insertMany(team_leagues);
+    if (team_leagues && team_leagues.length > 0) await bolao.collection('apifootball_fixtures').insertMany(team_leagues);
   } catch (err) {
     console.error(prompts.errors.no_data_fetched, '\n', err);
     return client.sendMessage(m.from, prompts.errors.no_data_fetched);
@@ -47,12 +46,14 @@ const start = async (m) => {
 const abreRodada = async () => {
   const nextMatch = await pegaProximaRodada();
   if (nextMatch.error) return sendAdmin(nextMatch.error);
+  config.apifootball.nextMatch = nextMatch,
+  save(config);
   const today = new Date();
   const timeoutProgramado = (nextMatch.hora - today.getTime()) - (36 * 3600000)
   console.log('Publicando rodada teste em 10 segundos...');
-  const publicacaoProgramada = setTimeout(() => publicaRodada(nextMatch), 10000);
+  const publicacaoProgramada = setTimeout(() => publicaRodada(), 10000);
   // const publicacaoProgramada = setTimeout(() => publicaRodada(nextMatch), timeoutProgramado);
-  sendAll(`Abertura da próxima rodada: ${new Date(today.getTime() + (nextMatch.hora - today.getTime()) - (36 * 3600000))}`);
+  sendAll(`Próxima rodada será aberta em ${new Date(today.getTime() + (nextMatch.hora - today.getTime()) - (36 * 3600000))}`);
   return sendAdmin(`Agendamento de ${nextMatch.homeTeam} x ${nextMatch.awayTeam} (matchId ${nextMatch.id}) realizado.\n\nJogo ocorrerá em ${new Date(nextMatch.hora)} \nPublicação nos grupos em ${new Date(today.getTime() + (nextMatch.hora - today.getTime()) - (36 * 3600000))}`)
 };
 
@@ -63,59 +64,81 @@ const pegaProximaRodada = async () => {
       host: config.apifootball.host,
       params: {
         team: config.apifootball.id,
-        next: 5,
+        next: 1,
       },
     });
     if (getNextMatches.response.length === 0) return { error: prompts.errors.no_round };
-    let singleMatch;
-    await getNextMatches.response.forEach(async (event, idx) => {
-      const updatePack = {
-        id: event.fixture.id,
-        leagueId: event.league.id,
-        leagueSeason: event.league.season,
-        homeTeam: event.teams.home.name,
-        awayTeam: event.teams.away.name,
-        hora: Number(event.fixture.timestamp) * 1000,
-        torneio: event.league.name,
-        torneioId: event.league.id,
-        estadio: event.fixture.venue.name,
-        status: event.fixture.status,
-        rodada: event.league.round.match(/\d+$/gi)[0],
-      };
-      if (idx === 0) singleMatch = updatePack;
-      await bolao
-        .collection('fixtures_apifootball')
-        .updateOne({ "league.id": event.league.id }, { $push: { "next_matches": updatePack } })
-    });
-    return singleMatch;
+    const updatePack = {
+      id: getNextMatches.response[0].fixture.id,
+      leagueId: getNextMatches.response[0].league.id,
+      leagueSeason: getNextMatches.response[0].league.season,
+      homeTeam: getNextMatches.response[0].teams.home.name,
+      awayTeam: getNextMatches.response[0].teams.away.name,
+      hora: Number(getNextMatches.response[0].fixture.timestamp) * 1000,
+      torneio: getNextMatches.response[0].league.name,
+      torneioId: getNextMatches.response[0].league.id,
+      estadio: getNextMatches.response[0].fixture.venue.name,
+      status: getNextMatches.response[0].fixture.status,
+      rodada: getNextMatches.response[0].league.round.match(/\d+$/gi)[0],
+    }
+    await bolao
+      .collection('apifootball_fixtures')
+      .updateOne(
+        { "league.id": getNextMatches[0].response.league.id },
+        {
+          $push:
+            { "next_matches": updatePack }
+        }
+      )
+    return updatePack;
+    // await getNextMatches.response.forEach(async (event, idx) => {
+    //   const updatePack = {
+    //     id: event.fixture.id,
+    //     leagueId: event.league.id,
+    //     leagueSeason: event.league.season,
+    //     homeTeam: event.teams.home.name,
+    //     awayTeam: event.teams.away.name,
+    //     hora: Number(event.fixture.timestamp) * 1000,
+    //     torneio: event.league.name,
+    //     torneioId: event.league.id,
+    //     estadio: event.fixture.venue.name,
+    //     status: event.fixture.status,
+    //     rodada: event.league.round.match(/\d+$/gi)[0],
+    //   };
+    //   if (idx === 0) singleMatch = updatePack;
+    //   await bolao
+    //     .collection('fixtures_apifootball')
+    //     .updateOne({ "league.id": event.league.id }, { $push: { "next_matches": updatePack } })
+    // });
+    // return singleMatch;
   } catch (err) {
     console.error(prompts.errors.no_data_fetched, '\n', err);
     return { error: prompts.errors.no_data_fetched };
   }
 };
 
-const publicaRodada = (match) => {
-  const texto = forMatch(match);
+const publicaRodada = () => {
+  const texto = forMatch(config.apifootball.nextMatch);
   () => clearTimeout(encerramentoProgramado);
-  config.apifootball.listening = match.id;
+  config.apifootball.listening = true;
   save(config);
   console.log('Encerrando rodada em 45 segundos...'); // TEST
   const encerramentoProgramado = setTimeout(() => encerraPalpite(), 45000); // TEST
   // const today = new Date();
-  // const encerramentoProgramado = setTimeout(() => encerraPalpite(), (match.hora - today.getTime() - 600000));
+  // const encerramentoProgramado = setTimeout(() => encerraPalpite(), (config.apifootball.nextMatch.hora - today.getTime() - 600000));
   return sendAll(texto);
 };
 
 const encerraPalpite = async () => {
-  const palpiteList = await listaPalpites(config.apifootball.listening);
-  console.log(palpiteList);
   config.apifootball.listening = false;
   save(config);
+  const palpiteList = await listaPalpites(config.apifootball.nextMatch.id);
+  console.log(palpiteList);
   palpiteList.forEach((pl) => client.sendMessage(pl.group, pl.list));
-  return console.log('Fim');
+  console.log('Agora é fechar a rodada');
   // const hours = 3; // Prazo (em horas) para buscar o resultado da partida após o encerramento dos palpites
   // const hoursInMs = hours * 3600000;
-  // const programaFechamento = setTimeout(() => fechaRodada(grupo), 5000) // TEST
+  // const programaFechamento = setTimeout(() => fechaRodada(), 5000) // TEST
   // const programaFechamento = setTimeout(() => fechaRodada({ grupo: grupo, tentativa: 1 }), hoursInMs);
 };
 

@@ -1,8 +1,5 @@
 {
-    "canais": [
-        {
-            "name": "TigreLOG",
-            "chanId": "120363198744230885@newsletter"
-        }
-    ]
+    "canais": {
+        "120363198744230885@newsletter": "TigreLOG"
+    }
 }

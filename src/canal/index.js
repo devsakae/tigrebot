@@ -2,10 +2,30 @@ const { MessageMedia } = require('whatsapp-web.js');
 const { client, canais, tigrebot } = require('../connections');
 const { fetchWithParams } = require('../../utils');
 const data = require('./data/canal.json');
-const bolaodata = require('../bolao/data/data.json');
+const config = require('../bolao_mongodb/data/config.json');
 const { saveUpdates } = require('./utils/fileHandler');
 
-const grupos = Object.keys(bolaodata).filter((key) => key.endsWith('.us'));
+const sendAdmin = (msg) => client.sendMessage(process.env.BOT_OWNER, msg);
+
+const sendMessage = (msg) => {
+  Object.keys(config.groups).forEach((grupo) => client.sendMessage(grupo, msg));
+};
+
+const sendMessageMedia = async (media) => {
+  const messageMedia = await MessageMedia.fromUrl(media.url);
+  Object.keys(config.groups).forEach(
+    async (grupo) =>
+      await client.sendMessage(grupo, messageMedia, {
+        caption: media.caption + '\n\n📷 Postagem original: ' + media.link + '\nCapturado e enviado até você por TigreBot - http://tigrebot.devsakae.tech',
+      }),
+  );
+  Object.keys(data.canais).forEach(
+    async (canal) =>
+      await client.sendMessage(canal, messageMedia, {
+        caption: media.caption,
+      }),
+  );
+};
 
 const canal = async (m) => {
   if (m.body.startsWith('/help')) {
@@ -14,57 +34,7 @@ const canal = async (m) => {
       'Comandos já configurados no bot:\n\n */canal criar <nome>*\n_Crio um canal de nome <nome> e devolvo com o ID, salvando no banco de dados_\n\n */insta <username>*\n _Publico no <canal> o último post de <username> no Instagram.com_\n\n */pub <canal> <conteúdo>*\n _Publico no <canal> (nome) o texto <conteúdo>_',
     );
   }
-  if (m.body.startsWith('/dbinsta')) return await fetchMongoInstagram();
-  if (m.body.startsWith('/insta')) {
-    const insta_account = m.body.split(' ')[1];
-    const instaPosts = await fetchInstagram(insta_account);
-    if (instaPosts.length > 0) {
-      grupos.forEach((grupo) => {
-        publicaMidiaFromUrl({
-          canal: {
-            name: '<Grupo> TigreLOG',
-            chanId: grupo
-          },
-          conteudo: instaPosts[0],
-        });
-      });
-      data.canais.forEach((canal) => {
-        publicaMidiaFromUrl({
-          canal: canal,
-          conteudo: instaPosts[0],
-        });
-      });
-      return;
-    }
-    return await fetchMongoInstagram();
-  }
-
-  if (m.body.startsWith('/pub')) {
-    if (m.hasQuotedMsg) {
-      const quotedm = await m.getQuotedMessage();
-      console.log(quotedm);
-      if (quotedm.hasMedia) {
-        const attachmentData = await quotedm.downloadMedia();
-        return client.sendMessage(data.canais[0].chanId, attachmentData, { caption: quotedm.caption });
-      }
-      if (quotedm.hasMedia && quotedm.type === 'audio') {
-        const audio = await quotedm.downloadMedia();
-        return await client.sendMessage(data.canais[0].chanId, audio, { sendAudioAsVoice: true });
-      }
-    }
-    const details = m.body.split(' ');
-    const canal = data.canais.find(
-      (c) => c.name.toLowerCase() === details[1].toLowerCase(),
-    );
-    if (!canal)
-      return client.sendMessage(
-        m.from,
-        'Nenhum canal encontrado! Verifique o nome',
-      );
-    const conteudo = details.splice(2).join(' ');
-    return publicaConteudo({ canal, conteudo });
-  }
-
+  if (m.body.startsWith('/insta')) return instagramThis(m.body.split(' ')[1] || 'criciumaoficial');
   if (m.body.startsWith('/canal')) {
     const command = m.body.split(' ');
     if (command && command[1] === 'criar' && command.length > 1) {
@@ -76,108 +46,59 @@ const canal = async (m) => {
             m.from,
             'Este canal já existe ou é inválido',
           );
-        const chanId = (await client.createChannel(command[2]))?.nid
-          ._serialized;
+        const chanId = (await client.createChannel(command[2]))?.nid._serialized;
         const canalCriado = { name: command[2], chanId: chanId };
         console.info(`Criação do canal ${command[2]} (${chanId})`);
-        data.canais.push(canalCriado);
+        data.canais = { [chanId]: command[2], ...data.canais }
         saveUpdates(data);
         await canais.collection('config').insertOne(canalCriado);
         return client.sendMessage(m.from, 'Canal criado! ID: ' + chanId);
       } catch (err) {
         console.error(err);
-        return client.sendMessage(process.env.BOT_OWNER, err);
+        sendAdmin(err);
       }
     }
   }
   return;
 };
 
-const publicaMidiaFromUrl = async ({ canal, conteudo }) => {
-  console.info(`Publicando no canal *${canal.name}* MÍDIA`);
-  const media = await MessageMedia.fromUrl(conteudo.url);
-  client.sendMessage(canal.chanId, media, { caption: conteudo.caption });
+const instagramThis = async (user) => {
+  try {
+    fetchInstagram(user).then((post) => sendMessageMedia(post));
+  } catch (err) {
+    return sendAdmin(err);
+  }
 };
-
-const publicaConteudo = async ({ canal, conteudo }) => {
-  console.info(
-    `Publicando no canal *${canal.name}* o conteúdo abaixo:\n\n` + conteudo,
-  );
-  await canais.collection(canal).insertOne({ date: new Date(), conteudo });
-  return client.sendMessage(canal.chanId, conteudo);
-};
-
-const fetchMongoInstagram = async () => {
-  tigrebot
-    .collection('instagram_criciumaoficial')
-    .find()
-    .toArray()
-    .then((posts) => {
-      if (posts.length === 0) return m.reply('Zero posts na database');
-      grupos.forEach((grupo) => {
-        publicaMidiaFromUrl({
-          canal: {
-            name: '<Grupo> TigreLOG',
-            chanId: grupo
-          },
-          conteudo: posts[0],
-        });
-      })
-    })
-}
 
 // Publicação no whatsapp de conta do instagram
 const fetchInstagram = async (user) => {
   return await fetchWithParams({
-    url: process.env.INSTAGRAM130_API_URL,
+    url: process.env.INSTAGRAM130_API_URL + '/account-feed',
     host: process.env.INSTAGRAM130_API_HOST,
     params: {
       username: user,
     },
   })
     .then(async (response) => {
-      if (response.length < 1) return [];
-      let instaUpdates = [];
-      response.forEach(({ node }) => {
-        const instaPost = {
-          id: node.id,
-          link: node.shortcode,
-          type: node.__typename,
-          url:
-            node.__typename === 'GraphVideo'
-              ? node.video_url
-              : node.display_url,
-          caption: node.edge_media_to_caption.edges[0].node.text,
-        };
-        instaUpdates.push(instaPost);
-      });
-      console.log('api: buscou', instaUpdates.length, 'posts na conta. último:', instaUpdates[0].id)
-      return instaUpdates;
-    })
-    .then((instaUpdates) => {
-      const latestDbPost = tigrebot
-        .collection('instagram_criciumaoficial')
-        .find({})
-        .sort({ _id: -1 })
-        .limit(1);
-      console.log('mongodb: último doc inserido', latestDbPost.id);
-      const latestIdx = instaUpdates.findIndex((post) => post.id === latestDbPost.id); // ex.: 3
-      console.log('este doc é o idx', latestIdx, 'do instaUpdates')
-      if (latestIdx === 0) return [];
-      return latestIdx === -1
-        ? instaUpdates
-        : instaUpdates.splice(0, latestIdx);
-    })
-    .then((instaSpliced) => {
-      console.log('mongodb: inserting', instaSpliced.length, 'documentos')
-      tigrebot
-        .collection('instagram_criciumaoficial')
-        .insertMany(instaSpliced);
-      return instaSpliced;
+      if (response.length === 0) throw Error('Não foi possível buscar nenhum post');
+      const update = {
+        date: new Date(),
+        id: response[0].node.id,
+        link: 'http://instagram.com/p/' + response[0].node.shortcode,
+        type: response[0].node.__typename,
+        url:
+          response[0].node.__typename === 'GraphVideo'
+            ? response[0].node.video_url
+            : response[0].node.display_url,
+        caption: response[0].node.edge_media_to_caption.edges[0].node.text,
+      }
+      await canais.collection('instagram').insertOne(update)
+      return update;
     })
     .catch((err) => console.error(err));
 };
 
 module.exports = {
   canal,
+  instagramThis,
 };
