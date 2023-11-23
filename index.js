@@ -7,9 +7,10 @@ const { narrador } = require('./src/narrador');
 const { help } = require('./utils/index');
 const { sendAdmin } = require('./src/bolao/utils/functions');
 const { predictions, atualizaRodada, jogounotigre, aniversariantesDoDia } = require('./src/futebol');
-const { canal } = require('./src/canal');
+const { canal, bomDia } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
 const { clima } = require('./src/weather');
+const cron = require('node-cron');
 
 (async () => {
   try {
@@ -29,6 +30,13 @@ const { clima } = require('./src/weather');
     return console.error(err);
   } finally {
     console.info('\n' + prompts.admin.welcome);
+    cron.schedule('39 6 * * *', () => {
+      console.info('06h39min. Bom dia. Rodando o bomDia()...');
+      bomDia()
+    }, {
+      scheduled: true,
+      timezone: "America/Sao_Paulo"
+    })
   }
 })();
 

@@ -21,11 +21,12 @@ Palpites válidos somente se enviados em até *10 minutos* antes da partida e o 
 
 *REGRAS*: As rodadas são abertas 36 horas antes do horário da partida.
 
-✅ Acertou o placar em cheio: *3 pontos*
-✅ Acertar vitória, empate ou derrota e o placar de um dos times: *2 pontos*
+✅ Acertou o placar em cheio: *4 pontos*
+✅ Acertar o vencedor e diferença de gols: *3 pontos*
+✅ Acertar vitória ou derrota e o placar de apenas um dos times: *2 pontos*
 ✅ Acertar vitória, empate ou derrota: *1 ponto*
+🟡 Tigre venceu? Todo mundo ganha *+1 ponto* 🐯
 🚫 Repetir palpite
-🚫 Flood (leva cartão amarelo)
 ⚖️ Desempate: Palpite mais antigo leva
 
 Boa sorte!

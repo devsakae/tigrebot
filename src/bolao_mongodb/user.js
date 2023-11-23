@@ -1,7 +1,8 @@
 const data = require('./data/data.json');
-const config = require('./data/config.json');
-const { writeData, save } = require('./utils/fileHandler');
-const { mongoclient, bolao } = require('../connections');
+const config = require('../../data/tigrebot.json');
+const { saveLocal } = require('../../utils')
+const { writeData } = require('./utils/fileHandler');
+const { mongoclient } = require('../connections');
 const { sendAdmin } = require('./utils/functions');
 
 const habilitaPalpite = async (info) => {
@@ -25,8 +26,8 @@ const habilitaPalpite = async (info) => {
     goal_diff: Number(homeScore) - Number(awayScore),
     goal_total: Number(homeScore) + Number(awayScore),
   };
-  config.groups[info.m.from].palpiteiros.push(info.m.author);
-  save(config);
+  config.grupos[info.m.from].palpiteiros.push(info.m.author);
+  saveLocal(config);
   try {
     mongoclient.db(info.group).collection(info.matchId).insertOne(palpiPack);
   } catch (err) {
@@ -36,10 +37,11 @@ const habilitaPalpite = async (info) => {
   }
 };
 
-const listaPalpites = async (matchId) => {
+const listaPalpites = async () => {
+  const matchId = config.bolao.nextMatch.id;
   try {
     let retorno = [];
-    Object.keys(config.groups).forEach(async (group) => {
+    Object.keys(config.grupos).forEach(async (group) => {
       let list = '📢 Lista de palpites registrados:\n';
       const palpitesNaDatabase = await mongoclient
         .db(group.split('@')[0])
@@ -48,7 +50,7 @@ const listaPalpites = async (matchId) => {
         .toArray();
       palpitesNaDatabase.length > 1
         ? palpitesNaDatabase.forEach((p) => list += `\n▪ ${p.homeScore} x ${p.awayScore} - ${p.userName}`)
-        : list += '\nAbsolutamente nenhum 👀';
+        : list += '\nAbsolutamente nenhum 🦗   🦗       🦗';
       retorno.push({ group, list });
     });
     return retorno;

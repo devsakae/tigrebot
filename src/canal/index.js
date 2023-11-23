@@ -2,7 +2,7 @@ const { client, criciuma } = require('../connections');
 const config = require('../../data/tigrebot.json')
 const { fetchWithParams } = require('../../utils');
 const { saveLocal } = require('../../utils/handleFile');
-const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups } = require('../../utils/sender');
+const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels } = require('../../utils/sender');
 const { getWeather } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 
@@ -27,7 +27,7 @@ const canal = async (m) => {
       return client.sendMessage(m.from, 'Canal criado! ID: ' + chanId);
     }
   }
-  if (m.body.startsWith('/ativar')) return bomDia();
+  if (m.body.startsWith('/bomdia')) return bomDia();
   return;
 };
 
@@ -39,11 +39,10 @@ const bomDia = async () => {
     .collection('atletas')
     .find({ 'birthday': { $regex: birthDate } })
     .toArray();
-  if (aniversariantes.length === 0) return sendMediaUrlToGroups(weather);
+  if (aniversariantes.length === 0) return sendMediaUrlToChannels(weather);
   const texto = organizaFestinha(aniversariantes);
   const mensagem = weather.caption + '\n\n' + texto;
-  sendMediaUrlToGroups({ url: weather.url, caption: mensagem })
-  const vaiDeNovo = setTimeout(() => bomDia(), 30000);
+  return sendMediaUrlToChannels({ url: weather.url, caption: mensagem })
 }
 
 const instagramThis = async (user = 'criciumaoficial') => {
@@ -99,4 +98,5 @@ const fetchInstagram = async (user) => {
 module.exports = {
   canal,
   instagramThis,
+  bomDia,
 };
