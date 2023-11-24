@@ -1,9 +1,7 @@
-const data = require('./data/data.json');
+// const data = require('./data/data.json');
 const config = require('../../data/tigrebot.json');
 const { saveLocal } = require('../../utils')
-const { writeData } = require('./utils/fileHandler');
-const { mongoclient, client } = require('../connections');
-const { sendAdmin } = require('./utils/functions');
+const { mongoclient } = require('../connections');
 
 const habilitaPalpite = async (info) => {
   const today = new Date();
@@ -101,33 +99,33 @@ const calculaRankingDaPartida = async (matchId = config.bolao.nextMatch.id) => {
   //     return { ...p, pontos: pontos };
 }
 
-const getRanking = async () => {
-  return;
-  // let response = `🏆🏆 *Ranking do Bolão* 🏆🏆\n`;
+// const getRanking = async () => {
+//   return;
+//   // let response = `🏆🏆 *Ranking do Bolão* 🏆🏆\n`;
 
-  data[grupo][data[grupo].activeRound.team.slug].ranking.forEach((pos, idx) => {
-    if (idx === 3) response += '\n🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝';
-    if (pos.pontos < 1)
-      response += '\n\nCertificado de participação no bolão:\n';
-    const medal =
-      idx === 0
-        ? '🥇 '
-        : idx === 1
-          ? '🥈 '
-          : idx === 2
-            ? '🥉 '
-            : `${idx + 1}º - `;
-    pos.pontos > 0
-      ? (response += `\n${medal}${pos.usuario} [${pos.pontos} ponto${pos.pontos > 1 ? 's' : ''
-        }]`)
-      : (response += `\n🎗 ${pos.usuario}`);
-  });
-  return response;
-};
+//   data[grupo][data[grupo].activeRound.team.slug].ranking.forEach((pos, idx) => {
+//     if (idx === 3) response += '\n🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝';
+//     if (pos.pontos < 1)
+//       response += '\n\nCertificado de participação no bolão:\n';
+//     const medal =
+//       idx === 0
+//         ? '🥇 '
+//         : idx === 1
+//           ? '🥈 '
+//           : idx === 2
+//             ? '🥉 '
+//             : `${idx + 1}º - `;
+//     pos.pontos > 0
+//       ? (response += `\n${medal}${pos.usuario} [${pos.pontos} ponto${pos.pontos > 1 ? 's' : ''
+//         }]`)
+//       : (response += `\n🎗 ${pos.usuario}`);
+//   });
+//   return response;
+// };
 
 module.exports = {
   habilitaPalpite,
   listaPalpites,
-  getRanking,
+  // getRanking,
   getMongoPalpites,
 };

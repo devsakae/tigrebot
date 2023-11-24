@@ -1,7 +1,7 @@
 const config = require('../../data/tigrebot.json');
-const { start, verificaRodada } = require('./admin');
+const { start } = require('./admin');
 const { client } = require('../connections');
-const { getRanking, habilitaPalpite, listaPalpites } = require('./user');
+const { habilitaPalpite, listaPalpites } = require('./user');
 
 const bolao_mongodb = async (m) => {
   if (m.from === process.env.BOT_OWNER) {
