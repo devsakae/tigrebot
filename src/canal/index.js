@@ -108,7 +108,7 @@ const publicaQuotedMessage = async (m) => {
       await Promise.all(Object.keys(config.canais).forEach(async (canal) => await client.sendMessage(canal, contentComMedia, { caption: raw.body })))
     }
   }
-  return await client.sendMessage(m.from, raw.body);
+  return await Promise.all(Object.keys(config.canais).forEach(async (canal) => await client.sendMessage(canal, raw.body)));
 }
 
 module.exports = {

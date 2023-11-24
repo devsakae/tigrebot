@@ -6,7 +6,5 @@ tools/
 **/*.json
 *.env*
 !.env.example
-!*example.json
-!*config.json
 !*prompts.json
-!*canal.json
+!*tigrebot.json

@@ -67,8 +67,8 @@ const quotes = async (m) => {
         .toArray();
 
       if (foundquote.length === 0) return m.reply('Tenho nada disso aí aqui 🫥');
-      if (foundquote.length === 1) return client.sendMessage(m.from, formatQuote(foundquote[0]));
       client.sendMessage(m.from, `ATENÇÃO PRA MELHOR DAS *${foundquote.length} QUOTES* QUE EU TENHO AQUI NO TEMA '${content.toUpperCase()}'`);
+      if (foundquote.length === 1) return client.sendMessage(m.from, formatQuote(foundquote[0]));
       const response = bestQuote(foundquote);
       return client.sendMessage(m.from, response);
 

@@ -54,6 +54,10 @@ client.on('message', async (m) => {
     return await publicaQuotedMessage(m)
   }
 
+  if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!tigrelino') {
+    return await publicaQuotedMessage(m)
+  }
+
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && m.body.startsWith('!teste')) {
     const lista = await getMongoPalpites();
     client.sendMessage(m.from, 'Aguardando?');
@@ -120,5 +124,5 @@ client.on('message', async (m) => {
 
   // Módulo Bolão
   // bolao(m) // (API-FOOTBALL - https://rapidapi.com/api-sports/api/api-football/)
-  bolao_mongodb(m);
+  // bolao_mongodb(m);
 });

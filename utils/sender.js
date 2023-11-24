@@ -2,12 +2,20 @@ const { client } = require('../src/connections');
 const config = require('../data/tigrebot.json');
 const { MessageMedia } = require('whatsapp-web.js');
 
-const sendTextToGroups = (text) => {
-  Object.keys(config.grupos).forEach(async (grupo) => {
+const sendTextToGroups = async (text) => {
+  await Promise.all(Object.keys(config.grupos).forEach(async (grupo) => {
     const chat = await client.getChatById(grupo);
     chat.sendStateTyping();
     setTimeout(() => client.sendMessage(grupo, text), 1500)
-  });
+  }));
+}
+
+const sendBolaoGroups = async (text) => {
+  await Promise.all(config.bolao.grupos.forEach(async (grupo) => {
+    const chat = await client.getChatById(grupo);
+    chat.sendStateTyping();
+    setTimeout(() => client.sendMessage(grupo, text), 1500)
+  }));
 }
 
 const sendTextToChannels = (text) => Object.keys(config.canais).forEach(async (channel) => await client.sendMessage(channel, text));
@@ -49,4 +57,5 @@ module.exports = {
   sendMediaUrlToChannels,
   sendInstagramToGroups,
   sendInstagramToChannels,
+  sendBolaoGroups,
 }
