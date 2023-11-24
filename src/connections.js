@@ -43,7 +43,7 @@ client.on('ready', async () => {
       console.info('✔️ ', mine.name);
     });
   const allChats = await client.getChats();
-  await Promise.all(allChats
+  allChats
     .filter((chat) => chat.isGroup && !chat.isMuted)
     .forEach(async (group) => {
       config.grupos = {
@@ -54,7 +54,7 @@ client.on('ready', async () => {
       };
       console.log('✔️ ', group.name);
       await group.sendSeen();
-    }));
+    });
   fs.writeFileSync(
     './data/tigrebot.json',
     JSON.stringify(config, null, 4),
