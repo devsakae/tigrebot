@@ -7,10 +7,10 @@ const { narrador } = require('./src/narrador');
 const { help } = require('./utils/index');
 const { sendAdmin } = require('./src/bolao/utils/functions');
 const { predictions, atualizaRodada, jogounotigre, aniversariantesDoDia } = require('./src/futebol');
-const { canal, bomDia } = require('./src/canal');
+const { canal, bomDia, publicaQuotedMessage } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
-const { clima } = require('./src/weather');
 const cron = require('node-cron');
+const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
 (async () => {
   try {
@@ -40,9 +40,28 @@ const cron = require('node-cron');
   }
 })();
 
+// client.on('message_reaction', async (m) => {
+//   if (m.reaction === '\u26BD') { // Unicode for ⚽️
+//     console.log('goal!')
+//   }
+//   if (m.reaction === '🤖') {
+//     console.info('Publicando conteúdo no canal');
+//   }
+// })
+
 client.on('message', async (m) => {
+  if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') {
+    return await publicaQuotedMessage(m)
+  }
+
+  if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && m.body.startsWith('!teste')) {
+    const lista = await getMongoPalpites();
+    client.sendMessage(m.from, 'Aguardando?');
+    return console.log(lista);
+  }
+
   // Módulo de administração de canal
-  if (m.from === process.env.BOT_OWNER && m.body.startsWith('/')) {
+  if ((m.from === process.env.BOT_OWNER || m.author === process.env.BOT_OWNER) && m.body.startsWith('/')) {
     console.info('Admin solicitou', m.body);
     return await canal(m);
   }

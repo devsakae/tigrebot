@@ -1,10 +1,9 @@
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { fetchWithParams, saveLocal, sendTextToGroups } = require('../../utils')
-const { forMatch, sendAdmin } = require('./utils');
-const { client, bolao } = require('../connections');
+const { forMatch } = require('./utils');
+const { client, bolao, mongoclient } = require('../connections');
 const { listaPalpites } = require('./user');
-const { calculaRanking } = require('../bolao/utils/functions');
 
 const start = async (m) => {
   try {
@@ -34,7 +33,7 @@ const start = async (m) => {
     if (team_leagues && team_leagues.length > 0) await bolao.collection('fixtures').insertMany(team_leagues);
   } catch (err) {
     console.error(prompts.errors.no_data_fetched, '\n', err);
-    return client.sendMessage(m.from, prompts.errors.no_data_fetched);
+    return client.sendMessage(m.from, err);
   } finally {
     sendTextToGroups(prompts.bolao.start);
     return await abreRodada();
@@ -42,15 +41,34 @@ const start = async (m) => {
 };
 
 const abreRodada = async () => {
-  const nextMatch = await pegaProximaRodada();
+  const nextMatch = await pesquisaProximaRodada();
+  if (nextMatch) console.log('Encontrei nextMatch');
+  // const nextMatch = await pegaProximaRodada();
   if (nextMatch.error) return sendTextToGroups(nextMatch.error);
   const today = new Date();
   console.log('Publicando rodada teste em 3 segundos...');
   const publicacaoProgramada = setTimeout(() => publicaRodada(), 3000);
-  const timeoutProgramado = (nextMatch.hora - today.getTime()) - (36 * 3600000)
+  // const timeoutProgramado = (nextMatch.hora - today.getTime()) - (36 * 3600000)
   // const publicacaoProgramada = setTimeout(() => publicaRodada(), timeoutProgramado);
   return sendTextToGroups(`Próxima rodada será aberta em ${new Date(today.getTime() + (nextMatch.hora - today.getTime()) - (36 * 3600000))}`);
 };
+
+const pesquisaProximaRodada = async () => {
+  const today = new Date();
+  const getNextMatches = await bolao
+    .collection('fixtures')
+    .find({ next_matches: { $gte: 1 } })
+    .toArray();
+  console.log(getNextMatches);
+  if (getNextMatches.length > 0) {
+    console.log('Tem nextmatch na database')
+    const nextMatch = getNextMatches.find((m) => m.hora > today);
+    console.log(nextMatch);
+    return nextMatch;
+  }
+  console.log('Não tem nextmatch na database')
+  return await pegaProximaRodada();
+}
 
 const pegaProximaRodada = async () => {
   try {
@@ -59,34 +77,54 @@ const pegaProximaRodada = async () => {
       host: config.bolao.host,
       params: {
         team: config.bolao.id,
-        next: 2,
+        next: 10,
       },
     });
     if (response.length === 0) return { error: prompts.errors.no_round };
-    const updatePack = {
-      id: response[0].fixture.id,
-      homeTeam: response[0].teams.home.name,
-      awayTeam: response[0].teams.away.name,
-      hora: Number(response[0].fixture.timestamp) * 1000,
-      torneio: response[0].league.name,
-      torneioId: response[0].league.id,
-      torneioSeason: response[0].league.season,
-      estadio: response[0].fixture.venue.name,
-      status: response[0].fixture.status,
-      rodada: response[0].league.round.match(/\d+$/gi)[0],
-    }
+    const responseTratada = response.map((item) => ({
+      id: item.fixture.id,
+      homeTeam: item.teams.home.name,
+      awayTeam: item.teams.away.name,
+      hora: Number(item.fixture.timestamp) * 1000,
+      torneio: item.league.name,
+      torneioId: item.league.id,
+      torneioSeason: item.league.season,
+      estadio: item.fixture.venue.name,
+      status: item.fixture.status,
+      rodada: item.league.round.match(/\d+$/gi)[0],
+    }))
+    // const updatePack = {
+    //   id: response[0].fixture.id,
+    //   homeTeam: response[0].teams.home.name,
+    //   awayTeam: response[0].teams.away.name,
+    //   hora: Number(response[0].fixture.timestamp) * 1000,
+    //   torneio: response[0].league.name,
+    //   torneioId: response[0].league.id,
+    //   torneioSeason: response[0].league.season,
+    //   estadio: response[0].fixture.venue.name,
+    //   status: response[0].fixture.status,
+    //   rodada: response[0].league.round.match(/\d+$/gi)[0],
+    // }
+    const forLeagues = responseTratada.map((item) => ({ id: item.id, hora: item.hora }));
     await bolao
       .collection('fixtures')
       .updateOne(
         { "league.id": response[0].league.id },
-        {
-          $push:
-            { "next_matches": updatePack }
-        }
+        { $set: { "next_matches": forLeagues } },
+        { upsert: true }
       )
-    config.bolao.nextMatch = updatePack;
+    await Promise.all(Object.keys(config.grupos).forEach(async (grupo) => {
+      await mongoclient
+        .db(grupo.split('@')[0])
+        .collection('#fixtures')
+        .insertMany(
+          responseTratada,
+          { upsert: true }
+        )
+    }))
+    config.bolao.nextMatch = responseTratada[0];
     saveLocal(config);
-    return updatePack;
+    return responseTratada[0];
   } catch (err) {
     console.error(prompts.errors.no_data_fetched, '\n', err);
     return { error: prompts.errors.no_data_fetched };
@@ -109,12 +147,11 @@ const publicaRodada = () => {
 const encerraPalpite = async () => {
   config.bolao.listening = false;
   saveLocal(config);
-  console.log('Start fetching palpites')
-  await listaPalpites();  
-  return console.log('End fetching palpites');
-  // const programaFechamento = setTimeout(() => fechaRodada(), 25000) // TEST
-  // const hours = 3;
-  // const hoursInMs = hours * 3600000;
+  await listaPalpites();
+  const hours = 3;
+  const hoursInMs = hours * 3600000;
+  console.info('Fechando rodada em 3 segundos');
+  const programaFechamento = setTimeout(() => fechaRodada(), 3000) // TEST
   // const programaFechamento = setTimeout(() => fechaRodada(), hoursInMs);
 }
 
@@ -122,22 +159,8 @@ const fechaRodada = async () => {
   const matchInfo = await buscaResultado();
   if (matchInfo.error) return sendTextToGroups(matchInfo.error);
   console.log('fim por enquanto');
-  // Object.keys(config.grupos).forEach((grupo) => calculaRanking(matchInfo, grupo));
-
   // console.info('Abre próxima rodada em 1 hora');
   // const preparaProximaRodada = setTimeout(() => abreRodada(grupo), 60000);
-  // data[grupo][data[grupo].activeRound.team.slug][today.getFullYear()][data[grupo].activeRound.matchId] = {
-  //   ...data[grupo][data[grupo].activeRound.team.slug][today.getFullYear()][data[grupo].activeRound.matchId],
-  //   ranking: response,
-  //   palpites: rankingDaRodada,
-  // };
-  // data[grupo].activeRound = {
-  //   ...data[grupo].activeRound,
-  //   matchId: null,
-  //   palpiteiros: []
-  // };
-  // writeData(data);
-  // return client.sendMessage(grupo, response);
 }
 
 const buscaResultado = async (tentativa = 1) => {
@@ -153,13 +176,14 @@ const buscaResultado = async (tentativa = 1) => {
   if (matchInfo || matchInfo.response[0].fixtures.status.short === 'FT') {
     try {
       await bolao
-        .collection('fixtures')
-        .updateOne({ "league.id": config.bolao.nextMatch.torneioId }, { $set: { [matchInfo.response[0].fixture.id]: matchInfo } }, { upsert: true });
+        .collection('resultados')
+        .insertOne({ [matchInfo.response[0].fixture.id]: matchInfo });
+      // .updateOne({ "league.id": config.bolao.nextMatch.torneioId }, { $set: { [matchInfo.response[0].fixture.id]: matchInfo } }, { upsert: true });
     } catch (err) {
       console.error(err);
       return { error: prompts.errors.mongodb }
     } finally {
-      return matchInfo
+      return matchInfo;
     }
   }
   console.error(prompts.errors.will_fetch_again + tentativa);

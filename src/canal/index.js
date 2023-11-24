@@ -5,6 +5,7 @@ const { saveLocal } = require('../../utils/handleFile');
 const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels } = require('../../utils/sender');
 const { getWeather } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
+const { MessageMedia } = require('whatsapp-web.js');
 
 const sendAdmin = (msg) => client.sendMessage(process.env.BOT_OWNER, msg);
 
@@ -93,10 +94,26 @@ const fetchInstagram = async (user) => {
       return update;
     })
     .catch((err) => console.error(err));
-};
+}
+
+const publicaQuotedMessage = async (m) => {
+  const raw = await m.getQuotedMessage();
+  if (raw.hasMedia) {
+    const media = await raw.downloadMedia();
+    if (media) {
+      const contentComMedia = new MessageMedia(
+        media.mimetype,
+        media.data.toString('base64')
+      );
+      await Promise.all(Object.keys(config.canais).forEach(async (canal) => await client.sendMessage(canal, contentComMedia, { caption: raw.body })))
+    }
+  }
+  return await client.sendMessage(m.from, raw.body);
+}
 
 module.exports = {
   canal,
   instagramThis,
   bomDia,
+  publicaQuotedMessage,
 };

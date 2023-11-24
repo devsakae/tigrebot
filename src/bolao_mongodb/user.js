@@ -12,6 +12,8 @@ const habilitaPalpite = async (info) => {
   const homeScore = info.m.body.match(regex)[0].match(/^\d+/i);
   const awayScore = info.m.body.match(regex)[0].match(/\d+$/i);
   const palpiPack = {
+    torneioId: config.bolao.nextMatch.torneioId,
+    torneioSeason: config.bolao.nextMatch.torneioSeason,
     date: today.toLocaleString('pt-br'),
     userId: info.m.author,
     userName: info.user,
@@ -25,6 +27,7 @@ const habilitaPalpite = async (info) => {
           : 'E',
     goal_diff: Number(homeScore) - Number(awayScore),
     goal_total: Number(homeScore) + Number(awayScore),
+    pontos: 0,
   };
   config.grupos[info.m.from].palpiteiros.push(info.m.author);
   saveLocal(config);
@@ -37,37 +40,73 @@ const habilitaPalpite = async (info) => {
   }
 };
 
-const listaPalpites = async () => {
+const getMongoPalpites = async () => {
   const matchId = JSON.stringify(config.bolao.nextMatch.id);
-  try {
-    Object.keys(config.grupos).forEach(async (group) => {
-      let list = '📢 Lista de palpites registrados:\n';
-      const palpitesNaDatabase = await mongoclient
+  const listaDePalpites = await Promise.all(Object.keys(config.grupos)
+    .map(async (group) => {
+      const lista = await mongoclient
         .db(group.split('@')[0])
         .collection(matchId)
         .find()
         .toArray();
-      if (palpitesNaDatabase.length === 0) {
-        list += '\nAbsolutamente nenhum 🦗   🦗       🦗';
-        return client.sendMessage(group, list);
-      }
-      palpitesNaDatabase.forEach((p) => list += `\n▪ ${p.homeScore} x ${p.awayScore} - ${p.userName}`)
-      return client.sendMessage(group, list)
-    })
-  } catch (err) {
-    console.error(err);
-    return sendAdmin(err);
-  }
+      return { group, lista };
+    }))
+  return listaDePalpites;
+}
+
+const listaPalpites = async (matchId = config.bolao.nextMatch.id) => {
+  if (!matchId) return 'Não foi possível buscar os palpites da rodada. Verifique com o admin.\n\nERROR: NO_MATCHID';
+  const listaDePalpites = await getMongoPalpites();
+  const organizado = listaDePalpites.map((item) => {
+    let message = `Lista de palpites (partida id ${matchId})\n`;
+    item.lista.forEach((palpite) => message += `\n▪️ ${palpite.homeScore} x ${palpite.awayScore} - ${palpite.userName}`)
+    return { group: item.group, message }
+  })
+  return organizado;
 };
 
-const getRanking = (grupo) => {
-  data[grupo][data[grupo].activeRound.team.slug].ranking.sort((a, b) =>
-    a.pontos < b.pontos ? 1 : a.pontos > b.pontos ? -1 : 0,
-  );
-  writeData(data);
-  let response = `🏆🏆 *Ranking do Bolão* 🏆🏆\n`;
+const calculaRankingDaPartida = async (matchId = config.bolao.nextMatch.id) => {
+  if (!matchId) return 'Não fio possível calcular o ranking da partida. Verifique com o admin.\n\nERROR: NO_MATCHID';
+
+  const listaDePalpites = await getMongoPalpites();
+  listaDePalpites.forEach((item) => {
+    let ranking = [];
+    // item = [{ group: '1234423@.g.us', list: [{ id: 34423432, userName: 'Rodrigo', homeScore: 0, awayScore: 2 }] }]
+    item.lista.forEach((p) => {
+      let pontos = 0;
+
+    })
+    ranking.sort((a, b) => a.pontos > b.pontos ? -1 : 1);
+    console.log(ranking);
+    return { group, ranking }
+  })
+  // let pontos = 0;
+  //     if (p.resultado === resultado) pontos = 1;
+  //     if (
+  //       p.resultado === resultado &&
+  //       (p.homeScore === homeScore || p.awayScore === awayScore)
+  //     )
+  //       pontos = 2;
+  //     if (p.homeScore === homeScore && p.awayScore === awayScore) pontos = 3;
+  //     const playerIdx = data[grupo][data[grupo].activeRound.team.slug].ranking.findIndex(
+  //       (player) => player.id === p.userId,
+  //     );
+  //     playerIdx < 0
+  //       ? data[grupo][data[grupo].activeRound.team.slug].ranking.push({
+  //         id: p.userId,
+  //         usuario: p.userName,
+  //         pontos: pontos,
+  //       })
+  //       : (data[grupo][data[grupo].activeRound.team.slug].ranking[playerIdx].pontos += pontos);
+  //     return { ...p, pontos: pontos };
+}
+
+const getRanking = async () => {
+  return;
+  // let response = `🏆🏆 *Ranking do Bolão* 🏆🏆\n`;
+
   data[grupo][data[grupo].activeRound.team.slug].ranking.forEach((pos, idx) => {
-    if (idx === 3) response += '\n🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝';
+    if (idx === 3) response += '\n🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝 🔝';
     if (pos.pontos < 1)
       response += '\n\nCertificado de participação no bolão:\n';
     const medal =
@@ -90,4 +129,5 @@ module.exports = {
   habilitaPalpite,
   listaPalpites,
   getRanking,
+  getMongoPalpites,
 };

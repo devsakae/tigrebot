@@ -6,7 +6,7 @@ const sendTextToGroups = (text) => {
   Object.keys(config.grupos).forEach(async (grupo) => {
     const chat = await client.getChatById(grupo);
     chat.sendStateTyping();
-    await client.sendMessage(grupo, text)
+    setTimeout(() => client.sendMessage(grupo, text), 1500)
   });
 }
 

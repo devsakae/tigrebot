@@ -53,7 +53,7 @@ client.on('ready', async () => {
         },
       };
       console.log('✔️ ', group.name);
-      await group.clearMessages();
+      await group.sendSeen();
     });
   fs.writeFileSync(
     './data/tigrebot.json',

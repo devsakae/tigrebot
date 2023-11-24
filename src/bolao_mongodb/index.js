@@ -30,11 +30,12 @@ const bolao_mongodb = async (m) => {
     }
     return;
   }
-  // if (m.body.startsWith('!palpites') && data[m.from].activeRound && data[m.from].activeRound.listening) {
-  //   console.info('Acessando comando !palpites');
-  //   const palpiteList = listaPalpites(m.from);
-  //   return client.sendMessage(m.from, palpiteList);
-  // };
+  if (m.body.startsWith('!palpites')) {
+    console.info('Acessando comando !palpites');
+    const palpiteList = await listaPalpites();
+    palpiteList.forEach((pl) => client.sendMessage(pl.group, pl.message));
+    return;
+  };
   // if (m.body.startsWith('!ranking')) {
   //   console.info('Acessando comando !ranking');
   //   const ranking = getRanking(m.from)
