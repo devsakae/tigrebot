@@ -2,7 +2,7 @@ const data = require('./data/data.json');
 const config = require('../../data/tigrebot.json');
 const { saveLocal } = require('../../utils')
 const { writeData } = require('./utils/fileHandler');
-const { mongoclient } = require('../connections');
+const { mongoclient, client } = require('../connections');
 const { sendAdmin } = require('./utils/functions');
 
 const habilitaPalpite = async (info) => {
@@ -21,8 +21,8 @@ const habilitaPalpite = async (info) => {
       Number(homeScore) > Number(awayScore)
         ? 'V'
         : Number(homeScore) < Number(awayScore)
-        ? 'D'
-        : 'E',
+          ? 'D'
+          : 'E',
     goal_diff: Number(homeScore) - Number(awayScore),
     goal_total: Number(homeScore) + Number(awayScore),
   };
@@ -38,22 +38,22 @@ const habilitaPalpite = async (info) => {
 };
 
 const listaPalpites = async () => {
-  const matchId = config.bolao.nextMatch.id;
+  const matchId = JSON.stringify(config.bolao.nextMatch.id);
   try {
-    let retorno = [];
     Object.keys(config.grupos).forEach(async (group) => {
       let list = '📢 Lista de palpites registrados:\n';
       const palpitesNaDatabase = await mongoclient
         .db(group.split('@')[0])
-        .collection(JSON.stringify(matchId))
+        .collection(matchId)
         .find()
         .toArray();
-      palpitesNaDatabase.length > 1
-        ? palpitesNaDatabase.forEach((p) => list += `\n▪ ${p.homeScore} x ${p.awayScore} - ${p.userName}`)
-        : list += '\nAbsolutamente nenhum 🦗   🦗       🦗';
-      retorno.push({ group, list });
-    });
-    return retorno;
+      if (palpitesNaDatabase.length === 0) {
+        list += '\nAbsolutamente nenhum 🦗   🦗       🦗';
+        return client.sendMessage(group, list);
+      }
+      palpitesNaDatabase.forEach((p) => list += `\n▪ ${p.homeScore} x ${p.awayScore} - ${p.userName}`)
+      return client.sendMessage(group, list)
+    })
   } catch (err) {
     console.error(err);
     return sendAdmin(err);
@@ -74,13 +74,12 @@ const getRanking = (grupo) => {
       idx === 0
         ? '🥇 '
         : idx === 1
-        ? '🥈 '
-        : idx === 2
-        ? '🥉 '
-        : `${idx + 1}º - `;
+          ? '🥈 '
+          : idx === 2
+            ? '🥉 '
+            : `${idx + 1}º - `;
     pos.pontos > 0
-      ? (response += `\n${medal}${pos.usuario} [${pos.pontos} ponto${
-          pos.pontos > 1 ? 's' : ''
+      ? (response += `\n${medal}${pos.usuario} [${pos.pontos} ponto${pos.pontos > 1 ? 's' : ''
         }]`)
       : (response += `\n🎗 ${pos.usuario}`);
   });

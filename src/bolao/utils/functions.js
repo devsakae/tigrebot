@@ -1,4 +1,4 @@
-const { client } = require("../../connections");
+const { client, bolao } = require("../../connections");
 
 const getCommand = (raw) => {
   const divide = raw.split(' ');
@@ -60,10 +60,7 @@ const formatPredicts = (predicts) => {
   return response;
 };
 
-const sendAdmin = (what) => client.sendMessage(process.env.BOT_OWNER, what);
-
 module.exports = {
-  sendAdmin,
   getCommand,
   forMatch,
   formatPredicts,

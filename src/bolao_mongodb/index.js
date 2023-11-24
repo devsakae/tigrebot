@@ -22,7 +22,7 @@ const bolao_mongodb = async (m) => {
     if (config.grupos[m.from].palpiteiros.includes(m.author)) return m.reply('Já palpitou pô, que que tá incomodando?');
     if (isTopic && isTopic.fromMe) {
       const sender = await m.getContact(m.author);
-      if (Number(matchingRegex) === Number(config.bolao.nextMatch)) {
+      if (Number(matchingRegex) === Number(config.bolao.nextMatch.id)) {
         const checkPalpite = habilitaPalpite({ group: m.from.split('@')[0], m: m, user: sender.pushname || sender.name || sender.shortname, matchId: matchingRegex });
         return checkPalpite.error ? m.reply(checkPalpite.error) : m.react('🎟');
       }

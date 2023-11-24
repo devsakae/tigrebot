@@ -1,3 +1,4 @@
+const { saveLocal } = require('../../utils');
 const data = require('./data/data.json');
 const { writeData } = require('./utils/fileHandler');
 
@@ -15,9 +16,9 @@ const habilitaPalpite = (info) => {
     awayScore: Number(awayScore),
     resultado: Number(homeScore) > Number(awayScore) ? 'V' : Number(homeScore) < Number(awayScore) ? 'D' : 'E',
   })
-  data[info.m.from].activeRound.palpiteiros.push(info.m.author);
-  data[info.m.from][data[info.m.from].activeRound.team.slug][today.getFullYear()][info.matchId].palpites.push(palpiPack);
-  writeData(data);
+  config[info.m.from].palpiteiros.push(info.m.author);
+  config[info.m.from].palpites.push(palpiPack);
+  saveLocal(config);
   return { error: false };
 };
 
