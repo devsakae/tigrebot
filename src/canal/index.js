@@ -2,7 +2,7 @@ const { client, criciuma } = require('../connections');
 const config = require('../../data/tigrebot.json')
 const { fetchWithParams } = require('../../utils');
 const { saveLocal } = require('../../utils/handleFile');
-const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels } = require('../../utils/sender');
+const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels, sendTextToGroups, sendTextToChannels } = require('../../utils/sender');
 const { getWeather } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { MessageMedia } = require('whatsapp-web.js');
@@ -43,15 +43,32 @@ const bomDia = async () => {
   if (aniversariantes.length === 0) return sendMediaUrlToChannels(weather);
   const texto = organizaFestinha(aniversariantes);
   const mensagem = weather.caption + '\n\n' + texto;
-  return sendMediaUrlToChannels({ url: weather.url, caption: mensagem })
+  await sendMediaUrlToGroups({ url: weather.url, caption: mensagem });
+  return await sendMediaUrlToChannels({ url: weather.url, caption: mensagem })
 }
+
+const bomFind = async () => {
+  const today = new Date();
+  const weather = await getWeather();
+  const birthDate = today.toLocaleDateString('pt-br').substring(0, 5);
+  const aniversariantes = await criciuma
+    .collection('atletas')
+    .find({ 'birthday': { $regex: birthDate } })
+    .toArray();
+  if (aniversariantes.length === 0) return sendMediaUrlToChannels(weather);
+  const texto = organizaFestinha(aniversariantes);
+  const mensagem = weather.caption + '\n\n' + texto;
+  await sendMediaUrlToGroups({ url: weather.url, caption: mensagem });
+  return await sendMediaUrlToChannels({ url: weather.url, caption: mensagem })
+}
+
 
 const instagramThis = async (user = 'criciumaoficial') => {
   try {
     client.sendMessage(process.env.BOT_OWNER, 'Ok, iniciando fetch no instagram de @' + user)
-    fetchInstagram(user).then((post) => {
-      sendInstagramToGroups(post);
-      return sendInstagramToChannels(post);
+    await fetchInstagram(user).then(async (post) => {
+      await sendInstagramToGroups(post);
+      return await sendInstagramToChannels(post);
     });
   } catch (err) {
     return sendAdmin(err);
@@ -105,15 +122,22 @@ const publicaQuotedMessage = async (m) => {
         media.mimetype,
         media.data.toString('base64')
       );
-      await Promise.all(Object.keys(config.canais).forEach(async (canal) => await client.sendMessage(canal, contentComMedia, { caption: raw.body })))
+      for (grupo of Object.keys(config.grupos)) {
+        await client.sendMessage(grupo, contentComMedia, { caption: raw.body });
+      }
+      for (canal of Object.keys(config.canais)) {
+        await client.sendMessage(canal, contentComMedia, { caption: raw.body })
+      }
     }
   }
-  return await Promise.all(Object.keys(config.canais).forEach(async (canal) => await client.sendMessage(canal, raw.body)));
+  await sendTextToGroups(raw.body);
+  return await sendTextToChannels(raw.body);
 }
 
 module.exports = {
   canal,
   instagramThis,
   bomDia,
+  bomFind,
   publicaQuotedMessage,
 };

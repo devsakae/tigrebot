@@ -43,18 +43,19 @@ client.on('ready', async () => {
       console.info('✔️ ', mine.name);
     });
   const allChats = await client.getChats();
-  allChats
-    .filter((chat) => chat.isGroup && !chat.isMuted)
-    .forEach(async (group) => {
+  await Promise.all(allChats
+    .filter((chat) => chat.isGroup)
+    .map(async (group) => {
+      if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized].palpiteiros.length > 0) return '';
       config.grupos = {
+        ...config.grupos,
         [group.id._serialized]: {
           palpiteiros: [],
-          ...config.grupos[group.id._serialized],
         },
       };
       console.log('✔️ ', group.name);
       await group.sendSeen();
-    });
+    }));
   fs.writeFileSync(
     './data/tigrebot.json',
     JSON.stringify(config, null, 4),

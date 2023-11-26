@@ -67,10 +67,10 @@ const quotes = async (m) => {
         .toArray();
 
       if (foundquote.length === 0) return m.reply('Tenho nada disso aí aqui 🫥');
-      client.sendMessage(m.from, `ATENÇÃO PRA MELHOR DAS *${foundquote.length} QUOTES* QUE EU TENHO AQUI NO TEMA '${content.toUpperCase()}'`);
-      if (foundquote.length === 1) return client.sendMessage(m.from, formatQuote(foundquote[0]));
+      if (foundquote.length === 1) return await client.sendMessage(m.from, formatQuote(foundquote[0]));
+      await client.sendMessage(m.from, `ATENÇÃO PRA MELHOR DAS *${foundquote.length} QUOTES* QUE EU TENHO AQUI NO TEMA '${content.toUpperCase()}'`);
       const response = bestQuote(foundquote);
-      return client.sendMessage(m.from, response);
+      return await client.sendMessage(m.from, response);
 
     // Adiciona uma quote nova na coleção do grupo
     case '!addquote':

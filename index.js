@@ -4,10 +4,11 @@ const { quotes } = require('./src/quotes');
 const { replyUser } = require('./src/jokes');
 const { help } = require('./utils/index');
 const { jogounotigre, aniversariantesDoDia } = require('./src/futebol');
-const { canal, bomDia, publicaQuotedMessage } = require('./src/canal');
+const { canal, bomDia, publicaQuotedMessage, bomFind } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
 const cron = require('node-cron');
 const { getMongoPalpites } = require('./src/bolao_mongodb/user');
+const { clima } = require('./src/weather');
 
 (async () => {
   try {
@@ -27,9 +28,16 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
     return console.error(err);
   } finally {
     console.info('\n' + prompts.admin.welcome);
-    cron.schedule('39 6 * * *', () => {
-      console.info('06h39min. Bom dia. Rodando o bomDia()...');
+    cron.schedule('40 6 * * 1-5', () => {
+      console.info('06h40min. Bom dia. Rodando o bomDia()...');
       bomDia()
+    }, {
+      scheduled: true,
+      timezone: "America/Sao_Paulo"
+    });
+    cron.schedule('0 8 * * 6-7', () => {
+      console.info('08h do final do semana. Rodando o bomFind()...');
+      bomFind()
     }, {
       scheduled: true,
       timezone: "America/Sao_Paulo"
@@ -47,19 +55,15 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 // })
 
 client.on('message', async (m) => {
-  if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') {
-    return await publicaQuotedMessage(m)
-  }
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!clima')) return await clima();
+  if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
+  // if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!tigrelino') return await publicaQuotedMessage(m)
 
-  if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!tigrelino') {
-    return await publicaQuotedMessage(m)
-  }
-
-  if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && m.body.startsWith('!teste')) {
-    const lista = await getMongoPalpites();
-    client.sendMessage(m.from, 'Aguardando?');
-    return console.log(lista);
-  }
+  // if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && m.body.startsWith('!teste')) {
+  //   const lista = await getMongoPalpites();
+  //   client.sendMessage(m.from, 'Aguardando?');
+  //   return console.log(lista);
+  // }
 
   // Módulo de administração de canal
   if ((m.from === process.env.BOT_OWNER || m.author === process.env.BOT_OWNER) && m.body.startsWith('/')) {

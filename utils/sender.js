@@ -2,52 +2,52 @@ const { client } = require('../src/connections');
 const config = require('../data/tigrebot.json');
 const { MessageMedia } = require('whatsapp-web.js');
 
-const sendTextToGroups = async (text) => {
-  await Promise.all(Object.keys(config.grupos).forEach(async (grupo) => {
-    const chat = await client.getChatById(grupo);
-    chat.sendStateTyping();
-    setTimeout(() => client.sendMessage(grupo, text), 1500)
-  }));
+const sendTextToGroups = async text => {
+  for (grupo of Object.keys(config.grupos)) {
+    await client.sendMessage(grupo, text)
+  }
 }
 
-const sendBolaoGroups = async (text) => {
-  await Promise.all(config.bolao.grupos.forEach(async (grupo) => {
-    const chat = await client.getChatById(grupo);
-    chat.sendStateTyping();
-    setTimeout(() => client.sendMessage(grupo, text), 1500)
-  }));
+const sendBolaoGroups = async text => {
+  for (grupo of config.bolao.grupos) {
+    await client.sendMessage(grupo, text);
+  }
+};
+
+const sendTextToChannels = async text => {
+  for (canal of config.canais) {
+    await client.sendMessage(channel, text)
+  }
 }
 
-const sendTextToChannels = (text) => Object.keys(config.canais).forEach(async (channel) => await client.sendMessage(channel, text));
-
-const sendMediaUrlToGroups = (media) => {
-  Object.keys(config.grupos).forEach(async (grupo) => {
+const sendMediaUrlToGroups = async media => {
+  for (grupo of config.grupos) {
     const mediaFile = await MessageMedia.fromUrl(media.url);
-    client.sendMessage(grupo, mediaFile, { caption: media.caption })
-  });
+    await client.sendMessage(grupo, mediaFile, { caption: media.caption })
+  }
 }
 
-const sendMediaUrlToChannels = (media) => {
-  Object.keys(config.canais).forEach(async (channel) => {
+const sendMediaUrlToChannels = async media => {
+  for (grupo of config.canais) {
     const mediaFile = await MessageMedia.fromUrl(media.url);
-    await client.sendMessage(channel, mediaFile, { caption: media.caption });
-  });
+    await client.sendMessage(grupo, mediaFile, { caption: media.caption })
+  }
 }
 
-const sendInstagramToGroups = (media) => {
-  Object.keys(config.grupos).forEach(async (grupo) => {
+const sendInstagramToGroups = async media => {
+  for (grupo of Object.keys(config.grupos)) {
     const mediaFile = await MessageMedia.fromUrl(media.url);
     const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link + '\nCapturado e enviado até você por TigreBot (tigrebot.devsakae.tech)';
     await client.sendMessage(grupo, mediaFile, { caption: newCaption });
-  })
+  }
 }
 
-const sendInstagramToChannels = (media) => {
-  Object.keys(config.canais).forEach(async (channel) => {
+const sendInstagramToChannels = async media => {
+  for (canal of Object.keys(config.canais)) {
     const mediaFile = await MessageMedia.fromUrl(media.url);
     const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link;
     await client.sendMessage(channel, mediaFile, { caption: newCaption });
-  })
+  }
 }
 
 module.exports = {
