@@ -7,4 +7,3 @@ tools/
 *.env*
 !.env.example
 !*prompts.json
-!*tigrebot.json
