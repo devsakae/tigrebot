@@ -16,7 +16,7 @@ const sendBolaoGroups = async text => {
 
 const sendTextToChannels = async text => {
   for (canal of Object.keys(config.canais)) {
-    await client.sendMessage(channel, text)
+    await client.sendMessage(canal, text)
   }
 }
 
@@ -46,7 +46,7 @@ const sendInstagramToChannels = async media => {
   for (canal of Object.keys(config.canais)) {
     const mediaFile = await MessageMedia.fromUrl(media.url);
     const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link;
-    await client.sendMessage(channel, mediaFile, { caption: newCaption });
+    await client.sendMessage(canal, mediaFile, { caption: newCaption });
   }
 }
 

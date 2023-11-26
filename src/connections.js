@@ -46,6 +46,7 @@ client.on('ready', async () => {
   await Promise.all(allChats
     .filter((chat) => chat.isGroup)
     .map(async (group) => {
+      await client.sendSeen(group);
       if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized].palpiteiros.length > 0) return '';
       config.grupos = {
         ...config.grupos,
