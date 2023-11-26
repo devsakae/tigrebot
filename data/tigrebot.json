@@ -1,47 +1,7 @@
 {
-    "bolao": {
-        "grupos": [
-            "120363178274878131@g.us"
-        ],
-        "id": 140,
-        "name": "Criciuma",
-        "slug": "criciuma",
-        "official": "Criciúma Esporte Clube",
-        "url": "https://api-football-v1.p.rapidapi.com/v3",
-        "host": "api-football-v1.p.rapidapi.com",
-        "nextMatch": {},
-        "listening": false
-    },
-    "canais": {
-        "120363198744230885@newsletter": "TigreLOG"
-    },
-    "grupos": {
-        "120363178274878131@g.us": {
-            "palpiteiros": []
-        },
-        "120363182242020382@g.us": {
-            "palpiteiros": []
-        },
-        "554896059196-1392584319@g.us": {
-            "palpiteiros": []
-        }
-    },
-    "instagram": {
-        "published": [
-            "3241659285343061736",
-            "3239461586430009598",
-            "3239461586430009598",
-            "3239088096216567113",
-            "3239050444881713170",
-            "3243114368563977363"
-        ],
-        "date": "2023-11-24T13:38:56.800Z",
-        "id": "3243114368563977363",
-        "link": "http://instagram.com/p/C0B21XgOJyT",
-        "type": "GraphVideo",
-        "url": "https://instagram.fkiv8-1.fna.fbcdn.net/v/t66.30100-16/53692464_656459823040849_3852535381947393287_n.mp4?_nc_ht=instagram.fkiv8-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=0poSi90G7tYAX8z76mb&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfA9wteLJS4zJVqTf4RokELq5-AI6xANw35w5EiH3nCqjA&oe=65626BC1&_nc_sid=8b3546",
-        "caption": "Deu a louca no Tigrão!\nHoje é dia de Black Friday e nosso Tigrão acordou doidão.\nSó hoje, pelúcia mascotinho de 149,90 por 119,00.\nAproveite agora mesmo, pois são apenas 30 unidades.",
-        "owner": "mascotinhos.fc"
-    },
+    "bolao": {},
+    "canais": {},
+    "grupos": {},
+    "instagram": {},
     "tigrelino": {}
 }
