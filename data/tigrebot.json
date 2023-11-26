@@ -1,7 +1,19 @@
 {
     "bolao": {},
-    "canais": {},
-    "grupos": {},
+    "canais": {
+        "120363198744230885@newsletter": "TigreLOG"
+    },
+    "grupos": {
+        "120363178274878131@g.us": {
+            "palpiteiros": []
+        },
+        "554896059196-1392584319@g.us": {
+            "palpiteiros": []
+        },
+        "120363182242020382@g.us": {
+            "palpiteiros": []
+        }
+    },
     "instagram": {},
     "tigrelino": {}
 }
