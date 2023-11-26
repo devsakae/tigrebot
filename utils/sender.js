@@ -9,26 +9,26 @@ const sendTextToGroups = async text => {
 }
 
 const sendBolaoGroups = async text => {
-  for (grupo of config.bolao.grupos) {
+  for (grupo of Object.keys(config.bolao.grupos)) {
     await client.sendMessage(grupo, text);
   }
 };
 
 const sendTextToChannels = async text => {
-  for (canal of config.canais) {
+  for (canal of Object.keys(config.canais)) {
     await client.sendMessage(channel, text)
   }
 }
 
 const sendMediaUrlToGroups = async media => {
-  for (grupo of config.grupos) {
+  for (grupo of Object.keys(config.grupos)) {
     const mediaFile = await MessageMedia.fromUrl(media.url);
     await client.sendMessage(grupo, mediaFile, { caption: media.caption })
   }
 }
 
 const sendMediaUrlToChannels = async media => {
-  for (grupo of config.canais) {
+  for (grupo of Object.keys(config.canais)) {
     const mediaFile = await MessageMedia.fromUrl(media.url);
     await client.sendMessage(grupo, mediaFile, { caption: media.caption })
   }

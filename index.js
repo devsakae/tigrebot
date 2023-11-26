@@ -1,3 +1,4 @@
+const cron = require('node-cron');
 const { client, mongoclient } = require('./src/connections');
 const prompts = require('./src/bolao/data/prompts.json');
 const { quotes } = require('./src/quotes');
@@ -6,7 +7,6 @@ const { help } = require('./utils/index');
 const { jogounotigre, aniversariantesDoDia } = require('./src/futebol');
 const { canal, bomDia, publicaQuotedMessage, bomFind } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
-const cron = require('node-cron');
 const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 const { clima } = require('./src/weather');
 
