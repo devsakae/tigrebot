@@ -30,7 +30,7 @@ const { clima } = require('./src/weather');
     console.info('\n' + prompts.admin.welcome);
     cron.schedule('40 6 * * 1-5', () => {
       console.info('06h40min. Bom dia. Rodando o bomDia()...');
-      bomDia()
+      bomDiaComDestaque()
     }, {
       scheduled: true,
       timezone: "America/Sao_Paulo"

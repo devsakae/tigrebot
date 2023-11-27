@@ -71,7 +71,7 @@ const bomDiaComDestaque = async () => {
       acc.gols += Number(curr.gols);
       return acc;
     }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
-    legendaJogador = `_Hoje é aniversário de nascimento de *${chosenOne.name}* (${chosenOne.position}). Com ${totalJogos.jogos} partidas pelo Tigre, ${chosenOne.nickname} marcou ${totalJogos.gols} gols._\n\n`
+    legendaJogador = `_Hoje é aniversário de nascimento de *${chosenOne.name}* (${chosenOne.position}).\nCom ${totalJogos.jogos} partidas pelo Tigre, ${chosenOne.nickname} marcou ${totalJogos.gols} gols._\n\n`
     legendaAniversariantes = '\n\n' + organizaFestinha(aniversariantes);
   }
   const legendaWeather = await getForecast();
