@@ -1,6 +1,8 @@
 const { default: axios } = require('axios');
 const { client } = require('../connections');
 const { fetchApi } = require('../../utils/fetchApi');
+const { MessageMedia } = require('whatsapp-web.js');
+const encodedParams = new URLSearchParams();
 
 const oraculo = [
   'Sim. Definitivamente sim.',
@@ -33,7 +35,7 @@ const replyUser = async (m) => {
     jokeLimit = true;
     const joke = await getJokes();
     m.reply(joke.setup);
-    const punchline = setTimeout(() => client.sendMessage(m.from, joke.punchline), 13000);
+    const punchline = setTimeout(() => client.sendMessage(m.from, joke.punchline), 6000);
     const liberaNovaJoke = setTimeout(() => jokeLimit = false, 5400000);
     return;
   };
@@ -67,8 +69,42 @@ const getJokes = async () => {
   }
 }
 
+const falaPraEle = async (m) => {
+  console.log('entering fala pra ele...');
+  if (m.body.length < 12) return;
+  const text = m.body.substring(11).trimStart();
+  console.log('Reproduzindo em áudio:', text);
+  const chat = await client.getChatById(m.from);
+  chat.sendStateRecording();
+  encodedParams.set('voice_code', 'pt-BR-3');
+  encodedParams.set('text', text);
+  encodedParams.set('speed', '1.00');
+  encodedParams.set('pitch', '1.00');
+  encodedParams.set('output_type', 'base64');
+  const options = {
+    method: 'POST',
+    url: 'https://cloudlabs-text-to-speech.p.rapidapi.com/synthesize',
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+      'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+      'X-RapidAPI-Host': 'cloudlabs-text-to-speech.p.rapidapi.com'
+    },
+    data: encodedParams,
+  };
+  try {
+    // const beduTest = 'https://storage.googleapis.com/cloudlabs-tts.appspot.com/audio/audio-4ebffb695feb7f0ab03de23692493085.mp3';
+    const response = await axios.request(options);
+    console.log(response.data);
+    const audioPack = new MessageMedia('audio/mp3', response.data.result.audio_base64)
+    return await chat.sendMessage(audioPack, { sendAudioAsVoice: true });
+  } catch (err) {
+    return console.error(err);
+  }
+}
+
 module.exports = {
   replyUser,
   getUselessFact,
   getJokes,
+  falaPraEle,
 }

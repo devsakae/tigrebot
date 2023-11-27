@@ -28,5 +28,20 @@
     "no_round": "Nenhuma rodada programada. Verifique com o administrador.",
     "will_fetch_again": "Fetch não realizado. Em 20 minutos faremos a tentativa nº",
     "mongodb": "⛔️ Erro na conexão com o banco de dados (MongoDB)"
-  }
+  },
+  "saudacoes": [
+    "Alô tussida do Tigre aqui é o Zé Calo futebol É naldorado",
+    "Bom dia tricolor. Subimo, p$#$#!! 🟡⚫️⚪️",
+    "Tá na hora tá na hora... Tá na hora de acordar...",
+    "O que que é um pontinho azul no final da tabela? Bom dia, torcedor do Tigre!",
+    "Oi, torcedor do Tigre!",
+    "Bom di🅰️ pra quem é de di🅰️. 🅱️om dia pros avaianos também.",
+    "Somos do 🐯 carvoeiro! Bora pra mais um dia?",
+    "O que é, o que é: Verde, mas cai de maduro. Não tem praia, mas também não joga a Série A. Bom dia, torcedor do Tigre!",
+    "Olá, torcedor do clube de amor, alma, garra e coração! 💛",
+    "Bom dia. Quem mais aqui tem sangue tipo A? É B? Espera 2024...",
+    "Hello, Tiger supporter (sim eu falo inglês agora).",
+    "Hola, que tal? Não né? Você não é torcedor do Figueirense... Bom dia.",
+    "O que que é um pontinho preto e branco no final da tabela? Bom dia."
+  ]
 }

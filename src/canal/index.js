@@ -1,9 +1,10 @@
 const { client, criciuma } = require('../connections');
-const config = require('../../data/tigrebot.json')
-const { fetchWithParams } = require('../../utils');
+const config = require('../../data/tigrebot.json');
+const prompts = require('../../data/prompts.json');
+const { fetchWithParams, fetchApi } = require('../../utils');
 const { saveLocal } = require('../../utils/handleFile');
 const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels, sendTextToGroups, sendTextToChannels } = require('../../utils/sender');
-const { getWeather } = require('../weather');
+const { getWeather, getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { MessageMedia } = require('whatsapp-web.js');
 
@@ -42,14 +43,15 @@ const bomDia = async () => {
     .toArray();
   if (aniversariantes.length === 0) return sendMediaUrlToChannels(weather);
   const texto = organizaFestinha(aniversariantes);
-  const mensagem = weather.caption + '\n\n' + texto;
+  const greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+  const mensagem = greeting + '\n\n' + weather.caption + '\n\n' + texto;
   await sendMediaUrlToGroups({ url: weather.url, caption: mensagem });
   return await sendMediaUrlToChannels({ url: weather.url, caption: mensagem })
 }
 
-const bomFind = async () => {
+const bomDiaComDestaque = async () => {
   const today = new Date();
-  const weather = await getWeather();
+  const weather = await getForecast();
   const birthDate = today.toLocaleDateString('pt-br').substring(0, 5);
   const aniversariantes = await criciuma
     .collection('atletas')
@@ -57,11 +59,20 @@ const bomFind = async () => {
     .toArray();
   if (aniversariantes.length === 0) return sendMediaUrlToChannels(weather);
   const texto = organizaFestinha(aniversariantes);
-  const mensagem = weather.caption + '\n\n' + texto;
+  const greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+  const mensagem = greeting + '\n\n' + weather.caption + '\n\n' + texto;
   await sendMediaUrlToGroups({ url: weather.url, caption: mensagem });
   return await sendMediaUrlToChannels({ url: weather.url, caption: mensagem })
 }
 
+const saveLocalInstagram = (update) => {
+  config.instagram.published.push(update.id);
+  config.instagram = {
+    ...config.instagram,
+    ...update
+  };
+  saveLocal(config);
+}
 
 const instagramThis = async (user = 'criciumaoficial') => {
   try {
@@ -102,15 +113,35 @@ const fetchInstagram = async (user) => {
         caption: response.node.edge_media_to_caption.edges[0].node.text,
         owner: response.node.owner.username,
       }
-      config.instagram.published.push(update.id);
-      config.instagram = {
-        ...config.instagram,
-        ...update
-      };
-      saveLocal(config);
+      saveLocalInstagram(update);
       return update;
     })
     .catch((err) => console.error(err));
+}
+
+const instaApi243 = async () => {
+  try {
+    const { data } = await fetchApi({
+      url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/4/%7Bend_cursor%7D', // @criciumaoficial
+      host: 'instagram243.p.rapidapi.com'
+    })
+    const update = {
+      date: new Date(),
+      id: data.edges[0].node.id,
+      link: 'http://instagram.com/p/' + data.edges[0].node.shortcode,
+      type: data.edges[0].node.__typename,
+      url:
+        data.edges[0].node.is_video
+          ? data.edges[0].node.video_url
+          : data.edges[0].node.display_url,
+      caption: data.edges[0].node.edge_media_to_caption.edges[0].node.text,
+      owner: data.edges[0].node.owner.username,
+    }
+    saveLocalInstagram(update);
+    return update;
+  } catch (err) {
+    return console.error(err)
+  }
 }
 
 const publicaQuotedMessage = async (m) => {
@@ -138,6 +169,6 @@ module.exports = {
   canal,
   instagramThis,
   bomDia,
-  bomFind,
+  bomDiaComDestaque,
   publicaQuotedMessage,
 };

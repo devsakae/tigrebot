@@ -2,10 +2,10 @@ const cron = require('node-cron');
 const { client, mongoclient } = require('./src/connections');
 const prompts = require('./src/bolao/data/prompts.json');
 const { quotes } = require('./src/quotes');
-const { replyUser } = require('./src/jokes');
+const { replyUser, falaPraEle } = require('./src/jokes');
 const { help } = require('./utils/index');
 const { jogounotigre, aniversariantesDoDia } = require('./src/futebol');
-const { canal, bomDia, publicaQuotedMessage, bomFind } = require('./src/canal');
+const { canal, bomDia, publicaQuotedMessage, bomFind, bomDiaComDestaque } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
 const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 const { clima } = require('./src/weather');
@@ -36,8 +36,8 @@ const { clima } = require('./src/weather');
       timezone: "America/Sao_Paulo"
     });
     cron.schedule('0 8 * * 6-7', () => {
-      console.info('08h do final do semana. Rodando o bomFind()...');
-      bomFind()
+      console.info('08h do final do semana. Rodando o bomDiaComDestaque()...');
+      bomDiaComDestaque()
     }, {
       scheduled: true,
       timezone: "America/Sao_Paulo"
@@ -56,6 +56,7 @@ const { clima } = require('./src/weather');
 
 client.on('message', async (m) => {
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!clima')) return await clima();
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!falapraele')) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
   // if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!tigrelino') return await publicaQuotedMessage(m)
 
