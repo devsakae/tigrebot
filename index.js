@@ -55,7 +55,6 @@ const { clima } = require('./src/weather');
 // })
 
 client.on('message', async (m) => {
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!clima')) return await clima();
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!falapraele')) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
   // if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!tigrelino') return await publicaQuotedMessage(m)

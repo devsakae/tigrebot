@@ -76,12 +76,12 @@ const getForecast = async () => {
       url: 'https://forecast9.p.rapidapi.com/rapidapi/forecast/-28.6783/-49.3704/summary/',
       host: 'forecast9.p.rapidapi.com',
     });
-    let previsao = `Previsão do tempo para Criciúma/SC hoje:`
+    let previsao = `Previsão do tempo para Criciúma/SC hoje:\n\n`
     if (forecastCodes[items[0].weather.state]) previsao += forecastCodes[items[0].weather.state]
     previsao += `\n🌡 Temperatura entre ${items[0].temperature.min} e ${items[0].temperature.max}° (sensação térmica de ${items[0].windchill.min} a ${items[0].windchill.max}°)`
     if (items[0].weather.state === 6) previsao += `\n☔️ ${items[0].prec.probability}% de precipitação`
     if (items[0].wind.significationWind) { previsao += `\n💨 Vento ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
-    return { caption: previsao }
+    return previsao;
   } catch (err) {
     return console.error(err);
   }

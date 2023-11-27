@@ -29,27 +29,12 @@ const canal = async (m) => {
       return client.sendMessage(m.from, 'Canal criado! ID: ' + chanId);
     }
   }
+  if (m.body.startsWith('/bomdiacomdestaque')) return bomDiaComDestaque();
   if (m.body.startsWith('/bomdia')) return bomDia();
   return;
 };
 
 const bomDia = async () => {
-  const today = new Date();
-  const weather = await getWeather();
-  const birthDate = today.toLocaleDateString('pt-br').substring(0, 5);
-  const aniversariantes = await criciuma
-    .collection('atletas')
-    .find({ 'birthday': { $regex: birthDate } })
-    .toArray();
-  if (aniversariantes.length === 0) return sendMediaUrlToChannels(weather);
-  const texto = organizaFestinha(aniversariantes);
-  const greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
-  const mensagem = greeting + '\n\n' + weather.caption + '\n\n' + texto;
-  await sendMediaUrlToGroups({ url: weather.url, caption: mensagem });
-  return await sendMediaUrlToChannels({ url: weather.url, caption: mensagem })
-}
-
-const bomDiaComDestaque = async () => {
   const today = new Date();
   const weather = await getForecast();
   const birthDate = today.toLocaleDateString('pt-br').substring(0, 5);
@@ -57,12 +42,48 @@ const bomDiaComDestaque = async () => {
     .collection('atletas')
     .find({ 'birthday': { $regex: birthDate } })
     .toArray();
-  if (aniversariantes.length === 0) return sendMediaUrlToChannels(weather);
+  if (aniversariantes.length === 0) {
+    await sendTextToChannels(weather);
+    return await sendTextToChannels(weather);
+  }
   const texto = organizaFestinha(aniversariantes);
   const greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
-  const mensagem = greeting + '\n\n' + weather.caption + '\n\n' + texto;
-  await sendMediaUrlToGroups({ url: weather.url, caption: mensagem });
-  return await sendMediaUrlToChannels({ url: weather.url, caption: mensagem })
+  const mensagem = greeting + '\n\n' + weather + '\n\n' + texto;
+  await sendTextToGroups(mensagem);
+  return await sendTextToChannels(mensagem);
+}
+
+const bomDiaComDestaque = async () => {
+  const today = new Date();
+  const birthDate = today.toLocaleDateString('pt-br').substring(0, 5);
+  const aniversariantes = await criciuma
+    .collection('atletas')
+    .find({ 'birthday': { $regex: birthDate } })
+    .toArray();
+  let legendaJogador;
+  let legendaAniversariantes;
+  let chosenOne;
+  if (aniversariantes.length > 0) {
+    const jogaramNoTigre = aniversariantes.filter((j) => j.jogos.some((jogo) => jogo.jogounotigre));
+    chosenOne = jogaramNoTigre[Math.floor(Math.random() * jogaramNoTigre.length)];
+    const totalJogos = chosenOne.jogos.filter((jogo) => jogo.jogounotigre).reduce((acc, curr) => {
+      acc.jogos += Number(curr.jogos);
+      acc.gols += Number(curr.gols);
+      return acc;
+    }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
+    legendaJogador = `_Hoje é aniversário de nascimento de *${chosenOne.name}* (${chosenOne.position}). Com ${totalJogos.jogos} partidas pelo Tigre, ${chosenOne.nickname} marcou ${totalJogos.gols} gols._\n\n`
+    legendaAniversariantes = '\n\n' + organizaFestinha(aniversariantes);
+  }
+  const legendaWeather = await getForecast();
+  const legendaGreeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+  if (legendaJogador) {
+    const thisCaption = legendaJogador + legendaGreeting + '\n\n' + legendaWeather + legendaAniversariantes;
+    await sendMediaUrlToChannels({ url: chosenOne.image, caption: thisCaption });
+    return await sendMediaUrlToGroups({ url: chosenOne.image, caption: thisCaption });
+  }
+  const thatCaption = legendaGreeting + '\n\n' + legendaWeather + legendaAniversariantes
+  await sendTextToChannels(thatCaption)
+  return await sendTextToGroups(thatCaption);
 }
 
 const saveLocalInstagram = (update) => {

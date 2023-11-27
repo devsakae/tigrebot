@@ -1,4 +1,5 @@
 const { default: axios } = require('axios');
+const config = require('../../data/tigrebot.json');
 const { client } = require('../connections');
 const { fetchApi } = require('../../utils/fetchApi');
 const { MessageMedia } = require('whatsapp-web.js');
@@ -70,10 +71,8 @@ const getJokes = async () => {
 }
 
 const falaPraEle = async (m) => {
-  console.log('entering fala pra ele...');
   if (m.body.length < 12) return;
   const text = m.body.substring(11).trimStart();
-  console.log('Reproduzindo em áudio:', text);
   const chat = await client.getChatById(m.from);
   chat.sendStateRecording();
   encodedParams.set('voice_code', 'pt-BR-3');
@@ -92,9 +91,7 @@ const falaPraEle = async (m) => {
     data: encodedParams,
   };
   try {
-    // const beduTest = 'https://storage.googleapis.com/cloudlabs-tts.appspot.com/audio/audio-4ebffb695feb7f0ab03de23692493085.mp3';
     const response = await axios.request(options);
-    console.log(response.data);
     const audioPack = new MessageMedia('audio/mp3', response.data.result.audio_base64)
     return await chat.sendMessage(audioPack, { sendAudioAsVoice: true });
   } catch (err) {
