@@ -1,7 +1,7 @@
 {
   "admin": {
     "welcome": "Conectando com o WhatsApp, aguarde...",
-    "no_owner": "ERRO: Você precisa configurar um administrador antes de iniciar o bot. Leia as instruções em https://bolao.devsakae.tech",
+    "no_owner": "ERRO: Você precisa configurar um administrador antes de iniciar o bot. Leia as instruções em https://devsakae.tech/bolao",
     "cancelled": "Bolão cancelado, mas dados salvos.",
     "verifyIdOrName": "Verifique o ID ou nome do bolão que você está querendo cancelar",
     "not_specified_bolao": "Bolão(ões) ativo(s)\n",
@@ -43,5 +43,25 @@
     "Hello, Tiger supporter (sim eu falo inglês agora).",
     "Hola, que tal? Não né? Você não é torcedor do Figueirense... Bom dia.",
     "O que que é um pontinho preto e branco no final da tabela? Bom dia."
+  ],
+  "oraculo": [
+    "Sim. Definitivamente sim.",
+    "É claro que não 👎",
+    "Por óbvio, a resposta é um retumbante SIM",
+    "Jamais!!! Tá maluco?? 🤬",
+    "Hummmm... Pode ser...",
+    "Claro claro, vai na frente que o Tigrebot já vai 😆",
+    "Depende, sua mãe gosta?",
+    "Pode ser, quanto você me paga?",
+    "Fechado! TMJ #sqn",
+    "Boh se não",
+    "Não me sinto confortável em responder.",
+    "Que pergunta cretina. Não vou responder essa PIADA 😣",
+    "42.",
+    "Putz olha essa pergunta... Calaboca...",
+    "Só se tua mãe quiser",
+    "Dependendo do quanto pagar, é lógico",
+    "Nem que me pagassem 1 milhão",
+    "Puta merda, olha essa pergunta... Me tira do grupo admin"
   ]
 }

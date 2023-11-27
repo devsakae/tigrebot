@@ -5,32 +5,12 @@ const { fetchApi } = require('../../utils/fetchApi');
 const { MessageMedia } = require('whatsapp-web.js');
 const encodedParams = new URLSearchParams();
 
-const oraculo = [
-  'Sim. Definitivamente sim.',
-  'É claro que não 👎',
-  'Por óbvio, a resposta é um retumbante SIM',
-  'Jamais!!! Tá maluco?? 🤬',
-  'Hummmm... Pode ser...',
-  'Claro claro, vai na frente que o Bot já vai 😆',
-  'Depende, sua mãe gosta?',
-  'Pode ser, quanto você me paga?',
-  'Fechado! TMJ #sqn',
-  'Boh se não',
-  'Não me sinto confortável em responder assim com essa grosseria toda',
-  'Que pergunta cretina. Não vou responder essa PIADA 😣',
-  '42.',
-  'Putz olha essa pergunta... Calaboca...',
-  'Só se tua mãe quiser',
-  'Dependendo do quanto pagar, é lógico',
-  'Nem que me pagassem 1 milhão',
-  'Puta merda, olha essa pergunta... Me tira do grupo admin'
-]
 let jokeLimit = false;
 
 const replyUser = async (m) => {
   if (m.body.endsWith('?')) {
-    const random = Math.floor(Math.random() * oraculo.length);
-    return m.reply(oraculo[random]);
+    const random = Math.floor(Math.random() * config.oraculo.length);
+    return m.reply(config.oraculo[random]);
   }
   if (m.body.match(/piada/gi) && !jokeLimit) {
     jokeLimit = true;
@@ -73,8 +53,11 @@ const getJokes = async () => {
 const falaPraEle = async (m) => {
   if (m.body.length < 12) return;
   const text = m.body.substring(11).trimStart();
-  const chat = await client.getChatById(m.from);
-  chat.sendStateRecording();
+  let chat;
+  if (m.body.startsWith('!falapraele')) {
+    chat = await client.getChatById(m.from);
+    chat.sendStateRecording();
+  }
   encodedParams.set('voice_code', 'pt-BR-3');
   encodedParams.set('text', text);
   encodedParams.set('speed', '1.00');
@@ -93,11 +76,19 @@ const falaPraEle = async (m) => {
   try {
     const response = await axios.request(options);
     const audioPack = new MessageMedia('audio/mp3', response.data.result.audio_base64)
+    if (m.body.startsWith('/anuncieque')) {
+      return Promise.all(Object.keys(config.grupos).map(async (grupo) => {
+        chat = await client.getChatById(grupo);
+        await chat.sendMessage(audioPack, { sendAudioAsVoice: true });
+      }));
+    }
     return await chat.sendMessage(audioPack, { sendAudioAsVoice: true });
   } catch (err) {
     return console.error(err);
   }
 }
+
+
 
 module.exports = {
   replyUser,
