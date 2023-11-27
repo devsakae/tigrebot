@@ -4,7 +4,7 @@ const prompts = require('../../data/prompts.json');
 const { fetchWithParams, fetchApi } = require('../../utils');
 const { saveLocal } = require('../../utils/handleFile');
 const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels, sendTextToGroups, sendTextToChannels } = require('../../utils/sender');
-const { getWeather, getForecast } = require('../weather');
+const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { MessageMedia } = require('whatsapp-web.js');
 
@@ -66,12 +66,13 @@ const bomDiaComDestaque = async () => {
   if (aniversariantes.length > 0) {
     const jogaramNoTigre = aniversariantes.filter((j) => j.jogos.some((jogo) => jogo.jogounotigre));
     chosenOne = jogaramNoTigre[Math.floor(Math.random() * jogaramNoTigre.length)];
-    const totalJogos = chosenOne.jogos.filter((jogo) => jogo.jogounotigre).reduce((acc, curr) => {
+    const jogosPeloTigre = chosenOne.jogos.filter((jogo) => jogo.jogounotigre);
+    const totalJogos = jogosPeloTigre.reduce((acc, curr) => {
       acc.jogos += Number(curr.jogos);
       acc.gols += Number(curr.gols);
       return acc;
     }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
-    legendaJogador = `_Hoje é aniversário de nascimento de *${chosenOne.name}* (${chosenOne.position}).\nCom ${totalJogos.jogos} partidas pelo Tigre, ${chosenOne.nickname} marcou ${totalJogos.gols} gols._\n\n`
+    legendaJogador = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.`
     legendaAniversariantes = '\n\n' + organizaFestinha(aniversariantes);
   }
   const legendaWeather = await getForecast();

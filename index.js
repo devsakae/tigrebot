@@ -5,10 +5,9 @@ const { quotes } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
 const { help } = require('./utils/index');
 const { jogounotigre, aniversariantesDoDia } = require('./src/futebol');
-const { canal, bomDia, publicaQuotedMessage, bomFind, bomDiaComDestaque } = require('./src/canal');
+const { canal, publicaQuotedMessage, bomDiaComDestaque } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
 const { getMongoPalpites } = require('./src/bolao_mongodb/user');
-const { clima } = require('./src/weather');
 
 (async () => {
   try {
@@ -98,11 +97,6 @@ client.on('message', async (m) => {
     console.info('Alguém pediu !jogounotigre')
     return await jogounotigre(m);
   }
-  if (m.body.startsWith('!aniversariantes')) {
-    console.info('Alguém pediu !aniversariantes');
-    return await aniversariantesDoDia(m.body.substring(16).trim());
-  }
-
   if (
     m.body.startsWith('!addquote') ||
     m.body.startsWith('!autor') ||

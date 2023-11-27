@@ -13,10 +13,10 @@ const calculaIdade = (date) => {
 
 const umAtleta = (array) => {
   const { jogos } = array[0];
-  let response = `O CRAQUE, GÊNIO, LENDÁRIO *${array[0].nickname.toUpperCase()}* já jogou no Tigre! 🐯\n\n${array[0].name} (${array[0].position}, ${calculaIdade(array[0].birthday)} anos)`;
+  let response = `O CRAQUE, GÊNIO, LENDÁRIO *${array[0].nickname.toUpperCase()}* jogou por aqui! 🐯\n\n${array[0].name} (${array[0].position}, ${calculaIdade(array[0].birthday)} anos)`;
   jogos.forEach((jogo) => {
     response += `\n\n➤ *${jogo.torneio}* (${jogo.ano})`;
-    if (!jogo.jogounotigre && jogo.clube) response += `\nJogando pelo ${jogo.clube}`
+    if (!jogo.jogounotigre && jogo.clube) response += `\nAtuando pelo ${jogo.clube}`
     response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'jogos' : 'jogo'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ⚽️ ${jogo.gols} ${jogo.gols > 1 ? 'gols' : 'gol'}`
   });
   response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - tigrebot.devsakae.tech'

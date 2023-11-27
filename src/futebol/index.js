@@ -90,6 +90,17 @@ const aniversariantesDoDia = async (date) => {
   return sendTextToGroups(texto);
 }
 
+const fetchRandomMatch = async () => {
+  const matches = await fetchApi({
+    url: 'https://footapi7.p.rapidapi.com/api/team/1984/standings/seasons',
+    host: 'footapi7.p.rapidapi.com'
+  });
+  const randomSeasons = matches[Math.floor(Math.random() * matches.tournamentSeasons.length)].seasons;
+  console.log(randomSeasons);
+  const randomTournamentId = randomSeasons[Math.floor(Math.random() * randomSeasons.length)].id
+  console.log(randomTournamentId);
+}
+
 module.exports = {
   // predictions,
   // atualizaRodada,
