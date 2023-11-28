@@ -64,8 +64,9 @@ client.on('ready', async () => {
     (err) => console.error(err),
   );
   console.info('\n### TigreBot rodando! ###');
-  client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
+  return client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
 });
+
 client.initialize();
 
 module.exports = {
