@@ -160,6 +160,7 @@ const instaApi243 = async () => {
 const fetchInstaId = async (m) => {
   const id = m.body.split(' ')[1];
   console.info('Fetching by ID', id);
+  client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch do post', id);
   const raw = await fetchWithParams({
     url: "https://instagram191.p.rapidapi.com/v2/post/details-by-shortcode/",
     host: "instagram191.p.rapidapi.com",
@@ -167,8 +168,22 @@ const fetchInstaId = async (m) => {
       "shortcode": id
     }
   })
-  console.log(raw);
-
+  const data = raw.graphql.shortcode_media;
+  const update = {
+    date: new Date(),
+    id: data.id,
+    link: 'http://instagram.com/p/' + data.shortcode,
+    type: data.__typename,
+    url:
+      data.is_video
+        ? data.video_url
+        : data.display_url,
+    caption: data.edge_media_to_caption.edges[0].node.text,
+    owner: data.owner.username,
+  }
+  saveLocalInstagram(update)
+  await sendInstagramToGroups(update);
+  return await sendInstagramToChannels(update);
 }
 
 const publicaQuotedMessage = async (m) => {
