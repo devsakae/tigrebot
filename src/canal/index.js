@@ -87,9 +87,11 @@ const instagramThis = async (user = 'criciumaoficial') => {
     instaApiOption === (instaApiList.length)
       ? instaApiOption = 1
       : instaApiOption += 1;
+    console.log('instaApiOption', instaApiOption);
     const post = instaApiList[instaApiOption] === 'insta30'
       ? await instaApi30(user)
       : await instaApi243(user);
+    console.log('post', post)
     await sendInstagramToGroups(post);
     return await sendInstagramToChannels(post);
   } catch (err) {
@@ -99,7 +101,7 @@ const instagramThis = async (user = 'criciumaoficial') => {
 
 // Publicação no whatsapp de conta do instagram
 const instaApi30 = async (user) => {
-  console.info('Fetching...')
+  console.info('Fetching INSTAAPI30')
   return await fetchWithParams({
     url: process.env.INSTAGRAM130_API_URL + '/account-feed',
     host: process.env.INSTAGRAM130_API_HOST,
@@ -131,28 +133,27 @@ const instaApi30 = async (user) => {
 }
 
 const instaApi243 = async () => {
-  try {
-    const { data } = await fetchApi({
-      url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/4/%7Bend_cursor%7D', // @criciumaoficial
-      host: 'instagram243.p.rapidapi.com'
-    })
-    const update = {
-      date: new Date(),
-      id: data.edges[0].node.id,
-      link: 'http://instagram.com/p/' + data.edges[0].node.shortcode,
-      type: data.edges[0].node.__typename,
-      url:
-        data.edges[0].node.is_video
-          ? data.edges[0].node.video_url
-          : data.edges[0].node.display_url,
-      caption: data.edges[0].node.edge_media_to_caption.edges[0].node.text,
-      owner: data.edges[0].node.owner.username,
-    }
-    saveLocalInstagram(update);
-    return update;
-  } catch (err) {
-    return console.error(err)
-  }
+  console.info('Fetching INSTAAPI243')
+  return await fetchApi({
+    url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/4/%7Bend_cursor%7D', // @criciumaoficial
+    host: 'instagram243.p.rapidapi.com'
+  })
+    .then(({ data }) => {
+      const update = {
+        date: new Date(),
+        id: data.edges[0].node.id,
+        link: 'http://instagram.com/p/' + data.edges[0].node.shortcode,
+        type: data.edges[0].node.__typename,
+        url:
+          data.edges[0].node.is_video
+            ? data.edges[0].node.video_url
+            : data.edges[0].node.display_url,
+        caption: data.edges[0].node.edge_media_to_caption.edges[0].node.text,
+        owner: data.edges[0].node.owner.username,
+      }
+      saveLocalInstagram(update);
+      return update;
+    }).catch((err) => console.error(err));
 }
 
 const publicaQuotedMessage = async (m) => {
