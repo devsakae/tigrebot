@@ -54,17 +54,17 @@ const bomDiaComDestaque = async () => {
       acc.gols += Number(curr.gols);
       return acc;
     }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
-    legendaJogador = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.\n\n`
-    legendaAniversariantes = '\n\n' + organizaFestinha(aniversariantes);
+    legendaJogador = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.`
+    legendaAniversariantes = organizaFestinha(aniversariantes);
   }
   const legendaWeather = await getForecast();
   const legendaGreeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
   if (legendaJogador) {
-    const thisCaption = legendaJogador + legendaGreeting + '\n\n' + legendaWeather + legendaAniversariantes;
+    const thisCaption = legendaJogador + '\n\n' + legendaGreeting + '\n\n' + legendaWeather + '\n\n' + legendaAniversariantes;
     await sendMediaUrlToChannels({ url: chosenOne.image, caption: thisCaption });
     return await sendMediaUrlToGroups({ url: chosenOne.image, caption: thisCaption });
   }
-  const thatCaption = legendaGreeting + '\n\n' + legendaWeather + legendaAniversariantes
+  const thatCaption = legendaGreeting + '\n\n' + legendaWeather + '\n\n' + legendaAniversariantes
   await sendTextToChannels(thatCaption)
   return await sendTextToGroups(thatCaption);
 }
