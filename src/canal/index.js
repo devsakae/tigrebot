@@ -79,20 +79,17 @@ const saveLocalInstagram = (update) => {
   saveLocal(config);
 }
 
-let instaApiOption = 1;
+let instaApiOption = 0;
 const instaApiList = ['insta30', 'insta243'];
 
 const instagramThis = async (user = 'criciumaoficial') => {
   client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch no instagram de @' + user);
+  instaApiOption = instaApiOption === instaApiList.length ? 0 : instaApiOption;
   try {
-    instaApiOption === (instaApiList.length + 1)
-      ? instaApiOption = 1
-      : instaApiOption += 1;
-    console.log('instaApiOption', instaApiOption);
     const post = instaApiList[instaApiOption] === 'insta30'
       ? await instaApi30(user)
       : await instaApi243(user);
-    console.log('post', post)
+    instaApiOption += 1;
     await sendInstagramToGroups(post);
     return await sendInstagramToChannels(post);
   } catch (err) {
@@ -136,22 +133,24 @@ const instaApi30 = async (user) => {
 const instaApi243 = async () => {
   console.info('Fetching INSTAAPI243')
   return await fetchApi({
-    url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/4/%7Bend_cursor%7D', // @criciumaoficial
+    url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/10/%7Bend_cursor%7D', // @criciumaoficial
     host: 'instagram243.p.rapidapi.com'
   })
-    .then(({ data }) => {
+    .then(({ data }) => {      
       console.info('Fetched!')
+      let response = data.edges;
+      if (config.instagram.published.includes(response[0].node.id)) response = data.edges.find((item) => !config.instagram.published.includes(item.node.id));
       const update = {
         date: new Date(),
-        id: data.edges[0].node.id,
-        link: 'http://instagram.com/p/' + data.edges[0].node.shortcode,
-        type: data.edges[0].node.__typename,
+        id: response.node.id,
+        link: 'http://instagram.com/p/' + response.node.shortcode,
+        type: response.node.__typename,
         url:
-          data.edges[0].node.is_video
-            ? data.edges[0].node.video_url
-            : data.edges[0].node.display_url,
-        caption: data.edges[0].node.edge_media_to_caption.edges[0].node.text,
-        owner: data.edges[0].node.owner.username,
+          response.node.is_video
+            ? response.node.video_url
+            : response.node.display_url,
+        caption: response.node.edge_media_to_caption.edges[0].node.text,
+        owner: response.node.owner.username,
       }
       saveLocalInstagram(update);
       return update;

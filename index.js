@@ -44,23 +44,6 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
   }
 })();
 
-client.on('message_reaction', async (m) => {
-  if (m.reaction === '\u26BD') { // Unicode for ⚽️
-    const message = await client.getMessageById(m.msgId._serialized);
-    const reactions = await message.getReactions();
-    if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
-      message.react('🏆')
-      return message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum');
-    }
-    return;
-  }
-  if (m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
-    console.info('Republicando mensagem');
-    const message = await client.getMessageById(m.msgId._serialized);
-    return await publicaMessage(message);
-  }
-})
-
 client.on('message', async (m) => {
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
@@ -107,3 +90,21 @@ client.on('message', async (m) => {
   // bolao(m) // (API-FOOTBALL - https://rapidapi.com/api-sports/api/api-football/)
   // bolao_mongodb(m);
 });
+
+client.on('message_reaction', async (m) => {
+  if (m.reaction === '\u26BD') { // Unicode for ⚽️
+    const message = await client.getMessageById(m.msgId._serialized);
+    const reactions = await message.getReactions();
+    if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
+      if (message.fromMe) return;
+      await message.react('🏆')
+      return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum');
+    }
+    return;
+  }
+  if (m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
+    console.info('Republicando mensagem');
+    const message = await client.getMessageById(m.msgId._serialized);
+    return await publicaMessage(message);
+  }
+})

@@ -44,9 +44,8 @@ client.on('ready', async () => {
     });
   const allChats = await client.getChats();
   await Promise.all(allChats
-    .filter((chat) => chat.isGroup)
     .map(async (group) => {
-      await group.sendSeen();
+      // await group.sendSeen();
       if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
       config.grupos = {
         ...config.grupos,
@@ -55,7 +54,7 @@ client.on('ready', async () => {
         },
       };
       console.log('✔️ ', group.name);
-      await group.sendSeen();
+      await group.clearMessages();
     }));
   fs.writeFileSync(
     './data/tigrebot.json',
@@ -64,7 +63,7 @@ client.on('ready', async () => {
     (err) => console.error(err),
   );
   console.info('\n### TigreBot rodando! ###');
-  return client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
+  return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
 });
 
 client.initialize();
