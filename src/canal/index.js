@@ -54,7 +54,7 @@ const bomDiaComDestaque = async () => {
       acc.gols += Number(curr.gols);
       return acc;
     }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
-    legendaJogador = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.`
+    legendaJogador = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.\n\n`
     legendaAniversariantes = '\n\n' + organizaFestinha(aniversariantes);
   }
   const legendaWeather = await getForecast();
@@ -78,20 +78,27 @@ const saveLocalInstagram = (update) => {
   saveLocal(config);
 }
 
+let instaApiOption = 1;
+const instaApiList = ['insta30', 'insta243'];
+
 const instagramThis = async (user = 'criciumaoficial') => {
+  client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch no instagram de @' + user);
   try {
-    client.sendMessage(process.env.BOT_OWNER, 'Ok, iniciando fetch no instagram de @' + user)
-    await fetchInstagram(user).then(async (post) => {
-      await sendInstagramToGroups(post);
-      return await sendInstagramToChannels(post);
-    });
+    instaApiOption === (instaApiList.length)
+      ? instaApiOption = 1
+      : instaApiOption += 1;
+    const post = instaApiList[instaApiOption] === 'insta30'
+      ? await instaApi30(user)
+      : await instaApi243(user);
+    await sendInstagramToGroups(post);
+    return await sendInstagramToChannels(post);
   } catch (err) {
     return sendAdmin(err);
   }
 };
 
 // Publicação no whatsapp de conta do instagram
-const fetchInstagram = async (user) => {
+const instaApi30 = async (user) => {
   console.info('Fetching...')
   return await fetchWithParams({
     url: process.env.INSTAGRAM130_API_URL + '/account-feed',
@@ -160,9 +167,10 @@ const publicaQuotedMessage = async (m) => {
       for (grupo of Object.keys(config.grupos)) {
         await client.sendMessage(grupo, contentComMedia, { caption: raw.body });
       }
-      for (canal of Object.keys(config.canais)) {
-        await client.sendMessage(canal, contentComMedia, { caption: raw.body })
+      for (chan of Object.keys(config.canais)) {
+        await client.sendMessage(chan, contentComMedia, { caption: raw.body })
       }
+      return;
     }
   }
   await sendTextToGroups(raw.body);

@@ -44,14 +44,16 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
   }
 })();
 
-// client.on('message_reaction', async (m) => {
-//   if (m.reaction === '\u26BD') { // Unicode for ⚽️
-//     console.log('goal!')
-//   }
-//   if (m.reaction === '🤖') {
-//     console.info('Publicando conteúdo no canal');
-//   }
-// })
+client.on('message_reaction', async (m) => {
+  if (m.reaction === '\u26BD') { // Unicode for ⚽️
+    console.log('GOL!')
+    console.log(m);
+  }
+  if (m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
+    console.info('Para publicar no canal:');
+    console.info(m);
+  }
+})
 
 client.on('message', async (m) => {
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);

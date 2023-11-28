@@ -26,7 +26,7 @@ const umAtleta = (array) => {
 const variosAtletas = (str, array) => {
   let response = `Pesquisando por "${str.toUpperCase()}" encontrei um monte de atletas!:\n`;
   array.forEach((obj) => response += `\n■ ${obj.name} (${obj.nickname}), ${obj.position}`);
-  response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - tigrebot.devsakae.tech'
+  response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - devsakae.tech/tigrebot'
   return response;
 }
 
@@ -34,10 +34,14 @@ const icons = ['🎉', '🎁', '🪅', '🎈', '🎊']
 
 const organizaFestinha = (array) => {
   array.sort((a, b) => a.name > b.name ? 1 : -1);
-  let response = 'Feliz aniversário para os atletas e ex atletas que assopram velinhas na data de hoje!\n';
+  let response = `${icons[Math.floor(Math.random() * icons.length)]} Hoje é aniversário de nascimento dos seguintes atletas (e ex atletas):\n`;
   array.forEach(
-    (atleta, idx) => response += `\n${icons[idx % icons.length]} ${atleta.name.toUpperCase()} (${atleta.nickname}, ${atleta.position}) completa ${calculaIdade(atleta.birthday) + 1} anos${idx !== (array.length - 1) ? ';' : ''}`
+    atleta => {
+      response += `\n‣ ${atleta.name} (${atleta.nickname} - ${atleta.position}), ${calculaIdade(atleta.birthday) + 1}º aniversário}`
+      if (atleta.jogos.some((j) => j.jogounotigre)) response += ' 🐯'
+    }
   );
+  response += '\n\n🐯 = Jogou pelo Tigre'
   return response;
 }
 
