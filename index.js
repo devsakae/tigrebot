@@ -34,9 +34,9 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
       scheduled: true,
       timezone: "America/Sao_Paulo"
     });
-    cron.schedule('21 12 * * 0,3', () => {
-      console.info('12h21min. Rodando /audio');
-      
+    cron.schedule('12 11 * * 3,7', () => {
+      console.info('11h12min. Rodando /audio');
+      falaAlgumaCoisa()
     }, {
       scheduled: true,
       timezone: "America/Sao_Paulo"
