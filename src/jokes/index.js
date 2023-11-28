@@ -1,5 +1,6 @@
 const { default: axios } = require('axios');
 const config = require('../../data/tigrebot.json');
+const prompts = require('../../data/prompts.json');
 const { client } = require('../connections');
 const { fetchApi } = require('../../utils/fetchApi');
 const { MessageMedia } = require('whatsapp-web.js');
@@ -9,8 +10,8 @@ let jokeLimit = false;
 
 const replyUser = async (m) => {
   if (m.body.endsWith('?')) {
-    const random = Math.floor(Math.random() * config.oraculo.length);
-    return m.reply(config.oraculo[random]);
+    const random = Math.floor(Math.random() * prompts.oraculo.length);
+    return m.reply(prompts.oraculo[random]);
   }
   if (m.body.match(/piada/gi) && !jokeLimit) {
     jokeLimit = true;
