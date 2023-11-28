@@ -48,7 +48,7 @@ client.on('message_reaction', async (m) => {
   if (m.reaction === '\u26BD') { // Unicode for ⚽️
     const message = await client.getMessageById(m.msgId._serialized);
     const reactions = await message.getReactions();
-    if (reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
+    if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
       message.react('🏆')
       return message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum');
     }

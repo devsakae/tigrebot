@@ -16,7 +16,7 @@ const canal = async (m) => {
   if (m.body.startsWith('/help')) {
     return client.sendMessage(
       m.from,
-      'Comandos já configurados no bot:\n\n */canal criar <nome>*\n_Crio um canal de nome <nome> e devolvo com o ID, salvando no banco de dados_\n\n */insta <username>*\n _Publico no <canal> o último post de <username> no Instagram.com_\n\n */pub <canal> <conteúdo>*\n _Publico no <canal> (nome) o texto <conteúdo>_',
+      'Comandos já configurados no bot:\n\n */canal criar <nome>*\n_Crio um canal de nome <nome> e devolvo com o ID, salvando no banco de dados_\n\n */insta <username>*\n _Publico no <canal> o último post de <username> no Instagram.com_\n\n */fetchinsta <link | id>*\n _Faço o fetch no instagram do post <link> ou <id>_',
     );
   }
   if (m.body.startsWith('/insta')) return await instagramThis(m.body.split(' ')[1]);
@@ -158,7 +158,9 @@ const instaApi243 = async () => {
 }
 
 const fetchInstaId = async (m) => {
-  const id = m.body.split(' ')[1];
+  const id = m.body.split(' ')[1].includes('instagram.com')
+    ? m.body.match(/(\w+)\/?$/)[1]
+    : m.body.split(' ')[1];
   console.info('Fetching by ID', id);
   client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch do post', id);
   const raw = await fetchWithParams({
