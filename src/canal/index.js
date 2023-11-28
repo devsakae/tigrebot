@@ -19,7 +19,8 @@ const canal = async (m) => {
       'Comandos já configurados no bot:\n\n */canal criar <nome>*\n_Crio um canal de nome <nome> e devolvo com o ID, salvando no banco de dados_\n\n */insta <username>*\n _Publico no <canal> o último post de <username> no Instagram.com_\n\n */pub <canal> <conteúdo>*\n _Publico no <canal> (nome) o texto <conteúdo>_',
     );
   }
-  if (m.body.startsWith('/insta')) return instagramThis(m.body.split(' ')[1]);
+  if (m.body.startsWith('/insta')) return await instagramThis(m.body.split(' ')[1]);
+  if (m.body.startsWith('/fetchinsta')) return await fetchInstaId(m);
   if (m.body.startsWith('/canal')) {
     const command = m.body.split(' ');
     if (command && command[1] === 'criar' && command.length > 1) {
@@ -156,6 +157,20 @@ const instaApi243 = async () => {
     }).catch((err) => console.error(err));
 }
 
+const fetchInstaId = async (m) => {
+  const id = m.body.split(' ')[1];
+  console.info('Fetching by ID', id);
+  const raw = await fetchWithParams({
+    url: "https://instagram191.p.rapidapi.com/v2/post/details-by-shortcode/",
+    host: "instagram191.p.rapidapi.com",
+    params: {
+      "shortcode": id
+    }
+  })
+  console.log(raw);
+
+}
+
 const publicaQuotedMessage = async (m) => {
   const raw = await m.getQuotedMessage();
   if (raw.hasMedia) {
@@ -178,9 +193,31 @@ const publicaQuotedMessage = async (m) => {
   return await sendTextToChannels(raw.body);
 }
 
+const publicaMessage = async (m) => {
+  console.log('Publicando mensagem', m.body);
+  if (m.hasMedia) {
+    const media = await m.downloadMedia()
+    const message = new MessageMedia(
+      media.mimetype,
+      media.data.toString('base64')
+    );
+    for (grupo of Object.keys(config.grupos)) {
+      await client.sendMessage(grupo, message, { caption: m.body })
+    }
+    for (chan of Object.keys(config.canais)) {
+      await client.sendMessage(chan, message, { caption: m.body })
+    }
+    return;
+  }
+  await sendTextToGroups(m.body);
+  return await sendTextToChannels(m.body);
+}
+
 module.exports = {
   canal,
   instagramThis,
   bomDiaComDestaque,
   publicaQuotedMessage,
+  fetchInstaId,
+  publicaMessage,
 };

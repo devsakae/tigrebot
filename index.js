@@ -5,7 +5,7 @@ const { quotes } = require('./src/quotes');
 const { replyUser, falaPraEle, falaAlgumaCoisa } = require('./src/jokes');
 const { help } = require('./utils/index');
 const { jogounotigre } = require('./src/futebol');
-const { canal, publicaQuotedMessage, bomDiaComDestaque } = require('./src/canal');
+const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
 const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
@@ -34,37 +34,36 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
       scheduled: true,
       timezone: "America/Sao_Paulo"
     });
-    // cron.schedule('13 10 * * ', () => {
-    //   console.info('08h do final do semana. Rodando o bomDiaComDestaque()...');
-    //   bomDiaComDestaque()
-    // }, {
-    //   scheduled: true,
-    //   timezone: "America/Sao_Paulo"
-    // })
+    cron.schedule('21 12 * * 0,3', () => {
+      console.info('12h21min. Rodando /audio');
+      
+    }, {
+      scheduled: true,
+      timezone: "America/Sao_Paulo"
+    })
   }
 })();
 
 client.on('message_reaction', async (m) => {
   if (m.reaction === '\u26BD') { // Unicode for ⚽️
-    console.log('GOL!')
-    console.log(m);
+    const message = await client.getMessageById(m.msgId._serialized);
+    const reactions = await message.getReactions();
+    if (reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
+      message.react('🏆')
+      return message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum');
+    }
+    return;
   }
   if (m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
-    console.info('Para publicar no canal:');
-    console.info(m);
+    console.info('Republicando mensagem');
+    const message = await client.getMessageById(m.msgId._serialized);
+    return await publicaMessage(message);
   }
 })
 
 client.on('message', async (m) => {
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
-  // if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!tigrelino') return await publicaQuotedMessage(m)
-
-  // if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && m.body.startsWith('!teste')) {
-  //   const lista = await getMongoPalpites();
-  //   client.sendMessage(m.from, 'Aguardando?');
-  //   return console.log(lista);
-  // }
 
   // Módulo de administração de canal
   if ((m.from === process.env.BOT_OWNER || m.author === process.env.BOT_OWNER) && m.body.startsWith('/')) {
@@ -80,21 +79,6 @@ client.on('message', async (m) => {
   }
 
   // Módulo Futebol (usa: Api-Football e FootApi7)
-  // if (m.body.startsWith('!resultadosdarodada')) {
-  //   console.info('Alguém disse !resultadosdarodada');
-  //   const getAtualizacao = await atualizaRodada(m);
-  //   if (getAtualizacao.error) sendAdmin(getAtualizacao.message);
-  //   return client.sendMessage(m.from, getAtualizacao.message);
-  // }
-  // if (
-  //   (m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) &&
-  //   m.body.startsWith('!stats')
-  // ) {
-  //   console.info('Admin disse !stats');
-  //   const getPredictions = await predictions(m);
-  //   if (getPredictions.error) sendAdmin(getPredictions.message);
-  //   return client.sendMessage(m.from, getPredictions.message);
-  // }
   if (m.body.startsWith('!jogounotigre')) {
     console.info('Alguém pediu !jogounotigre')
     return await jogounotigre(m);
