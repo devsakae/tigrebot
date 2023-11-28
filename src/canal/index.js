@@ -29,29 +29,9 @@ const canal = async (m) => {
       return client.sendMessage(m.from, 'Canal criado! ID: ' + chanId);
     }
   }
-  if (m.body.startsWith('/bomdiacomdestaque')) return bomDiaComDestaque();
-  if (m.body.startsWith('/bomdia')) return bomDia();
+  if (m.body.startsWith('/bomdia')) return bomDiaComDestaque();
   return;
 };
-
-const bomDia = async () => {
-  const today = new Date();
-  const weather = await getForecast();
-  const birthDate = today.toLocaleDateString('pt-br').substring(0, 5);
-  const aniversariantes = await criciuma
-    .collection('atletas')
-    .find({ 'birthday': { $regex: birthDate } })
-    .toArray();
-  if (aniversariantes.length === 0) {
-    await sendTextToChannels(weather);
-    return await sendTextToChannels(weather);
-  }
-  const texto = organizaFestinha(aniversariantes);
-  const greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
-  const mensagem = greeting + '\n\n' + weather + '\n\n' + texto;
-  await sendTextToGroups(mensagem);
-  return await sendTextToChannels(mensagem);
-}
 
 const bomDiaComDestaque = async () => {
   const today = new Date();
@@ -190,7 +170,6 @@ const publicaQuotedMessage = async (m) => {
 module.exports = {
   canal,
   instagramThis,
-  bomDia,
   bomDiaComDestaque,
   publicaQuotedMessage,
 };

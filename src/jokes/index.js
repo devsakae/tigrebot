@@ -88,11 +88,19 @@ const falaPraEle = async (m) => {
   }
 }
 
-
+const falaAlgumaCoisa = async (m) => {
+  const pack = ['mastella.mp3', 'zecalo.mp3', 'aa1.mp3', 'aa2.mp3', 'aa3.mp3', 'argel.mp3'];
+  const audio = await MessageMedia.fromFilePath('./src/jokes/audios/' + pack[Math.floor(Math.random() * pack.length)])
+  return Promise.all(Object.keys(config.grupos).map(async grupo => {
+    const chat = await client.getChatById(grupo);
+    await chat.sendMessage(audio, { sendAudioAsVoice: true });
+  }))
+}
 
 module.exports = {
   replyUser,
   getUselessFact,
   getJokes,
   falaPraEle,
+  falaAlgumaCoisa,
 }

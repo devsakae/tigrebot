@@ -2,9 +2,9 @@ const cron = require('node-cron');
 const { client, mongoclient } = require('./src/connections');
 const prompts = require('./src/bolao/data/prompts.json');
 const { quotes } = require('./src/quotes');
-const { replyUser, falaPraEle } = require('./src/jokes');
+const { replyUser, falaPraEle, falaAlgumaCoisa } = require('./src/jokes');
 const { help } = require('./utils/index');
-const { jogounotigre, aniversariantesDoDia } = require('./src/futebol');
+const { jogounotigre } = require('./src/futebol');
 const { canal, publicaQuotedMessage, bomDiaComDestaque } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
 const { getMongoPalpites } = require('./src/bolao_mongodb/user');
@@ -27,20 +27,20 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
     return console.error(err);
   } finally {
     console.info('\n' + prompts.admin.welcome);
-    cron.schedule('40 6 * * 1-5', () => {
+    cron.schedule('40 6 * * *', () => {
       console.info('06h40min. Bom dia. Rodando o bomDia()...');
       bomDiaComDestaque()
     }, {
       scheduled: true,
       timezone: "America/Sao_Paulo"
     });
-    cron.schedule('0 8 * * 6-7', () => {
-      console.info('08h do final do semana. Rodando o bomDiaComDestaque()...');
-      bomDiaComDestaque()
-    }, {
-      scheduled: true,
-      timezone: "America/Sao_Paulo"
-    })
+    // cron.schedule('13 10 * * ', () => {
+    //   console.info('08h do final do semana. Rodando o bomDiaComDestaque()...');
+    //   bomDiaComDestaque()
+    // }, {
+    //   scheduled: true,
+    //   timezone: "America/Sao_Paulo"
+    // })
   }
 })();
 
@@ -56,6 +56,7 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 client.on('message', async (m) => {
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
+  if (m.body.startsWith('!teste')) return await falaAlgumaCoisa(m);
   // if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!tigrelino') return await publicaQuotedMessage(m)
 
   // if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && m.body.startsWith('!teste')) {
