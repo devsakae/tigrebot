@@ -85,7 +85,7 @@ const instaApiList = ['insta30', 'insta243'];
 const instagramThis = async (user = 'criciumaoficial') => {
   client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch no instagram de @' + user);
   try {
-    instaApiOption === (instaApiList.length)
+    instaApiOption === (instaApiList.length + 1)
       ? instaApiOption = 1
       : instaApiOption += 1;
     console.log('instaApiOption', instaApiOption);
@@ -140,6 +140,7 @@ const instaApi243 = async () => {
     host: 'instagram243.p.rapidapi.com'
   })
     .then(({ data }) => {
+      console.info('Fetched!')
       const update = {
         date: new Date(),
         id: data.edges[0].node.id,
@@ -170,6 +171,7 @@ const fetchInstaId = async (m) => {
       "shortcode": id
     }
   })
+  raw && console.info('Fetched!')
   const data = raw.graphql.shortcode_media;
   const update = {
     date: new Date(),
