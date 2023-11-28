@@ -7,10 +7,12 @@ const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, se
 const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { MessageMedia } = require('whatsapp-web.js');
+const { falaAlgumaCoisa } = require('../jokes');
 
 const sendAdmin = (msg) => client.sendMessage(process.env.BOT_OWNER, msg);
 
 const canal = async (m) => {
+  if (m.body.startsWith('/audio')) return await falaAlgumaCoisa();
   if (m.body.startsWith('/help')) {
     return client.sendMessage(
       m.from,
