@@ -27,16 +27,16 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
     return console.error(err);
   } finally {
     console.info('\n' + prompts.admin.welcome);
-    cron.schedule('40 6 * * *', () => {
+    cron.schedule('40 6 * * *', async () => {
       console.info('06h40min. Bom dia. Rodando o bomDia()...');
-      bomDiaComDestaque()
+      await bomDiaComDestaque()
     }, {
       scheduled: true,
       timezone: "America/Sao_Paulo"
     });
-    cron.schedule('12 11 * * 3,7', () => {
+    cron.schedule('12 11 * * 3,7', async () => {
       console.info('11h12min. Rodando /audio');
-      falaAlgumaCoisa()
+      await falaAlgumaCoisa()
     }, {
       scheduled: true,
       timezone: "America/Sao_Paulo"
@@ -71,7 +71,6 @@ client.on('message', async (m) => {
     m.body.startsWith('!autor') ||
     m.body.startsWith('!data') ||
     m.body.startsWith('!delquote') ||
-    m.body.startsWith('!jogounotigre') ||
     m.body.startsWith('!quote')
   ) {
     // Módulo Quotes (usa: MongoDB)
@@ -107,4 +106,17 @@ client.on('message_reaction', async (m) => {
     const message = await client.getMessageById(m.msgId._serialized);
     return await publicaMessage(message);
   }
+})
+
+client.on('group_join', async (e) => {
+  console.info(e);
+  const newGroup = await e.getChat();
+  console.info(newGroup);
+  await client.sendMessage(process.env.BOT_OWNER, "Fui adicionado em um grupo!")
+})
+
+client.on('group_update', async (e) => {
+  console.info(e);
+  const newGroup = await e.getChat();
+  console.info(newGroup);
 })

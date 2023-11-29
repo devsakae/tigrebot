@@ -44,8 +44,8 @@ client.on('ready', async () => {
     });
   const allChats = await client.getChats();
   await Promise.all(allChats
+    .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {
-      // await group.sendSeen();
       if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
       config.grupos = {
         ...config.grupos,
@@ -54,6 +54,7 @@ client.on('ready', async () => {
         },
       };
       console.log('✔️ ', group.name);
+      await group.sendSeen();
       await group.clearMessages();
     }));
   fs.writeFileSync(
