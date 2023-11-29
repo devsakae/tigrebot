@@ -40,10 +40,9 @@ client.on('ready', async () => {
     .filter((chan) => !chan.isReadOnly)
     .forEach((mine) => {
       config.canais = { [mine.id._serialized]: mine.name };
-      console.info('✔️ ', mine.name);
+      console.info('✔️ ', mine.name, '[canal]');
     });
   const allChats = await client.getChats();
-  console.log(allChats);
   await Promise.all(allChats
     .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {
@@ -52,7 +51,7 @@ client.on('ready', async () => {
       config.grupos[group.id._serialized] = {
         palpiteiros: [],
       };
-      console.log('✔️ ', group.name);
+      console.log('✔️ ', group.name, '[grupo]');
       await group.sendSeen();
       await group.clearMessages();
     }));
@@ -62,7 +61,9 @@ client.on('ready', async () => {
     'utf-8',
     (err) => console.error(err),
   );
+  const today = new Date()
   console.info('\n### TigreBot rodando! ###');
+  console.info(today.toLocaleString('pt-br'));
   return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
 });
 

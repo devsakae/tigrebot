@@ -1,9 +1,10 @@
 const cron = require('node-cron');
+const config = require('./data/tigrebot.json')
+const prompts = require('./data/prompts.json');
 const { client, mongoclient } = require('./src/connections');
-const prompts = require('./src/bolao/data/prompts.json');
 const { quotes } = require('./src/quotes');
 const { replyUser, falaPraEle, falaAlgumaCoisa } = require('./src/jokes');
-const { help } = require('./utils/index');
+const { help, saveLocal } = require('./utils/index');
 const { jogounotigre } = require('./src/futebol');
 const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
 const { bolao_mongodb } = require('./src/bolao_mongodb');
@@ -109,14 +110,28 @@ client.on('message_reaction', async (m) => {
 })
 
 client.on('group_join', async (e) => {
-  console.info(e);
   const newGroup = await e.getChat();
-  console.info(newGroup);
-  await client.sendMessage(process.env.BOT_OWNER, "Fui adicionado em um grupo!")
+  console.info('Colocando grupo', newGroup.name, 'na lista de envios')
+  config.grupos[newGroup.id._serialized] = { palpiteiros: [] }
+  saveLocal(config);
+  return await client.sendMessage(process.env.BOT_OWNER, `Configurações do grupo ${newGroup.name} realizadas com sucesso!`)
 })
 
 client.on('group_update', async (e) => {
-  console.info(e);
   const newGroup = await e.getChat();
-  console.info(newGroup);
+  if (newGroup.isMuted || newGroup.isReadOnly) {
+    console.info('Retirando grupo', newGroup.name, 'temporariamente dos envios')
+    config.grupos = {
+      ...Object.keys(config.grupos.filter((group) => group !== group.id._serialized))
+    }
+    return saveLocal(config);
+  }
+  console.info('Colocando grupo', newGroup.name, 'na lista de envios')
+  config.grupos[newGroup.id._serialized] = { palpiteiros: [] }
+  return saveLocal(config);
+})
+
+client.on('group_leave', async (e) => {
+  console.info('group_leave');
+  console.info(e);
 })
