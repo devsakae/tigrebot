@@ -43,6 +43,7 @@ client.on('ready', async () => {
       console.info('✔️ ', mine.name);
     });
   const allChats = await client.getChats();
+  console.log(allChats);
   await Promise.all(allChats
     .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {
