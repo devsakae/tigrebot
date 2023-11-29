@@ -47,11 +47,8 @@ client.on('ready', async () => {
     .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {
       if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
-      config.grupos = {
-        ...config.grupos,
-        [group.id._serialized]: {
-          palpiteiros: [],
-        },
+      config.grupos[group.id._serialized] = {
+        palpiteiros: [],
       };
       console.log('✔️ ', group.name);
       await group.sendSeen();
