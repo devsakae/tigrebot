@@ -29,14 +29,14 @@ const { getMongoPalpites } = require('./src/bolao_mongodb/user');
   } finally {
     console.info('\n' + prompts.admin.welcome);
     cron.schedule('40 6 * * *', async () => {
-      console.info('06h40min. Bom dia. Rodando o bomDia()...');
+      console.info('06h40min. Bom dia. Rodando o bomDiaComDestaque()...');
       await bomDiaComDestaque()
     }, {
       scheduled: true,
       timezone: "America/Sao_Paulo"
     });
     cron.schedule('12 11 * * 3,7', async () => {
-      console.info('11h12min. Rodando /audio');
+      console.info('11h12min. Rodando /audio...');
       await falaAlgumaCoisa()
     }, {
       scheduled: true,
