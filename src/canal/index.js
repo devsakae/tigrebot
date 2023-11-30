@@ -59,7 +59,7 @@ const bomDiaComDestaque = async () => {
     legendaAniversariantes = organizaFestinha(aniversariantes);
   }
   const legendaWeather = await getForecast();
-  const legendaGreeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+  const legendaGreeting = '👉 ' + prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
   if (legendaJogador) {
     const thisCaption = legendaJogador + '\n\n' + legendaGreeting + '\n\n' + legendaWeather + '\n\n' + legendaAniversariantes;
     await sendMediaUrlToChannels({ url: chosenOne.image, caption: thisCaption });

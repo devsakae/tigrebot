@@ -113,6 +113,26 @@ const quotes = async (m) => {
   }
 };
 
-module.exports = { 
-  quotes
+const golacoAleatorio = async () => {
+  const today = new Date();
+  const isoToday = today.toISOString().substring(4, 10);
+  const dateRegex = new RegExp(isoToday);
+  const res = await criciuma
+    .collection("golacos_tigrelog")
+    .find({ "data": dateRegex })
+    .toArray();
+  const q = res[Math.floor(Math.random() * res.length)];
+  const anosAtras = today.getFullYear() - Number(q.data.substring(0, 4));
+  let response = `👀 Lembrando ~os herois~ as bobagens do passado...\n\nHá ${anosAtras} anos, foi postado no fórum TigreLOG a seguinte mensagem:`
+  response += `"\n\n\`\`\`${q.quote.substring(0, 240)}\`\`\`"`
+  response += q.quote.length > 240 ? ' (texto completo só no grupo TigreLOG https://chat.whatsapp.com/2yy89JmmjYf6mQLW87wjTQ)\n' : '\n'
+  response += `\n👤 Autor: ${q.autor.substring(0, 1) + "*".repeat(q.autor.length - 1)}`
+  response += `\n✍️ Tópico: ${q.titulo}`
+  response += `\n⚽️ ${q.gols} ${Number(q.gols) > 1 ? 'usuários consideraram' : 'usuário considerou'} essa mensagem um golaço`
+  return response;
+}
+
+module.exports = {
+  quotes,
+  golacoAleatorio,
 }

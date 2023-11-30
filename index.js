@@ -1,7 +1,7 @@
-const cron = require('node-cron');
 const config = require('./data/tigrebot.json')
 const prompts = require('./data/prompts.json');
 const { client, mongoclient } = require('./src/connections');
+const publicacoes = require('./utils/autobot');
 const { quotes } = require('./src/quotes');
 const { replyUser, falaPraEle, falaAlgumaCoisa } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
@@ -28,20 +28,11 @@ const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = requi
     return console.error(err);
   } finally {
     console.info('\n' + prompts.admin.welcome);
-    cron.schedule('40 6 * * *', async () => {
-      console.info('06h40min. Bom dia. Rodando o bomDiaComDestaque()...');
-      await bomDiaComDestaque()
-    }, {
-      scheduled: true,
-      timezone: "America/Sao_Paulo"
-    });
-    cron.schedule('12 11 * * 3,7', async () => {
-      console.info('11h12min. Rodando /audio...');
-      await falaAlgumaCoisa()
-    }, {
-      scheduled: true,
-      timezone: "America/Sao_Paulo"
-    })
+
+    // Programações automáticas
+    publicacoes.bomDia('40 6 * * *') // Todos os dias às 06:40
+    publicacoes.audio('12 11 * * 3,6'); // Quartas e sábados às 11:12
+    publicacoes.atletaDestaque('10 10 * * 5') // Sexta às 10:10
   }
 })();
 

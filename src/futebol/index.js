@@ -97,7 +97,7 @@ const jogadorDoTigreAleatorio = async () => {
     return acc;
   }, { jogos: 0, gols: 0, v: 0, e: 0, d: 0 });
   const aproveitamento = (((total.v * 3) + (total.e)) / (total.jogos * 3)) * 100
-  let response = `Você sabia que esse atleta já jogou pelo Tigre? 🐯\n\nEpisódio de hoje: *${atl[0].nickname}* (${atl[0].position})\n\n_${atl[0].name}_ nasceu em ${atl[0].birthday} (há ${calculaIdade(atl[0].birthday)} anos, portanto) e disputou ${total.jogos} partidas pelo Criciúma Esporte Clube, tendo um aproveitamento total de ${aproveitamento.toFixed(2)}%.`;
+  let response = `Você sabia que esse atleta já jogou pelo Tigre? 🐯\n\nEpisódio dessa semana: *${atl[0].nickname}* (${atl[0].position})\n\n_${atl[0].name}_ nasceu em ${atl[0].birthday} (há ${calculaIdade(atl[0].birthday)} anos, portanto) e disputou ${total.jogos} partidas pelo Criciúma Esporte Clube, tendo um aproveitamento total de ${aproveitamento.toFixed(2)}%.`;
   response += `\n\nSua última partida pelo tricolor foi por ${jogos[0].torneio} de ${jogos[0].ano}, tendo ${atl[0].nickname} disputado ${jogos[0].jogos} jogos e conquistado ${jogos[0].v} vitórias, ${jogos[0].e} empates e ${jogos[0].d} derrotas (aproveitamento de ${(((Number(jogos[0].v) * 3) + Number(jogos[0].e)) / (Number(jogos[0].jogos) * 3) * 100).toFixed(2)}%.)`
   if (clubes.length > 0) {
     response += `\n\nAlém do nosso glorioso tricolor, ${atl[0].nickname} também jogou por `

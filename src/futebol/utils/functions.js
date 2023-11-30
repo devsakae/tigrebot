@@ -34,14 +34,13 @@ const icons = ['🎉', '🎁', '🪅', '🎈', '🎊']
 
 const organizaFestinha = (array) => {
   array.sort((a, b) => a.name > b.name ? 1 : -1);
-  let response = `${icons[Math.floor(Math.random() * icons.length)]} Hoje é aniversário de nascimento dos seguintes atletas (e ex atletas):\n`;
+  let response = `${icons[Math.floor(Math.random() * icons.length)]} Nasceram, no dia de hoje, os atletas (e ex atletas) abaixo:\n\n🐯 = Jogou com a camisa do Tigre\n\n`;
   array.forEach(
     atleta => {
       response += `\n‣ ${atleta.name} (${atleta.nickname} - ${atleta.position}), ${calculaIdade(atleta.birthday) + 1}º aniversário`
       if (atleta.jogos.some((j) => j.jogounotigre)) response += ' 🐯'
     }
   );
-  response += '\n\n🐯 = Jogou pelo Tigre'
   return response;
 }
 
