@@ -16,6 +16,6 @@ async function postTweet(tweetText) {
   }
 }
 
-modules.export = {
+module.exports = {
   postTweet,
 }
