@@ -2,7 +2,7 @@ const config = require('./data/tigrebot.json')
 const prompts = require('./data/prompts.json');
 const { client, mongoclient } = require('./src/connections');
 const publicacoes = require('./utils/autobot');
-const { quotes } = require('./src/quotes');
+const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle, falaAlgumaCoisa } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
 const { jogounotigre } = require('./src/futebol');
@@ -83,6 +83,10 @@ client.on('message', async (m) => {
 });
 
 client.on('message_reaction', async (m) => {
+  if (m.reaction === '❤️' && m.senderId === process.env.BOT_OWNER) {
+    const msg = await client.getMessageById(m.msgId._serialized);
+    return await addQuote(msg);
+  }
   if (m.reaction === '\u26BD') { // Unicode for ⚽️
     const message = await client.getMessageById(m.msgId._serialized);
     if (message) {
@@ -90,7 +94,7 @@ client.on('message_reaction', async (m) => {
       if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
         if (message.fromMe) return;
         await message.react('🏆')
-        return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum');
+        return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum!\n\nAh sim, também salvei ele no banco de dados de quotes... Dá um !quote aí');
       }
       return;
     }
