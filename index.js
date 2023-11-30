@@ -94,18 +94,24 @@ client.on('message', async (m) => {
 client.on('message_reaction', async (m) => {
   if (m.reaction === '\u26BD') { // Unicode for ⚽️
     const message = await client.getMessageById(m.msgId._serialized);
-    const reactions = await message.getReactions();
-    if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
-      if (message.fromMe) return;
-      await message.react('🏆')
-      return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum');
+    if (message) {
+      const reactions = await message.getReactions();
+      if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
+        if (message.fromMe) return;
+        await message.react('🏆')
+        return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum');
+      }
+      return;
     }
     return;
   }
   if (m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
     console.info('Republicando mensagem');
     const message = await client.getMessageById(m.msgId._serialized);
-    return await publicaMessage(message);
+    if (message) {
+      return await publicaMessage(message);
+    }
+    return;
   }
 })
 
