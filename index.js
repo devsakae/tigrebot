@@ -7,8 +7,8 @@ const { replyUser, falaPraEle, falaAlgumaCoisa } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
 const { jogounotigre } = require('./src/futebol');
 const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
-const { bolao_mongodb } = require('./src/bolao_mongodb');
-const { getMongoPalpites } = require('./src/bolao_mongodb/user');
+// const { bolao_mongodb } = require('./src/bolao_mongodb');
+// const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
 (async () => {
   try {

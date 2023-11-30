@@ -1,5 +1,5 @@
-const { db, tigrebot, client } = require('../connections');
-const { formatQuote, addStats, bestQuote } = require('./utils/functions');
+const { db, client } = require('../connections');
+const { formatQuote, bestQuote } = require('./utils/functions');
 
 const quotes = async (m) => {
   const chat = await m.getChat();
