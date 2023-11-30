@@ -1,6 +1,7 @@
 const { client } = require('../src/connections');
 const config = require('../data/tigrebot.json');
 const { MessageMedia } = require('whatsapp-web.js');
+const { postTweet } = require('./twitter');
 
 const sendTextToGroups = async text => {
   for (grupo of Object.keys(config.grupos)) {
@@ -18,6 +19,7 @@ const sendTextToChannels = async text => {
   for (canal of Object.keys(config.canais)) {
     await client.sendMessage(canal, text)
   }
+  await postTweet(text);
 }
 
 const sendMediaUrlToGroups = async media => {

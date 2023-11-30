@@ -122,7 +122,7 @@ client.on('group_update', async (e) => {
   if (newGroup.isMuted || newGroup.isReadOnly) {
     console.info('Retirando grupo', newGroup.name, 'temporariamente dos envios')
     config.grupos = {
-      ...Object.keys(config.grupos.filter((group) => group !== group.id._serialized))
+      ...Object.entries(config.grupos.filter(([key]) => key !== newGroup.id._serialized))
     }
     return saveLocal(config);
   }
@@ -132,6 +132,11 @@ client.on('group_update', async (e) => {
 })
 
 client.on('group_leave', async (e) => {
-  console.info('group_leave');
-  console.info(e);
+  const newGroup = await e.getChat();
+  console.info('Retirando grupo', newGroup.name, 'do cadastro')
+  config.grupos = {
+    ...Object.entries(config.grupos.filter(([key]) => key !== newGroup.id._serialized))
+  }
+  return saveLocal(config);
+
 })
