@@ -37,7 +37,7 @@ const organizaFestinha = (array) => {
   let response = `${icons[Math.floor(Math.random() * icons.length)]} Hoje é aniversário de nascimento dos seguintes atletas (e ex atletas):\n`;
   array.forEach(
     atleta => {
-      response += `\n‣ ${atleta.name} (${atleta.nickname} - ${atleta.position}), ${calculaIdade(atleta.birthday) + 1}º aniversário}`
+      response += `\n‣ ${atleta.name} (${atleta.nickname} - ${atleta.position}), ${calculaIdade(atleta.birthday) + 1}º aniversário`
       if (atleta.jogos.some((j) => j.jogounotigre)) response += ' 🐯'
     }
   );
