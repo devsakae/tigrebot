@@ -135,5 +135,4 @@ client.on('group_leave', async (e) => {
     ...Object.entries(config.grupos.filter(([key]) => key !== newGroup.id._serialized))
   }
   return saveLocal(config);
-
 })
