@@ -13,6 +13,7 @@ const mongoclient = new MongoClient(process.env.MONGODB_URI, {
 });
 
 const db = mongoclient.db('quotes');
+const forum = mongoclient.db('quotes').collection('tigrelog');
 const criciuma = mongoclient.db('criciuma');
 const tigrebot = mongoclient.db('tigrebot');
 const canais = mongoclient.db('#channels')
@@ -75,4 +76,5 @@ module.exports = {
   canais,
   bolao,
   criciuma,
+  forum,
 };

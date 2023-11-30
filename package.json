@@ -1,12 +1,12 @@
 {
   "name": "tigrebot",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "description": "Um bot exclusivo pra quem é apaixonado pelo Tigre",
   "main": "index.js",
   "scripts": {
     "start": "./install.sh",
     "production": "pm2 start npm --name \"TigreBot\" -- start && pm2 monit",
-    "test": "jest"
+    "test": "node --env-file=.env ./tests/TEST.js"
   },
   "repository": {
     "type": "git",

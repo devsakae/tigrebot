@@ -3,7 +3,7 @@ const { fetchWithParams, fetchApi } = require('../../utils');
 const data = require('../bolao/data/data.json');
 const { client, criciuma } = require('../connections');
 const { variosAtletas, umAtleta, organizaFestinha } = require('./utils/functions');
-const { sendTextToGroups, sendTextToChannels } = require('../../utils/sender');
+const { sendTextToGroups, sendTextToChannels, sendMediaUrlToChannels, sendMediaUrlToGroups } = require('../../utils/sender');
 
 // const predictions = async (m) => {
 //   const thisBolao = data[m.from];
@@ -77,12 +77,49 @@ const jogounotigre = async (m) => {
   return m.reply('Não que saiba ou tenha conhecimento.');
 }
 
+const jogadorDoTigreAleatorio = async () => {
+  const atl = await criciuma
+    .collection('atletas')
+    .aggregate([{ $match: { "jogos.jogounotigre": true } }, { $sample: { size: 1 } }])
+    .toArray();
+  const jogos = atl[0].jogos.filter(j => j.jogounotigre);
+  const allClubs = atl[0].jogos.filter(j => !j.jogounotigre).reduce((acc, curr) => {
+    acc.push(curr.clube)
+    return acc;
+  }, [])
+  const clubes = [...new Set(allClubs)]
+  const total = jogos.reduce((acc, curr) => {
+    acc.jogos += Number(curr.jogos);
+    acc.gols += Number(curr.gols);
+    acc.v += Number(curr.v);
+    acc.e += Number(curr.e);
+    acc.d += Number(curr.d);
+    return acc;
+  }, { jogos: 0, gols: 0, v: 0, e: 0, d: 0 });
+  const aproveitamento = (((total.v * 3) + (total.e)) / (total.jogos * 3)) * 100
+  let response = `Você sabia que esse atleta já jogou pelo Tigre? 🐯\n\nEpisódio de hoje: *${atl[0].nickname}* (${atl[0].position})\n\n_${atl[0].name}_ nasceu em ${atl[0].birthday} (há ${calculaIdade(atl[0].birthday)} anos, portanto) e disputou ${total.jogos} partidas pelo Criciúma Esporte Clube, tendo um aproveitamento total de ${aproveitamento.toFixed(2)}%.`;
+  response += `\n\nSua última partida pelo tricolor foi por ${jogos[0].torneio} de ${jogos[0].ano}, tendo ${atl[0].nickname} disputado ${jogos[0].jogos} jogos e conquistado ${jogos[0].v} vitórias, ${jogos[0].e} empates e ${jogos[0].d} derrotas (aproveitamento de ${(((Number(jogos[0].v) * 3) + Number(jogos[0].e)) / (Number(jogos[0].jogos) * 3) * 100).toFixed(2)}%.)`
+  if (clubes.length > 0) {
+    response += `\n\nAlém do nosso glorioso tricolor, ${atl[0].nickname} também jogou por `
+    clubes.forEach((c, i) => response += `${i === 0 ? '' : i === (clubes.length - 1) ? ' e ' : ', '}${c}${i === (clubes.length - 1) ? '.' : ''}`)
+  }
+  response += `\n\nHistórico completo:`
+  atl[0].jogos.forEach((jogo) => {
+    response += `\n\n➤ *${jogo.torneio}* (${jogo.ano})`;
+    response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'jogos' : 'jogo'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ⚽️ ${jogo.gols > 0 ? jogo.gols : 'Nenhum'} ${jogo.gols > 1 ? 'gols' : 'gol'}`
+    if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube}`
+  });
+  response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - tigrebot.devsakae.tech'
+  await sendMediaUrlToChannels({ url: atl[0].image, caption: response });
+  return await sendMediaUrlToGroups({ url: atl[0].image, caption: response });
+}
+
 const aniversariantesDoDia = async (date) => {
   const today = new Date();
   const birthDate = date || today.toLocaleDateString('pt-br').substring(0, 5);
   const aniversariantes = await criciuma
     .collection('atletas')
-    .find({ 'birthday': { $regex: birthDate }})
+    .find({ 'birthday': { $regex: birthDate } })
     .toArray();
   if (aniversariantes.length === 0) return;
   const texto = organizaFestinha(aniversariantes);
@@ -106,4 +143,5 @@ module.exports = {
   // atualizaRodada,
   jogounotigre,
   aniversariantesDoDia,
+  jogadorDoTigreAleatorio,
 };

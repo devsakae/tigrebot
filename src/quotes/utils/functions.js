@@ -9,10 +9,13 @@ ${quote.gols > 0 ? `⚽️ ${quote.gols} ${quote.gols > 1 ? 'pessoas considerara
 };
 
 const bestQuote = (array) => {
-  const scoredQuotes = array.filter(q => q.gols > 0);
-  if (scoredQuotes.length === 0) return formatQuote(array[Math.floor(Math.random() * array.length)]);
-  if (scoredQuotes.length > 1) scoredQuotes.sort((a, b) => b.gols - a.gols);
-  return formatQuote(scoredQuotes[0]);
+  return array.some(q => q.gols > 0)
+    ? formatQuote(array.filter(q => q.gols > 0)[0])
+    : formatQuote(array[Math.floor(Math.random() * array.length)])
+  // const scoredQuotes = array.filter(q => q.gols > 0);
+  // if (scoredQuotes.length === 0) return formatQuote(array[Math.floor(Math.random() * array.length)]);
+  // if (scoredQuotes.length > 1) scoredQuotes.sort((a, b) => b.gols - a.gols);
+  // return formatQuote(scoredQuotes[0]);
 }
 
 module.exports = {

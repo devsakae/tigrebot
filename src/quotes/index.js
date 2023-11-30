@@ -1,12 +1,12 @@
-const { db, client } = require('../connections');
+const { db, forum, criciuma, client } = require('../connections');
 const { formatQuote, bestQuote } = require('./utils/functions');
 
 const quotes = async (m) => {
   const chat = await m.getChat();
   chat.sendStateTyping();
   if (m.body === '!quote') {
-    const randomQuote = await db
-      .collection('tigrelog')
+    const randomQuote = await criciuma
+      .collection('golacos_tigrelog')
       .aggregate([{ $sample: { size: 1 } }])
       .toArray();
     return client.sendMessage(m.from, formatQuote(randomQuote[0]));
@@ -21,8 +21,7 @@ const quotes = async (m) => {
   // Switch/case para verificar !quote, !quotefrom, !quoteby, !addquote e !delquote
   switch (quoteType) {
     case '!data':
-      const quotesdated = await db
-        .collection('tigrelog')
+      const quotesdated = await forum
         .find({
           $and: [
             { 'data': { $regex: firstWord, $options: 'i' } },
@@ -51,13 +50,12 @@ const quotes = async (m) => {
         })
         .toArray();
       if (quotesfrom.length === 0) return m.reply('Tem nada disso aí aqui 🫥'); // Não achou nada
-      client.sendMessage(m.from, `Tenho ${quotesfrom.length} quote(s) do *${firstWord}*, mas a melhor é essa:`);
+      await client.sendMessage(m.from, `Tenho ${quotesfrom.length} quote(s) do *${firstWord}*, mas a melhor é essa:`);
       const bestByAuthor = bestQuote(quotesfrom);
       return client.sendMessage(m.from, bestByAuthor);
 
     case '!quote': // Procura por uma quote com parâmetros
-      const foundquote = await db
-        .collection('tigrelog')
+      const foundquote = await forum
         .find({
           $or: [
             { quote: { $regex: content, $options: 'i' } },
@@ -71,6 +69,14 @@ const quotes = async (m) => {
       await client.sendMessage(m.from, `ATENÇÃO PRA MELHOR DAS *${foundquote.length} QUOTES* QUE EU TENHO AQUI NO TEMA '${content.toUpperCase()}'`);
       const response = bestQuote(foundquote);
       return await client.sendMessage(m.from, response);
+
+    // // Novo !addquote com base em replies!
+    // case '!addquote':
+    //   if (m.hasQuotedMessage) {
+    //     // continuar a lógica aqui
+    //     return console.info('adding quote')
+    //   }
+    //   break;
 
     // Adiciona uma quote nova na coleção do grupo
     case '!addquote':
@@ -88,7 +94,7 @@ const quotes = async (m) => {
         gols: 1,
         titulo: '(Mensagem no grupo)'
       };
-      const result = await db.collection('tigrelog').insertOne(quote);
+      const result = await forum.insertOne(quote);
       m.reply(`✔️ Quote salva com id _${result.insertedId}_`);
       break;
 
@@ -96,7 +102,7 @@ const quotes = async (m) => {
     case '!delquote':
       if (m.author !== process.env.BOT_OWNER) return;
       try {
-        await db.collection('tigrelog').deleteOne({ id: content });
+        await forum.deleteOne({ id: content });
       } catch {
         m.reply(`Erro. Tem certeza que a quote '${content}' existe?`);
       } finally {
