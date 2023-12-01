@@ -5,7 +5,7 @@ const publicacoes = require('./utils/autobot');
 const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle, falaAlgumaCoisa } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
-const { jogounotigre } = require('./src/futebol');
+const { jogounotigre, jogadorDoTigreAleatorio } = require('./src/futebol');
 const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
@@ -37,6 +37,7 @@ const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = requi
 })();
 
 client.on('message', async (m) => {
+  // if (m.author === process.env.BOT_OWNER && m.body.startsWith('!teste')) return await jogadorDoTigreAleatorio();
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
 

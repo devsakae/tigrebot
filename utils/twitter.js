@@ -9,8 +9,8 @@ const client = new TwitterApi({
 
 async function postTweet(tweetText) {
   try {
-    let texto = tweetText
-    if (tweetText.length > 280) texto = tweetText.substring(0, 230) + '...\n\n👉 Leia a íntegra em devsakae.tech/tigrebot'
+    let texto = tweetText;
+    if (tweetText.length > 280) texto = `${tweetText.substring(0, 230)} (...)\n\nLeia tudo em devsakae.tech/tigrebot`
     const tweet = await client.v2.tweet(texto);
     return console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
   } catch (error) {
