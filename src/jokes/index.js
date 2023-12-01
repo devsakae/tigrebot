@@ -4,12 +4,17 @@ const prompts = require('../../data/prompts.json');
 const { client } = require('../connections');
 const { fetchApi } = require('../../utils/fetchApi');
 const { MessageMedia } = require('whatsapp-web.js');
+const { publicaUltimaNoticia } = require('../news');
 const encodedParams = new URLSearchParams();
 
 let jokeLimit = false;
 
 const replyUser = async (m) => {
   if (m.body.endsWith('?')) {
+    if (m.body.match(/acontecendo em crici/gi)) {
+      const response = await respondeEAtualiza();
+      return m.reply(response);
+    }
     const random = Math.floor(Math.random() * prompts.oraculo.length);
     return m.reply(prompts.oraculo[random]);
   }

@@ -33,6 +33,7 @@ const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = requi
     publicacoes.bomDia('40 6 * * *') // Todos os dias às 06:40
     publicacoes.audio('12 11 * * 3,6'); // Quartas e sábados às 11:12
     publicacoes.atletaDestaque('10 10 * * 5') // Sexta às 10:10
+    publicacoes.atualiza('0 8,13,20 * * *')
   }
 })();
 

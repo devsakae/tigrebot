@@ -1,5 +1,6 @@
 const googleNewsAPI = require("google-news-json");
-const { sendTextToGroups, sendTextToChannels } = require("../../utils");
+const { sendTextToGroups, sendTextToChannels, saveLocal } = require("../../utils");
+const config = require("../../data/tigrebot.json");
 
 const getNews = async () => {
   const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, "Criciúma", "pt-BR");
@@ -12,12 +13,21 @@ const getNews = async () => {
 
 const publicaUltimaNoticia = async () => {
   const n = await getNews();
-  const textoFormatado = `${n[0].title}\n\n📆 ${n[0].pubDate}\n👉 Leia em ${n[0].link}`
+  if (config.news === n[0].guid.text) return;
+  const textoFormatado = `${n[0].title}\n\n📆 ${n[0].pubDate}\nℹ️ Fonte: ${n[0].source.text} - ${n[0].source.url}\n\nLink para a notícia completa 👉 ${n[0].link}`;
+  config.news = n[0].guid.text;
+  saveLocal(config);
   await sendTextToGroups(textoFormatado)
   return await sendTextToChannels(textoFormatado)
+}
+
+const respondeEAtualiza = async () => {
+  const n = await getNews();
+  return `Parece que ${n[0].title[0].toLowerCase() + n[0].title.substring(1)}.`;
 }
 
 module.exports = {
   getNews,
   publicaUltimaNoticia,
+  respondeEAtualiza,
 }
