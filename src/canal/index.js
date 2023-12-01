@@ -8,6 +8,8 @@ const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { MessageMedia } = require('whatsapp-web.js');
 const { falaAlgumaCoisa } = require('../jokes');
+const { golacoAleatorio } = require('../quotes');
+const { postTweet } = require('../../utils/twitter');
 
 const sendAdmin = (msg) => client.sendMessage(process.env.BOT_OWNER, msg);
 
@@ -37,37 +39,59 @@ const canal = async (m) => {
 };
 
 const bomDiaComDestaque = async () => {
+  // Inicia o bom dia
+  let response = '👉 ' + prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+
+  // Pega a previsão do tempo em Criciúma/SC para hoje
+  const previsao = await getForecast()
+  if (previsao) {
+    response += '\n\n';
+    response += previsao;
+  }
+
+  // Pega um golaço aleatório do fórum e adiciona na resposta
+  const forum = await golacoAleatorio()
+  if (forum) {
+    response += '\n\n';
+    response += forum;
+  }
+
+  // Busca atletas aniversariando hoje
   const today = new Date();
   const birthDate = today.toLocaleDateString('pt-br').substring(0, 5);
   const aniversariantes = await criciuma
     .collection('atletas')
     .find({ 'birthday': { $regex: birthDate } })
     .toArray();
-  let legendaJogador;
-  let legendaAniversariantes;
-  let chosenOne;
+  // Encontrou aniversariante? 
   if (aniversariantes.length > 0) {
-    const jogaramNoTigre = aniversariantes.filter((j) => j.jogos.some((jogo) => jogo.jogounotigre));
-    chosenOne = jogaramNoTigre[Math.floor(Math.random() * jogaramNoTigre.length)];
-    const jogosPeloTigre = chosenOne.jogos.filter((jogo) => jogo.jogounotigre);
-    const totalJogos = jogosPeloTigre.reduce((acc, curr) => {
-      acc.jogos += Number(curr.jogos);
-      acc.gols += Number(curr.gols);
-      return acc;
-    }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
-    legendaJogador = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.`
-    legendaAniversariantes = organizaFestinha(aniversariantes);
+    const jogaramNoTigre = aniversariantes.filter(j => j.jogos.some(jogo => jogo.jogounotigre));
+    const aniversariantes = organizaFestinha(aniversariantes);
+    // Adiciona foto e stats de atleta que jogou no Tigre
+    if (jogaramNoTigre.length > 0) {
+      const chosenOne = jogaramNoTigre[Math.floor(Math.random() * jogaramNoTigre.length)];
+      const jogosPeloTigre = chosenOne.jogos.filter(jogo => jogo.jogounotigre);
+      const totalJogos = jogosPeloTigre.reduce((acc, curr) => {
+        acc.jogos += Number(curr.jogos);
+        acc.gols += Number(curr.gols);
+        return acc;
+      }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
+      response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${aniversariantes}`;
+
+      return console.log(response); // TEST!!! DELETE THIS
+      await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
+      return await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
+    }
+    // Adiciona a lista de aniversariantes SEM atletas do Tigre
+    response += '\n\n'
+    response += aniversariantes
+    return console.log(response)
   }
-  const legendaWeather = await getForecast();
-  const legendaGreeting = '👉 ' + prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
-  if (legendaJogador) {
-    const thisCaption = legendaJogador + '\n\n' + legendaGreeting + '\n\n' + legendaWeather + '\n\n' + legendaAniversariantes;
-    await sendMediaUrlToChannels({ url: chosenOne.image, caption: thisCaption });
-    return await sendMediaUrlToGroups({ url: chosenOne.image, caption: thisCaption });
-  }
-  const thatCaption = legendaGreeting + '\n\n' + legendaWeather + '\n\n' + legendaAniversariantes
-  await sendTextToChannels(thatCaption)
-  return await sendTextToGroups(thatCaption);
+  // Retorna bom dia, previsão e fórum (sem aniversariantes)
+  return console.log(response); // TEST!!! DELETE THIS
+  await sendTextToChannels(response);
+  await sendTextToGroups(response);
+  return await postTweet(response);
 }
 
 const saveLocalInstagram = (update) => {
@@ -136,7 +160,7 @@ const instaApi243 = async () => {
     url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/10/%7Bend_cursor%7D', // @criciumaoficial
     host: 'instagram243.p.rapidapi.com'
   })
-    .then(({ data }) => {      
+    .then(({ data }) => {
       console.info('Fetched!')
       let response = data.edges;
       if (config.instagram.published.includes(response[0].node.id)) response = data.edges.find((item) => !config.instagram.published.includes(item.node.id));

@@ -37,6 +37,8 @@ const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = requi
 })();
 
 client.on('message', async (m) => {
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!teste')) return await bomDiaComDestaque();
+
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
 
@@ -83,11 +85,11 @@ client.on('message', async (m) => {
 });
 
 client.on('message_reaction', async (m) => {
-  if (m.reaction === '❤️' && m.senderId === process.env.BOT_OWNER) {
+  if (m && m.reaction === '❤️' && m.senderId === process.env.BOT_OWNER) {
     const msg = await client.getMessageById(m.msgId._serialized);
     return await addQuote(msg);
   }
-  if (m.reaction === '\u26BD') { // Unicode for ⚽️
+  if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
     const message = await client.getMessageById(m.msgId._serialized);
     if (message) {
       const reactions = await message.getReactions();
@@ -100,7 +102,7 @@ client.on('message_reaction', async (m) => {
     }
     return;
   }
-  if (m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
+  if (m && m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
     console.info('Republicando mensagem');
     const message = await client.getMessageById(m.msgId._serialized);
     if (message) {
