@@ -127,7 +127,7 @@ const jogadorDoTigreAleatorio = async () => {
     if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube}`
   });
   response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - tigrebot.devsakae.tech'
-  await postTweet(tweet);
+  // await postTweet(tweet);
   await sendMediaUrlToChannels({ url: atl[0].image, caption: response });
   return await sendMediaUrlToGroups({ url: atl[0].image, caption: response });
 }

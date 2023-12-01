@@ -11,8 +11,10 @@ let jokeLimit = false;
 
 const replyUser = async (m) => {
   if (m.body.endsWith('?')) {
-    if (m.body.match(/acontecendo em crici/gi)) {
-      const response = await respondeEAtualiza();
+    const wantNews = m.body.match(/novidades d[eao].*/gi);
+    if (wantNews) {
+      const query = wantNews[0].split('?')[0].substring(12).trim();
+      const response = await respondeEAtualiza(query);
       return m.reply(response);
     }
     const random = Math.floor(Math.random() * prompts.oraculo.length);

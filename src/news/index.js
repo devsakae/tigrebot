@@ -1,9 +1,9 @@
 const googleNewsAPI = require("google-news-json");
 const { sendTextToGroups, sendTextToChannels, saveLocal } = require("../../utils");
-const config = require("../../data/tigrebot.json");
+const prompts = require("../../data/prompts.json");
 
-const getNews = async () => {
-  const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, "Criciúma", "pt-BR");
+const fetchNews = async (term = 'Criciúma') => {
+  const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, term, "pt-BR");
   const today = new Date();
   const oneLess = new Date(today.getTime());
   oneLess.setDate(today.getDate() - 1)
@@ -11,23 +11,21 @@ const getNews = async () => {
   return articles.items.filter(a => new Date(a.pubDate) > yesterday)
 }
 
-const publicaUltimaNoticia = async () => {
-  const n = await getNews();
-  if (config.news === n[0].guid.text) return;
-  const textoFormatado = `${n[0].title}\n\n📆 ${n[0].pubDate}\nℹ️ Fonte: ${n[0].source.text} - ${n[0].source.url}\n\nLink para a notícia completa 👉 ${n[0].link}`;
-  config.news = n[0].guid.text;
-  saveLocal(config);
-  await sendTextToGroups(textoFormatado)
-  return await sendTextToChannels(textoFormatado)
+const getNews = async () => {
+  const response = await fetchNews();
+  let texto = prompts.chamada_news[Math.floor(Math.random() * prompts.chamada_news.length)] + '\n'
+  response.map(news => texto += `\n・ ${news.title} (${news.source})`)
+  return texto;
 }
 
-const respondeEAtualiza = async () => {
-  const n = await getNews();
-  return `Parece que ${n[0].title[0].toLowerCase() + n[0].title.substring(1)}.`;
+const respondeEAtualiza = async (term) => {
+  const n = await fetchNews(term);
+  if (n) return `Parece que ${n[0].title[0].toLowerCase() + n[0].title.substring(1)}.`;
+  return "Não, nada por enquanto."
 }
 
 module.exports = {
+  fetchNews,
   getNews,
-  publicaUltimaNoticia,
   respondeEAtualiza,
 }
