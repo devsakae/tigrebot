@@ -4,7 +4,7 @@ const prompts = require('../../data/prompts.json');
 const { client } = require('../connections');
 const { fetchApi } = require('../../utils/fetchApi');
 const { MessageMedia } = require('whatsapp-web.js');
-const { publicaUltimaNoticia } = require('../news');
+const { respondeEAtualiza } = require('../news');
 const encodedParams = new URLSearchParams();
 
 let jokeLimit = false;
