@@ -10,11 +10,15 @@ const fetchNews = async (term = 'Criciúma') => {
   return articles.items.filter(a => new Date(a.pubDate) > yesterday)
 }
 
-const getNews = async () => {
+const getNovidades = async () => {
   const response = await fetchNews();
-  let texto = prompts.chamada_news[Math.floor(Math.random() * prompts.chamada_news.length)] + '\n'
-  response.map(news => texto += `\n・ ${news.title} (${news.source})`)
-  return texto;
+  if (response || response.length > 0) {
+    let texto = '\n\n'
+    texto += prompts.chamada_news[Math.floor(Math.random() * prompts.chamada_news.length)] + '\n'
+    response.splice(0, Math.floor(Math.random() * 8) + 4).map(news => texto += `\n・ ${news.title} (${news.source.url})`)
+    return texto;
+  }
+  return;
 }
 
 const respondeEAtualiza = async (term) => {
@@ -25,6 +29,6 @@ const respondeEAtualiza = async (term) => {
 
 module.exports = {
   fetchNews,
-  getNews,
+  getNovidades,
   respondeEAtualiza,
 }
