@@ -81,7 +81,7 @@ const getForecast = async () => {
     previsao += `temperaturas 🌡 mín. de ${items[0].temperature.min} e máx. de ${items[0].temperature.max}° (sensação térmica de ${items[0].windchill.min} a ${items[0].windchill.max}°). `
     if (items[0].weather.state === 6) previsao += `Precipitação ☔️ de ${items[0].prec.probability}%. `
     if (items[0].wind.significationWind) { previsao += `Ventos 💨 ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
-    return previsao;
+    return { long: previsao, short: 'Em Criciúma, hoje, ' + forecastCodes[items[0].weather.state] };
   } catch (err) {
     return console.error(err);
   }

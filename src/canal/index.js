@@ -41,19 +41,22 @@ const canal = async (m) => {
 const bomDiaComDestaque = async () => {
   // Inicia o bom dia
   let response = '👉 ' + prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+  let tweet = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)]
 
   // Pega a previsão do tempo em Criciúma/SC para hoje
-  const previsao = await getForecast()
-  if (previsao) {
+  const legenda_previsao = await getForecast()
+  if (legenda_previsao) {
+    tweet += '\n\n'
+    tweet += legenda_previsao.short;
     response += '\n\n';
-    response += previsao;
+    response += legenda_previsao.long;
   }
 
   // Pega um golaço aleatório do fórum e adiciona na resposta
-  const forum = await golacoAleatorio()
-  if (forum) {
+  const legenda_forum = await golacoAleatorio()
+  if (legenda_forum) {
     response += '\n\n';
-    response += forum;
+    response += legenda_forum;
   }
 
   // Busca atletas aniversariando hoje
@@ -66,7 +69,7 @@ const bomDiaComDestaque = async () => {
   // Encontrou aniversariante? 
   if (aniversariantes.length > 0) {
     const jogaramNoTigre = aniversariantes.filter(j => j.jogos.some(jogo => jogo.jogounotigre));
-    const aniversariantes = organizaFestinha(aniversariantes);
+    const legenda_aniversariantes = organizaFestinha(aniversariantes);
     // Adiciona foto e stats de atleta que jogou no Tigre
     if (jogaramNoTigre.length > 0) {
       const chosenOne = jogaramNoTigre[Math.floor(Math.random() * jogaramNoTigre.length)];
@@ -76,22 +79,20 @@ const bomDiaComDestaque = async () => {
         acc.gols += Number(curr.gols);
         return acc;
       }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
-      response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${aniversariantes}`;
-
-      return console.log(response); // TEST!!! DELETE THIS
+      response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${legenda_aniversariantes}`;
+      tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gol(s) pelo Tigre`;
+      await postTweet(tweet);
       await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       return await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
     }
     // Adiciona a lista de aniversariantes SEM atletas do Tigre
     response += '\n\n'
     response += aniversariantes
-    return console.log(response)
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
-  return console.log(response); // TEST!!! DELETE THIS
   await sendTextToChannels(response);
   await sendTextToGroups(response);
-  return await postTweet(response);
+  return await postTweet(tweet);
 }
 
 const saveLocalInstagram = (update) => {
@@ -238,7 +239,9 @@ const publicaQuotedMessage = async (m) => {
 const publicaMessage = async (m) => {
   console.log('Publicando mensagem', m.body);
   if (m.hasMedia) {
+    console.log('Baixando mídia...')
     const media = await m.downloadMedia()
+    console.log('Mídia baixada!', media)
     const message = new MessageMedia(
       media.mimetype,
       media.data.toString('base64')

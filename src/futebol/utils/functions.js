@@ -30,12 +30,11 @@ const variosAtletas = (str, array) => {
   return response;
 }
 
-const icons = ['🎉', '🎁', '🪅', '🎈', '🎊']
 
 const organizaFestinha = (array) => {
   array.sort((a, b) => a.name > b.name ? 1 : -1);
-  let response = `${icons[Math.floor(Math.random() * icons.length)]} Nasceram, no dia de hoje, os atletas (e ex atletas) abaixo:\n`;
-  if (array.some(p => p.some(j => j.jogounotigre))) response += '\n🐯 = Jogou com a camisa do Tigre\n'
+  let response = `A lista completa de atletas (e ex atletas) que nasceram no dia de hoje é a seguinte:\n`;
+  if (array.some((p) => p.jogos.some((j) => j.jogounotigre))) response += '(🐯 = Jogou com a camisa do Tigre)\n'
   array.forEach(
     atleta => {
       response += `\n‣ ${atleta.name} (${atleta.nickname} - ${atleta.position}), ${calculaIdade(atleta.birthday) + 1}º aniversário`

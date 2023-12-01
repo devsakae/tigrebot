@@ -156,8 +156,8 @@ const golacoAleatorio = async () => {
     .toArray();
   const q = res[Math.floor(Math.random() * res.length)];
   const anosAtras = today.getFullYear() - Number(q.data.substring(0, 4));
-  let response = `👀 Lembrando ~os herois~ as bobagens do passado...\n\nHá ${anosAtras} anos, foi postado no fórum TigreLOG a seguinte mensagem:`
-  response += `"\n\n\`\`\`${q.quote.substring(0, 240)}\`\`\`"`
+  let response = `Há ${anosAtras} anos, rolava essa mensagem no fórum TigreLOG:`
+  response += `\n\n"\`\`\`${q.quote.substring(0, 240)}\`\`\`"`
   response += q.quote.length > 240 ? ' (texto completo só no grupo TigreLOG https://chat.whatsapp.com/2yy89JmmjYf6mQLW87wjTQ)\n' : '\n'
   response += `\n👤 Autor: ${q.autor.substring(0, 1) + "∙".repeat(q.autor.length - 2) + q.autor.substring(q.autor.length - 1, q.autor.length)}`
   response += `\n✍️ Tópico: ${q.titulo}`

@@ -37,8 +37,6 @@ const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = requi
 })();
 
 client.on('message', async (m) => {
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!teste')) return await bomDiaComDestaque();
-
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
 
@@ -105,9 +103,7 @@ client.on('message_reaction', async (m) => {
   if (m && m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
     console.info('Republicando mensagem');
     const message = await client.getMessageById(m.msgId._serialized);
-    if (message) {
-      return await publicaMessage(message);
-    }
+    if (message) return await publicaMessage(message);
     return;
   }
 })
