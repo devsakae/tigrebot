@@ -1,5 +1,4 @@
 const googleNewsAPI = require("google-news-json");
-const { sendTextToGroups, sendTextToChannels, saveLocal } = require("../../utils");
 const prompts = require("../../data/prompts.json");
 
 const fetchNews = async (term = 'Criciúma') => {
@@ -20,8 +19,8 @@ const getNews = async () => {
 
 const respondeEAtualiza = async (term) => {
   const n = await fetchNews(term);
-  if (n) return `Parece que ${n[0].title[0].toLowerCase() + n[0].title.substring(1)}.`;
-  return "Não, nada por enquanto."
+  if (n.length > 0) return `Só te digo isso: ${n[0].title}`;
+  return "Não, nada por enquanto.";
 }
 
 module.exports = {

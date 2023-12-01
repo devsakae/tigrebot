@@ -12,13 +12,15 @@ let jokeLimit = false;
 const replyUser = async (m) => {
   if (m.body.endsWith('?')) {
     const wantNews = m.body.match(/novidades d[eao].*/gi);
+    console.log(wantNews);
     if (wantNews) {
       const query = wantNews[0].split('?')[0].substring(12).trim();
       const response = await respondeEAtualiza(query);
-      return m.reply(response);
+      console.log(response);
+      return await m.reply(response);
     }
     const random = Math.floor(Math.random() * prompts.oraculo.length);
-    return m.reply(prompts.oraculo[random]);
+    return await m.reply(prompts.oraculo[random]);
   }
   if (m.body.match(/piada/gi) && !jokeLimit) {
     jokeLimit = true;
@@ -99,7 +101,7 @@ const falaPraEle = async (m) => {
 const falaAlgumaCoisa = async () => {
   const pack = ['mastella.mp3', 'zecalo.mp3', 'aa1.mp3', 'aa2.mp3', 'aa3.mp3', 'argel.mp3', 'tencatti.mp3', 'dmmonho.mp3', 'everton.mp3'];
   const audio = await MessageMedia.fromFilePath('./data/audios/' + pack[Math.floor(Math.random() * pack.length)])
-  await Promise.all(Object.keys(config.canais).map( async chan => {
+  await Promise.all(Object.keys(config.canais).map(async chan => {
     const chat = await client.getChatById(chan);
     await chat.sendMessage(audio, { sendAudioAsVoice: true });
   }))
