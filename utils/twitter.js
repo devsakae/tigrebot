@@ -7,17 +7,34 @@ const client = new TwitterApi({
   accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-async function postTweet(tweetText) {
+const cutToFit = text => text.length < 281 ? text : text.substring(0, ).substring(0, 230) + '(...)\n\nLeia tudo em devsakae.tech/tigrebot'
+
+const postTweet = async text => {
   try {
-    let texto = tweetText;
-    if (tweetText.length > 280) texto = `${tweetText.substring(0, 230)} (...)\n\nLeia tudo em devsakae.tech/tigrebot`
-    const tweet = await client.v2.tweet(texto);
+    const tweet = await client.v2.tweet(cutToFit(text));
     return console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
   } catch (error) {
-    console.error(`Failed to post tweet: ${error}`);
+    return console.error(`Failed to post tweet: ${error}`);
+  }
+}
+
+const postMediaTweet = async ({ media, text }) => {
+  try {
+    const source = Buffer.from(media.data, 'base64');
+    console.log(media.mimetype)
+    console.log(source);
+    console.log('Recebeu arquivo');
+    const mediaId = await client.v1.uploadMedia(source, { mimeType: media.mimetype });
+    console.log('MediaId uploaded', mediaId);
+    const tweet = await client.v2.tweet({ text: cutToFit(text), media: { media_ids: [mediaId] } });
+    console.log('Tweet sent!', tweet);
+    return console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
+  } catch (error) {
+    return console.error(`Failed to post tweet: ${error}`);
   }
 }
 
 module.exports = {
   postTweet,
+  postMediaTweet,
 }

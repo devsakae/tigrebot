@@ -1,5 +1,6 @@
+const prompts = require("../../data/prompts.json");
 const { fetchWithParams, fetchApi } = require("../../utils");
-const {  sendTextToGroups } = require("../../utils/sender");
+const { sendTextToGroups } = require("../../utils/sender");
 
 const clima = async () => {
   const response = await getForecast();
@@ -44,7 +45,7 @@ const forecastCodes = {
   48: 'clima ensolarado depois da névoa 🌤',
   49: 'clima ensolarado depois da névoa 🌤',
   50: 'chuva leve em alguns lugares 🌦',
-  51: 'chuva leve em alguns lugares 🌦', 
+  51: 'chuva leve em alguns lugares 🌦',
   55: 'pancadas isoladas de chuva 🌦', // 55 | Strong drizzle | Precipitation in liquid form with droplet size smaller than 0.6 mm, rainfall from 0.5 litres/hour 
   56: 'pancadas isoladas de chuva 🌦', // 56 | Slight drizzle, freezing | Precipitation in liquid form with droplet size smaller than 0.6 mm, rainfall up to 0.2 litres/hour, temperatures below zero degrees Celsius 
   57: 'chuva e frio ⚠️🌦', // 57 | Strong drizzle, freezing | Precipitation in liquid form with droplet size smaller than 0.6 mm, rainfall from 0.5 litres/hour, temperatures below zero degrees Celsius 
@@ -76,14 +77,21 @@ const getForecast = async () => {
       url: 'https://forecast9.p.rapidapi.com/rapidapi/forecast/-28.6783/-49.3704/summary/',
       host: 'forecast9.p.rapidapi.com',
     });
-    let previsao = 'Em Criciúma/SC, hoje, '
-    if (forecastCodes[items[0].weather.state]) previsao += `${forecastCodes[items[0].weather.state]} com `
-    previsao += `temperaturas 🌡 mín. de ${items[0].temperature.min} e máx. de ${items[0].temperature.max}° (sensação térmica de ${items[0].windchill.min} a ${items[0].windchill.max}°). `
-    if (items[0].weather.state === 6) previsao += `Precipitação ☔️ de ${items[0].prec.probability}%. `
-    if (items[0].wind.significationWind) { previsao += `Ventos 💨 ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
-    return { long: previsao, short: 'Em Criciúma, hoje, ' + forecastCodes[items[0].weather.state] };
+    // let previsao = 'Em Criciúma/SC, hoje, '
+    let previsao = prompts.bomdia.previsao[Math.floor(Math.random() * prompts.bomdia.previsao.length)];
+    let long = previsao + ' ';
+    let short = previsao + ' ';
+    if (forecastCodes[items[0].weather.state]) {
+      long += `${forecastCodes[items[0].weather.state]} com `;
+      short += `${forecastCodes[items[0].weather.state]} e `;
+    }
+    long += `temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx), com sensação térmica de ${items[0].windchill.min} a ${items[0].windchill.max}°). `
+    if (items[0].weather.state === 6) long += `Precipitação ☔️ de ${items[0].prec.probability}%. `
+    if (items[0].wind.significationWind) { long += `Ventos 💨 ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
+    return { long: long, short: short };
   } catch (err) {
-    return console.error(err);
+    console.error(err);
+    return 'Não tem previsão do clima hoje :('
   }
 }
 

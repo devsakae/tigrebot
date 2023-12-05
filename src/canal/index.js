@@ -9,10 +9,10 @@ const { organizaFestinha } = require('../futebol/utils/functions');
 const { MessageMedia } = require('whatsapp-web.js');
 const { falaAlgumaCoisa } = require('../jokes');
 const { golacoAleatorio } = require('../quotes');
-const { postTweet } = require('../../utils/twitter');
+const { postTweet, postMediaTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 
-const sendAdmin = (msg) => client.sendMessage(process.env.BOT_OWNER, msg);
+const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
 const canal = async (m) => {
   if (m.body.startsWith('/audio')) return await falaAlgumaCoisa();
@@ -41,9 +41,10 @@ const canal = async (m) => {
 
 const bomDiaComDestaque = async () => {
   // Inicia o bom dia
-  let response = '👉 ' + prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
-  let tweet = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)]
-
+  const legenda_greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+  let response = '👉 ' + legenda_greeting;
+  let tweet = legenda_greeting
+90
   // Pega a previsão do tempo em Criciúma/SC para hoje
   const legenda_previsao = await getForecast()
   if (legenda_previsao) {
@@ -115,8 +116,8 @@ let instaApiOption = 0;
 const instaApiList = ['insta30', 'insta243'];
 
 const instagramThis = async (user = 'criciumaoficial') => {
-  client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch no instagram de @' + user);
   instaApiOption = instaApiOption === instaApiList.length ? 0 : instaApiOption;
+  client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch no instagram de @' + user + 'com' + instaApiOption);
   try {
     const post = instaApiList[instaApiOption] === 'insta30'
       ? await instaApi30(user)
@@ -141,7 +142,7 @@ const instaApi30 = async (user) => {
   })
     .then(async (res) => {
       console.info('Fetched!')
-      if (res.length === 0) throw Error('Não foi possível buscar nenhum post');
+      if (!res || res.length === 0) throw Error('Não foi possível buscar nenhum post');
       let response = res[0];
       if (config.instagram.published.includes(response.node.id)) response = res.find((item) => !config.instagram.published.includes(item.node.id));
       const update = {
@@ -159,7 +160,10 @@ const instaApi30 = async (user) => {
       saveLocalInstagram(update);
       return update;
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      console.error(err)
+      return sendAdmin(err)
+    });
 }
 
 const instaApi243 = async () => {
@@ -230,12 +234,13 @@ const publicaQuotedMessage = async (m) => {
         media.mimetype,
         media.data.toString('base64')
       );
-      for (grupo of Object.keys(config.grupos)) {
-        await client.sendMessage(grupo, contentComMedia, { caption: raw.body });
-      }
-      for (chan of Object.keys(config.canais)) {
-        await client.sendMessage(chan, contentComMedia, { caption: raw.body })
-      }
+      return await postMediaTweet({ media: media, text: raw.body });
+      // for (grupo of Object.keys(config.grupos)) {
+      //   await client.sendMessage(grupo, contentComMedia, { caption: raw.body });
+      // }
+      // for (chan of Object.keys(config.canais)) {
+      //   await client.sendMessage(chan, contentComMedia, { caption: raw.body })
+      // }
       return;
     }
   }
