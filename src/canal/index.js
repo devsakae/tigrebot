@@ -88,9 +88,8 @@ const bomDiaComDestaque = async () => {
         acc.gols += Number(curr.gols);
         return acc;
       }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
-      response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${legenda_aniversariantes}`;
-      tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gol(s) pelo Tigre`;
-      return console.log(response); // TEST
+      response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas (${totalJogos.v}V/${totalJogos.e}E/${totalJogos.d}D), marcou ${totalJogos.gols} gols e jogou a última partida com a camisa do Tigre por ${jogosPeloTigre[0].torneio} em ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${legenda_aniversariantes}`;
+      tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s), vencendo ${totalJogos.v} jogos.`;
       await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
       return await postTweet(tweet);
@@ -100,7 +99,6 @@ const bomDiaComDestaque = async () => {
     response += aniversariantes
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
-  return console.log(response);
   await sendTextToChannels(response);
   await sendTextToGroups(response);
   return await postTweet(tweet);
