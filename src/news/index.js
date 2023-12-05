@@ -1,5 +1,8 @@
 const googleNewsAPI = require("google-news-json");
 const prompts = require("../../data/prompts.json");
+const config = require("../../data/tigrebot.json");
+const { sendTextToChannels, sendTextToGroups, saveLocal } = require("../../utils");
+const { postTweet } = require("../../utils/twitter");
 
 const fetchNews = async (term = 'Criciúma') => {
   const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, term, "pt-BR");
@@ -11,14 +14,6 @@ const fetchNews = async (term = 'Criciúma') => {
 }
 
 const getNovidades = async () => {
-  // const response = await fetchNews();
-  // if (response || response.length > 0) {
-  //   let texto = '\n\n'
-  //   texto += prompts.chamada_news[Math.floor(Math.random() * prompts.chamada_news.length)] + '\n'
-  //   response.splice(0, Math.floor(Math.random() * 8) + 4).map(news => texto += `\n・ ${news.title} (${news.source.url})`)
-  //   return texto;
-  // }
-  // return;
   const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, "Criciúma", "pt-BR");
   const worldNews = await googleNewsAPI.getNews(googleNewsAPI.TOPICS_WORLD, null, "pt-BR");
   const today = new Date();
@@ -32,9 +27,21 @@ const getNovidades = async () => {
     response.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
     texto += '\n\n🌎 O que é notícia no mundo:\n'
     organized.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
+    return texto;
   }
-  return console.log('voltará undefined')
+  console.error('Error fetching news');
+  return;
+}
 
+const atualizaSobreCriciuma = async () => {
+  const response = await fetchNews();
+  if (config.news === response[0].guid.text) return;
+  const latest = 'Google News Criciúma 👉 ' + await response[0].title
+  config.news = await response[0].guid.text;
+  saveLocal(config);
+  await sendTextToChannels(latest);
+  await sendTextToGroups(latest);
+  return await postTweet(latest);
 }
 
 const respondeEAtualiza = async (term) => {
@@ -47,4 +54,5 @@ module.exports = {
   fetchNews,
   getNovidades,
   respondeEAtualiza,
+  atualizaSobreCriciuma,
 }

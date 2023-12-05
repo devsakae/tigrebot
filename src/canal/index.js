@@ -44,7 +44,7 @@ const bomDiaComDestaque = async () => {
   const legenda_greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
   let response = '👉 ' + legenda_greeting;
   let tweet = legenda_greeting
-90
+  90
   // Pega a previsão do tempo em Criciúma/SC para hoje
   const legenda_previsao = await getForecast()
   if (legenda_previsao) {
@@ -54,16 +54,19 @@ const bomDiaComDestaque = async () => {
     response += legenda_previsao.long;
   }
 
+  // Busca as últimas notícias de Criciúma
+  const legenda_news = await getNovidades();
+  if (legenda_news) {
+    response += '\n\n';
+    response += legenda_news;
+  }
+
   // Pega um golaço aleatório do fórum e adiciona na resposta
   const legenda_forum = await golacoAleatorio()
   if (legenda_forum) {
     response += '\n\n';
     response += legenda_forum;
   }
-
-  // Busca as últimas notícias de Criciúma
-  const legenda_news = await getNovidades();
-  if (legenda_news) response += legenda_news;
 
   // Busca atletas aniversariando hoje
   const today = new Date();
@@ -87,7 +90,7 @@ const bomDiaComDestaque = async () => {
       }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
       response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gols, com última partida válida por ${jogosPeloTigre[0].torneio} ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${legenda_aniversariantes}`;
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas e marcou ${totalJogos.gols} gol(s) pelo Tigre`;
-      // return console.log(response); // TEST
+      return console.log(response); // TEST
       await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
       return await postTweet(tweet);
@@ -97,7 +100,7 @@ const bomDiaComDestaque = async () => {
     response += aniversariantes
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
-  // return console.log(response);
+  return console.log(response);
   await sendTextToChannels(response);
   await sendTextToGroups(response);
   return await postTweet(tweet);

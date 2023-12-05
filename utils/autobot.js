@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const { bomDiaComDestaque } = require('../src/canal');
 const { falaAlgumaCoisa } = require('../src/jokes');
 const { jogadorDoTigreAleatorio } = require('../src/futebol');
+const { atualizaSobreCriciumna, atualizaSobreCriciuma } = require('../src/news');
 
 const bomDia = time => {
   cron.schedule(time, async () => {
@@ -36,8 +37,20 @@ const atletaDestaque = time => {
   })
 }
 
+const googleNewsCriciuma = (time) => {
+  cron.schedule(time, async () => {
+    const today = new Date();
+    console.info('Rodando Google News Criciúma - ', today.toLocaleString('pt-br'));
+    await atualizaSobreCriciuma();
+  }, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  })
+}
+
 module.exports = {
   bomDia,
   audio,
   atletaDestaque,
+  googleNewsCriciuma
 }

@@ -7,6 +7,7 @@ const { replyUser, falaPraEle } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
 const { jogounotigre } = require('./src/futebol');
 const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
+const { atualizaSobreCriciumna } = require('./src/news');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
@@ -32,11 +33,13 @@ const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = requi
     publicacoes.bomDia('40 6 * * *') // Todos os dias às 06:40
     publicacoes.audio('12 11 * * 3,6'); // Quartas e sábados às 11:12
     publicacoes.atletaDestaque('10 10 * * 5') // Sexta às 10:10
+    publicacoes.googleNewsCriciuma('*/12 6-22 * * *') // Google News Criciúma todo dia, das 6 as 22, a cada 12 minutos
   }
 })();
 
 client.on('message', async (m) => {
-  if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!pubtest') return await publicaQuotedMessage(m)
+  // if (m.author === process.env.BOT_OWNER && m.body === '!buena') return await bomDiaComDestaque();
+  // if (m.author === process.env.BOT_OWNER && m.body === '!ultima') return await atualizaSobreCriciumna();
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
 
