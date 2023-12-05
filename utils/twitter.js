@@ -21,9 +21,6 @@ const postTweet = async text => {
 const postMediaTweet = async ({ media, text }) => {
   try {
     const source = Buffer.from(media.data, 'base64');
-    console.log(media.mimetype)
-    console.log(source);
-    console.log('Recebeu arquivo');
     const mediaId = await client.v1.uploadMedia(source, { mimeType: media.mimetype });
     console.log('MediaId uploaded', mediaId);
     const tweet = await client.v2.tweet({ text: cutToFit(text), media: { media_ids: [mediaId] } });

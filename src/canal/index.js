@@ -235,18 +235,18 @@ const publicaQuotedMessage = async (m) => {
         media.mimetype,
         media.data.toString('base64')
       );
-      await postMediaTweet({ media: media, text: raw.body });
       for (grupo of Object.keys(config.grupos)) {
         await client.sendMessage(grupo, contentComMedia, { caption: raw.body });
       }
       for (chan of Object.keys(config.canais)) {
         await client.sendMessage(chan, contentComMedia, { caption: raw.body })
       }
-      return;
+      return await postMediaTweet({ media: media, text: raw.body });
     }
   }
   await sendTextToGroups(raw.body);
-  return await sendTextToChannels(raw.body);
+  await sendTextToChannels(raw.body);
+  return await postTweet(raw.body)
 }
 
 const publicaMessage = async (m) => {
