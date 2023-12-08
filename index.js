@@ -7,7 +7,6 @@ const { replyUser, falaPraEle } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
 const { jogounotigre } = require('./src/futebol');
 const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
-const { atualizaSobreCriciumna } = require('./src/news');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
@@ -39,7 +38,6 @@ const { atualizaSobreCriciumna } = require('./src/news');
 
 client.on('message', async (m) => {
   // if (m.author === process.env.BOT_OWNER && m.body === '!buena') return await bomDiaComDestaque();
-  // if (m.author === process.env.BOT_OWNER && m.body === '!ultima') return await atualizaSobreCriciumna();
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
 
@@ -95,6 +93,7 @@ client.on('message_reaction', async (m) => {
     if (message) {
       const reactions = await message.getReactions();
       if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
+        console.log('3 ou mais gols!')
         if (message.fromMe) return;
         await message.react('🏆')
         return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum!\n\nAh sim, também salvei ele no banco de dados de quotes... Dá um !quote aí');

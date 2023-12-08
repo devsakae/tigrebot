@@ -77,6 +77,7 @@ const getForecast = async () => {
       url: 'https://forecast9.p.rapidapi.com/rapidapi/forecast/-28.6783/-49.3704/summary/',
       host: 'forecast9.p.rapidapi.com',
     });
+    console.log('Forecast:\n', items);
     // let previsao = 'Em Criciúma/SC, hoje, '
     let previsao = prompts.bomdia.previsao[Math.floor(Math.random() * prompts.bomdia.previsao.length)];
     let long = previsao + ' ';
