@@ -28,7 +28,6 @@ const umAtleta = (array) => {
     return acc;
   }, { jogos: 0, gols: 0, v: 0, e: 0, d: 0 });
   const aproveitamento = (((total.v * 3) + (total.e)) / (total.jogos * 3)) * 100
-  tweet += `${array[0].nickname}!\n\nNascido em ${array[0].birthday}, jogou ${total.jogos} partidas pelo Tigre, com aproveitamento de ${aproveitamento.toFixed(1)}%.\n\nSua última partida foi em ${jogos[0].ano}.\n\nQuer saber mais? Acesse nosso canal devsakae.tech/tigrebot`
   let response = `O CRAQUE, GÊNIO, LENDÁRIO *${array[0].nickname.toUpperCase()}* jogou por aqui! 🐯\n\n${array[0].name} (${array[0].position}), nascido em ${array[0].birthday}, disputou ${total.jogos} partidas pelo Criciúma Esporte Clube, com aproveitamento de ${aproveitamento.toFixed(1)}%.`;
   response += `\n\nSua última partida pelo tricolor foi por ${jogos[0].torneio} de ${jogos[0].ano}, tendo ${array[0].nickname} disputado ${jogos[0].jogos} jogos e conquistado ${jogos[0].v} vitórias, ${jogos[0].e} empates e ${jogos[0].d} derrotas (aproveitamento de ${(((Number(jogos[0].v) * 3) + Number(jogos[0].e)) / (Number(jogos[0].jogos) * 3) * 100).toFixed(1)}%.)`
   if (clubes.length > 0) {
