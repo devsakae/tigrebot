@@ -86,11 +86,13 @@ const bomDiaComDestaque = async () => {
       const totalJogos = jogosPeloTigre.reduce((acc, curr) => {
         acc.jogos += Number(curr.jogos);
         acc.gols += Number(curr.gols);
+        acc.v += Number(curr.v);
+        acc.e += Number(curr.e);
+        acc.d += Number(curr.d);
         return acc;
       }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
       response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas (${totalJogos.v}V/${totalJogos.e}E/${totalJogos.d}D), marcou ${totalJogos.gols} gols e jogou a última partida com a camisa do Tigre por ${jogosPeloTigre[0].torneio} em ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${legenda_aniversariantes}`;
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s), vencendo ${totalJogos.v} jogos.`;
-      console.info('Bom dia!\n', response);
       await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
       return await postTweet(tweet);
@@ -100,7 +102,6 @@ const bomDiaComDestaque = async () => {
     response += aniversariantes
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
-  console.info('Bom dia!\n', response);
   await sendTextToChannels(response);
   await sendTextToGroups(response);
   return await postTweet(tweet);
