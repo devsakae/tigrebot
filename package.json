@@ -6,7 +6,7 @@
   "scripts": {
     "start": "./install.sh",
     "production": "pm2 start npm --name \"TigreBot\" -- start && pm2 monit",
-    "test": "node --env-file=.env ./tests/TEST.js"
+    "test": "node --env-file=.env ./tests/*.test.js"
   },
   "repository": {
     "type": "git",
