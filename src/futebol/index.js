@@ -156,10 +156,46 @@ const aniversariantesDoDia = async (date) => {
 //   console.log(randomTournamentId);
 // }
 
+const adversarios = async (m) => {
+  const search = m.body.substring(m.body.split(" ")[0].length).trim()
+  const findCom = search.substring(search.length - 2).match(/[A-Z]{2}/)
+    ? {
+      $and: [
+        { 'adversario': { $regex: search.substring(0, search.length - 2).trim(), $options: 'i' } },
+        { 'uf': { $regex: search.substring(search.length - 2).match(/[A-Z]{2}/)[0], $options: 'i' } }
+      ]
+    }
+    : { 'adversario': { $regex: search, $options: 'i' } };
+  const response = await criciuma
+    .collection('jogos')
+    .find(findCom)
+    .toArray();
+  if (response.length === 0) return client.sendMessage(m.from, `Nenhum time encontrado! Digitou certo mesmo? É _${search}_ mesmo que fala?\n\nLembre-se, eu sou um bot e nunca erro, já você... É direto...\n\nps.: Ah sim, pode ser que o Criciúma nunca tenha jogado contra o ${search} também.`);
+  if (response.length > 1) {
+    let moreThanOne = `Encontrei mais de 1 ${search}. Qual você deseja? Use o comando correspondente:\n`
+    response.map(t => moreThanOne += `\n‣ !jogos ${t.adversario} ${t.uf}`);
+    return client.sendMessage(m.from, moreThanOne);
+  }
+  const t = response[0];
+  const aproveitamento = headToHead(t.resumo);
+  console.log(t.logo);
+  let texto = `Histórico completo de Criciúma 🐯 _vs_ ${t.adversario} (${t.uf})\n`;
+  texto += `\n⚽️ Jogos: ${t.resumo.j}`;
+  texto += `\n✅ Vencemos: ${t.resumo.v}`;
+  texto += `\n⏺ Empatams: ${t.resumo.e}`;
+  texto += `\n❌ Perdemos: ${t.resumo.d}`;
+  texto += `\n👉 Aproveitamento: ${aproveitamento}%`;
+  texto += '\nTodos os jogos cadastrados:\n'
+  t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
+  const logo = await MessageMedia.fromUrl(t.logo);
+  return client.sendMessage(m.from, logo, { caption: texto });
+}
+
 module.exports = {
   // predictions,
   // atualizaRodada,
   jogounotigre,
   aniversariantesDoDia,
   jogadorDoTigreAleatorio,
+  adversarios,
 };
