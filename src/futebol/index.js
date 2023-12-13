@@ -1,6 +1,7 @@
 const { MessageMedia } = require('whatsapp-web.js');
 const { fetchWithParams, fetchApi } = require('../../utils');
 const data = require('../bolao/data/data.json');
+const mongodb = require('mongodb');
 const { client, criciuma } = require('../connections');
 const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo } = require('./utils/functions');
 const { sendTextToGroups, sendTextToChannels, sendMediaUrlToChannels, sendMediaUrlToGroups } = require('../../utils/sender');
@@ -195,8 +196,7 @@ const partida = async (m) => {
   const query = m.body.substring(m.body.split(" ")[0].length).trim().split("-");
   const teamId = new mongodb.ObjectId(query[0]);
   const matchIdx = Number(query[1]) - 1
-  const response = await mongo
-    .db("criciuma")
+  const response = await criciuma
     .collection("jogos")
     .find({ _id: teamId }, { $projection: { "jogos": 1 } })
     .toArray();
