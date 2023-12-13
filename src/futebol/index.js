@@ -207,8 +207,7 @@ const partida = async (m) => {
 const hojeNaHistoria = async m => {
   const today = new Date();
   const thisDay = today.getDate() + '/' + (today.getMonth() + 1);
-  const response = await mongo
-    .db('criciuma')
+  const response = await criciuma
     .collection('jogos')
     .find({ "jogos.date": { $regex: thisDay, $options: "i" } })
     .toArray();
