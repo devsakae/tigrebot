@@ -30,7 +30,7 @@ const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = requi
     console.info('\n' + prompts.admin.welcome);
     // Programações automáticas
     publicacoes.bomDia('40 6 * * *') // Todos os dias às 06:40
-    publicacoes.audio('12 11 * * 3,6'); // Quartas e sábados às 11:12
+    publicacoes.audio('08 14 * * 3,6'); // Quartas e sábados às 14:08
     publicacoes.atletaDestaque('10 10 * * 5') // Sexta às 10:10
     // publicacoes.googleNewsCriciuma('*/12 6-22 * * *') // Google News Criciúma todo dia, das 6 as 22, a cada 12 minutos
   }
