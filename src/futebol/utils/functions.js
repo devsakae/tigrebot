@@ -51,7 +51,6 @@ const variosAtletas = (str, array) => {
   return response;
 }
 
-
 const organizaFestinha = (array) => {
   array.sort((a, b) => a.name > b.name ? 1 : -1);
   let response = `A lista completa de atletas (e ex atletas) que nasceram no dia de hoje é a seguinte:\n`;
@@ -65,8 +64,59 @@ const organizaFestinha = (array) => {
   return response;
 }
 
+const headToHead = stats => ((((Number(stats.v) * 3) + Number(stats.e)) / (Number(stats.j) * 3)) * 100).toFixed(1);
+
+const formataJogo = data => {
+  const today = new Date()
+  const sp = data.date.split('/')
+  const matchDate = new Date(sp[2], sp[1], sp[0])
+  const diff = today.getTime() - matchDate.getTime()
+  const years = Math.ceil(diff / (1000 * 3600 * 24 * 365));
+  let texto = `Tudo que aconteceu naquele HISTÓRICO, LENDÁRIO e PARA SEMPRE LEMBRADO jogo, há ${years} anos atrás...\n`
+  texto += `\n👉 ${data.homeTeam} ${data.homeScore} x ${data.awayScore} ${data.awayTeam} 👈\n`;
+  texto += `\n🗓 ${data.date}`;
+  texto += `\n🏆 ${data.campeonato}`;
+  texto += `\n📈 ${data.rodada}ª rodada (${data.fase}ª fase)`;
+  texto += `\n👥 Público: ${data.publico}`;
+  texto += `\n💰 Renda: $${data.renda}`;
+  if (data.homeScore > 0) {
+    texto += `\n\n⚽️ O(s) gol(s) de ${data.homeTeam} foi(ram) marcado(s) por:`;
+    data.home_goals.forEach((m, i) => texto += `${i > 0 ? i === data.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === data.home_goals.length - 1 ? '.' : ''}`);
+  }
+  if (data.awayScore > 0) {
+    texto += `\n⚽️ O(s) gol(s) de ${data.awayTeam} foi(ram) marcado(s) por:`;
+    data.away_goals.forEach((m, i) => texto += `${i > 0 ? i === data.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === data.home_goals.length - 1 ? '.' : ''}`);
+  }
+  texto += `\n\nTreinados por ${data.home_treinador}, o time da casa tinha a seguinte escalação: `;
+  data.home_escalacao.forEach((p, i) => {
+    ycp = data.home_cards.find(c => c.nome === p.nome);
+    texto += `${i > 0 ? i === data.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === data.home_escalacao.length - 1 ? '.' : ''}`
+  })
+  texto += `\n\nCom ${data.away_treinador} no comando, os visitantes foram escalados assim: `;
+  data.away_players.forEach((p, i) => {
+    ycp = data.away_cards.find(c => c.nome === p.nome);
+    texto += `${i > 0 ? i === data.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === data.away_players.length - 1 ? '.' : ''}`
+  })
+  if ((data.home_subs.length + data.away_subs.length) > 0) {
+    texto += `\n\n🙏 Substituições na partida:`
+    if (data.home_subs.length > 0) {
+      for (let idx = 0; idx < data.home_subs.length; idx += 2) {
+        texto += `\n[${data.home_subs[idx].minuto}'/${data.home_subs[idx].tempo}T - ${data.homeTeam}] ${data.home_subs[idx + 1].nome} (${data.home_subs[idx + 1].pos}) <> ${data.home_subs[idx].nome} (${data.home_subs[idx].pos})`
+      }
+    }
+    if (data.away_subs.length > 0) {
+      for (let idx = 0; idx < data.away_subs.length; idx += 2) {
+        texto += `\n[${data.away_subs[idx].minuto}'/${data.away_subs[idx].tempo}T - ${data.awayTeam}] ${data.away_subs[idx + 1].nome} (${data.away_subs[idx + 1].pos}) <> ${data.away_subs[idx].nome} (${data.away_subs[idx].pos})`
+      }
+    }
+  }
+  return texto;
+}
+
 module.exports = {
   umAtleta,
   variosAtletas,
   organizaFestinha,
+  headToHead,
+  formataJogo,
 };

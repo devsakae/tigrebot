@@ -2,7 +2,7 @@ const { MessageMedia } = require('whatsapp-web.js');
 const { fetchWithParams, fetchApi } = require('../../utils');
 const data = require('../bolao/data/data.json');
 const { client, criciuma } = require('../connections');
-const { variosAtletas, umAtleta, organizaFestinha } = require('./utils/functions');
+const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo } = require('./utils/functions');
 const { sendTextToGroups, sendTextToChannels, sendMediaUrlToChannels, sendMediaUrlToGroups } = require('../../utils/sender');
 const { postTweet } = require('../../utils/twitter');
 
@@ -145,17 +145,6 @@ const aniversariantesDoDia = async (date) => {
   return sendTextToGroups(texto);
 }
 
-// const fetchRandomMatch = async () => {
-//   const matches = await fetchApi({
-//     url: 'https://footapi7.p.rapidapi.com/api/team/1984/standings/seasons',
-//     host: 'footapi7.p.rapidapi.com'
-//   });
-//   const randomSeasons = matches[Math.floor(Math.random() * matches.tournamentSeasons.length)].seasons;
-//   console.log(randomSeasons);
-//   const randomTournamentId = randomSeasons[Math.floor(Math.random() * randomSeasons.length)].id
-//   console.log(randomTournamentId);
-// }
-
 const adversarios = async (m) => {
   const search = m.body.substring(m.body.split(" ")[0].length).trim()
   const findCom = search.substring(search.length - 2).match(/[A-Z]{2}/)
@@ -170,32 +159,57 @@ const adversarios = async (m) => {
     .collection('jogos')
     .find(findCom)
     .toArray();
-  if (response.length === 0) return client.sendMessage(m.from, `Nenhum time encontrado! Digitou certo mesmo? É _${search}_ mesmo que fala?\n\nLembre-se, eu sou um bot e nunca erro, já você... É direto...\n\nps.: Ah sim, pode ser que o Criciúma nunca tenha jogado contra o ${search} também.`);
+  if (response.length === 0) return m.reply(`Nenhum time encontrado! Digitou certo mesmo? É _${search}_ mesmo que fala?\n\nLembre-se, eu sou um bot e nunca erro, já você... É direto...\n\nps.: Ah sim, pode ser que o Criciúma nunca tenha jogado contra o ${search} também.`);
   if (response.length > 1) {
-    let moreThanOne = `Encontrei mais de 1 ${search}. Qual você deseja? Use o comando correspondente:\n`
+    let moreThanOne = `Encontrei mais de 1 ${search}. Qual você deseja? Use o comando correto:\n`
     response.map(t => moreThanOne += `\n‣ !jogos ${t.adversario} ${t.uf}`);
-    return client.sendMessage(m.from, moreThanOne);
+    return m.reply(moreThanOne);
   }
   const t = response[0];
   const aproveitamento = headToHead(t.resumo);
-  console.log(t.logo);
   let texto = `Histórico completo de Criciúma 🐯 _vs_ ${t.adversario} (${t.uf})\n`;
   texto += `\n⚽️ Jogos: ${t.resumo.j}`;
   texto += `\n✅ Vencemos: ${t.resumo.v}`;
-  texto += `\n⏺ Empatams: ${t.resumo.e}`;
+  texto += `\n⏺ Empatamos: ${t.resumo.e}`;
   texto += `\n❌ Perdemos: ${t.resumo.d}`;
   texto += `\n👉 Aproveitamento: ${aproveitamento}%`;
-  texto += '\nTodos os jogos cadastrados:\n'
-  t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
+  texto += `\nEu tenho ${t.jogos.length} jogos cadastrados:\n`
   const logo = await MessageMedia.fromUrl(t.logo);
-  return client.sendMessage(m.from, logo, { caption: texto });
+  if (t.jogos.length < 20) {
+    t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
+    return await client.sendMessage(m.from, logo, { caption: texto });
+  }
+  await client.sendMessage(m.from, logo, { caption: texto });
+  const partes = Math.floor(t.jogos.length / 20) + 1
+  let auxi = 0;
+  for (let i = 0; i < t.jogos.length; i + 20) {
+    let textofull = `Parte ${(auxi / 20) + 1}/${partes}\n\n`;
+    t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n !matchid ${t._id}-${id + auxi + 1}\n`)
+    auxi += 20;
+    await client.sendMessage(m.from, textofull);
+  }
+  return;
+}
+
+const partida = async (m) => {
+  const query = m.body.substring(m.body.split(" ")[0].length).trim().split("-");
+  const teamId = new mongodb.ObjectId(query[0]);
+  const matchIdx = Number(query[1]) - 1
+  console.log('teamId:', teamId)
+  console.log('matchIdx:', matchIdx)
+  const response = await mongo
+    .db("criciuma")
+    .collection("jogos")
+    .find({ _id: teamId }, { $projection: { "jogos": 1 } })
+    .toArray();
+  const texto = formataJogo(response[0].jogos[matchIdx]);
+  return await client.sendMessage(m.from, texto);
 }
 
 module.exports = {
-  // predictions,
-  // atualizaRodada,
   jogounotigre,
   aniversariantesDoDia,
   jogadorDoTigreAleatorio,
   adversarios,
+  partida,
 };

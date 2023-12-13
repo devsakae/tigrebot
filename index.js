@@ -5,7 +5,7 @@ const publicacoes = require('./utils/autobot');
 const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
-const { jogounotigre } = require('./src/futebol');
+const { jogounotigre, adversarios, partida } = require('./src/futebol');
 const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
@@ -56,9 +56,19 @@ client.on('message', async (m) => {
 
   // Módulo Futebol (usa: Api-Football e FootApi7)
   if (m.body.startsWith('!jogounotigre')) {
-    console.info('Alguém pediu !jogounotigre')
+    console.info('Alguém pediu !jogounotigre');
     return await jogounotigre(m);
   }
+  if (m.body.startsWith('!jogos')) {
+    console.info('Alguém pediu !jogos');
+    return await adversarios(m);
+  }
+  if (m.body.startsWith('!matchId') || m.body.startsWith('!matchid')) {
+    console.info('Alguém pediu !matchid');
+    return await partida(m);
+  }
+
+  // Módulo Quotes (usa: MongoDB)
   if (
     m.body.startsWith('!addquote') ||
     m.body.startsWith('!autor') ||
@@ -66,7 +76,6 @@ client.on('message', async (m) => {
     m.body.startsWith('!delquote') ||
     m.body.startsWith('!quote')
   ) {
-    // Módulo Quotes (usa: MongoDB)
     return await quotes(m);
   }
 
