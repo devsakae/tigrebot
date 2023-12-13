@@ -195,8 +195,6 @@ const partida = async (m) => {
   const query = m.body.substring(m.body.split(" ")[0].length).trim().split("-");
   const teamId = new mongodb.ObjectId(query[0]);
   const matchIdx = Number(query[1]) - 1
-  console.log('teamId:', teamId)
-  console.log('matchIdx:', matchIdx)
   const response = await mongo
     .db("criciuma")
     .collection("jogos")
