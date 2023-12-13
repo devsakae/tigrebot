@@ -176,7 +176,6 @@ const jogoDeHoje = ({ jogo, time }) => {
       }
     }
   }
-
   return texto;
 }
 

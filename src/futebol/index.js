@@ -3,7 +3,7 @@ const { fetchWithParams, fetchApi } = require('../../utils');
 const data = require('../bolao/data/data.json');
 const mongodb = require('mongodb');
 const { client, criciuma } = require('../connections');
-const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo } = require('./utils/functions');
+const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDeHoje } = require('./utils/functions');
 const { sendTextToGroups, sendTextToChannels, sendMediaUrlToChannels, sendMediaUrlToGroups } = require('../../utils/sender');
 const { postTweet } = require('../../utils/twitter');
 
@@ -204,10 +204,26 @@ const partida = async (m) => {
   return await client.sendMessage(m.from, texto);
 }
 
+const hojeNaHistoria = async m => {
+  const today = new Date();
+  const thisDay = today.getDate() + '/' + (today.getMonth() + 1);
+  const response = await mongo
+    .db('criciuma')
+    .collection('jogos')
+    .find({ "jogos.date": { $regex: thisDay, $options: "i" } })
+    .toArray();
+  if (response.length === 0) throw new Error('Nenhum time encontrado');
+  const team = response[Math.floor(Math.random() * response.length)];
+  let match = team.jogos.filter(m => m.date.includes(thisDay));
+  if (match.length > 1) match = match[Math.floor(Math.random() * match.length)];
+  return await client.sendMessage(m.from, jogoDeHoje({ jogo: match[0], time: team }));
+}
+
 module.exports = {
   jogounotigre,
   aniversariantesDoDia,
   jogadorDoTigreAleatorio,
   adversarios,
   partida,
+  hojeNaHistoria,
 };

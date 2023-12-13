@@ -5,7 +5,7 @@ const publicacoes = require('./utils/autobot');
 const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
-const { jogounotigre, adversarios, partida } = require('./src/futebol');
+const { jogounotigre, adversarios, partida, hojeNaHistoria } = require('./src/futebol');
 const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
@@ -66,6 +66,10 @@ client.on('message', async (m) => {
   if (m.author === process.env.BOT_OWNER && (m.body.startsWith('!matchId') || m.body.startsWith('!matchid'))) {
     console.info('Admin pediu !matchid');
     return await partida(m);
+  }
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!hojenahistoria')) {
+    console.info('Admin pediu !hojenahistoria');
+    return await hojeNaHistoria(m);
   }
 
   // Módulo Quotes (usa: MongoDB)
