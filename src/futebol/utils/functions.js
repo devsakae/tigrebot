@@ -31,7 +31,8 @@ const umAtleta = (array) => {
   let response = `O CRAQUE, GÊNIO, LENDÁRIO *${array[0].nickname.toUpperCase()}* jogou por aqui! 🐯\n\n${array[0].name} (${array[0].position}), nasceu em ${array[0].birthday}.`;
   if (jogos.length > 0) response += ` Pelo Tigre, disputou ${total.jogos} partidas e teve um aproveitamento de ${aproveitamento.toFixed(1)}%.\n\nSua última partida com a camisa mais bonita do mundo 🟡⚫️⚪️ foi por ${jogos[0].torneio} de ${jogos[0].ano}, tendo ${array[0].nickname} disputado ${jogos[0].jogos} jogos e conquistado ${jogos[0].v} vitórias, ${jogos[0].e} empates e ${jogos[0].d} derrotas (aproveitamento de ${(((Number(jogos[0].v) * 3) + Number(jogos[0].e)) / (Number(jogos[0].jogos) * 3) * 100).toFixed(1)}%).`
   if (clubes.length > 0) {
-    if (jogos.length > 0) response += `\n\nAlém do nosso glorioso tricolor, `;
+    response + '\n\n';
+    if (jogos.length > 0) response += 'Além do nosso glorioso tricolor, ';
     response += `${array[0].nickname} jogou contra a gente 😡 vestindo a(s) camisa(s) de `
     clubes.forEach((c, i) => response += `${i === 0 ? '' : i === (clubes.length - 1) ? ' e ' : ', '}${c}${i === (clubes.length - 1) ? '.' : ''}`)
   }
