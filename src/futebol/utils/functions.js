@@ -103,12 +103,12 @@ const formataJogo = data => {
     texto += `\n\n🙏 Substituições na partida:`
     if (data.home_subs.length > 0) {
       for (let idx = 0; idx < data.home_subs.length; idx += 2) {
-        texto += `\n[${data.home_subs[idx].minuto}'/${data.home_subs[idx].tempo}T - ${data.homeTeam}] ${data.home_subs[idx + 1].nome} (${data.home_subs[idx + 1].pos}) <> ${data.home_subs[idx].nome} (${data.home_subs[idx].pos})`
+        texto += `\n[${data.home_subs[idx].minuto}'/${data.home_subs[idx].tempo}T - ${data.homeTeam}] ${data.home_subs[idx].nome} (${data.home_subs[idx].pos}) <> ${data.home_subs[idx + 1].nome} (${data.home_subs[idx + 1].pos})`
       }
     }
     if (data.away_subs.length > 0) {
       for (let idx = 0; idx < data.away_subs.length; idx += 2) {
-        texto += `\n[${data.away_subs[idx].minuto}'/${data.away_subs[idx].tempo}T - ${data.awayTeam}] ${data.away_subs[idx + 1].nome} (${data.away_subs[idx + 1].pos}) <> ${data.away_subs[idx].nome} (${data.away_subs[idx].pos})`
+        texto += `\n[${data.away_subs[idx].minuto}'/${data.away_subs[idx].tempo}T - ${data.awayTeam}] ${data.away_subs[idx].nome} (${data.away_subs[idx].pos}) <> ${data.away_subs[idx + 1].nome} (${data.away_subs[idx + 1].pos})`
       }
     }
   }
