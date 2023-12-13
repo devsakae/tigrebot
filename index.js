@@ -63,8 +63,8 @@ client.on('message', async (m) => {
     console.info('Alguém pediu !jogos');
     return await adversarios(m);
   }
-  if (m.body.startsWith('!matchId') || m.body.startsWith('!matchid')) {
-    console.info('Alguém pediu !matchid');
+  if (m.author === process.env.BOT_OWNER && (m.body.startsWith('!matchId') || m.body.startsWith('!matchid'))) {
+    console.info('Admin pediu !matchid');
     return await partida(m);
   }
 

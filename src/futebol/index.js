@@ -174,7 +174,7 @@ const adversarios = async (m) => {
   texto += `\n⏺ Empatamos: ${t.resumo.e}`;
   texto += `\n❌ Perdemos: ${t.resumo.d}`;
   texto += `\n👉 Aproveitamento: ${aproveitamento}%`;
-  texto += `\nEu tenho ${t.jogos.length} jogos cadastrados:\n`
+  texto += `\n\nEu tenho ${t.jogos.length} jogos cadastrados (divididos em lotes de 20):\n`
   const logo = await MessageMedia.fromUrl(t.logo);
   if (t.jogos.length < 20) {
     t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
@@ -184,8 +184,8 @@ const adversarios = async (m) => {
   const partes = Math.floor(t.jogos.length / 20) + 1
   let auxi = 0;
   for (let i = 0; i < t.jogos.length; i + 20) {
-    let textofull = `Parte ${(auxi / 20) + 1}/${partes}\n\n`;
-    t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n !matchid ${t._id}-${id + auxi + 1}\n`)
+    let textofull = `Parte ${(auxi / 20) + 1}/${partes}\n`;
+    t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${id + auxi + 1}\n`)
     auxi += 20;
     await client.sendMessage(m.from, textofull);
   }
