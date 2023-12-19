@@ -233,7 +233,8 @@ const sorteiaJogoAleatorio = async () => {
 const hojeNaHistoria = async m => {
   const today = new Date();
   const response = await fetchJogosDe(today);
-  if (response) return await client.sendMessage(m.from, jogoDestaqueDoDia({ jogo: response.match, time: response.team }));
+  const texto = jogoDestaqueDoDia({ jogo: response.match, time: response.team })
+  if (response) return await client.sendMessage(m.from, texto);
   return;
 }
 

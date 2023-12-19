@@ -211,8 +211,8 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   texto += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
   tweet += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
   const placarMaiorNaFrente = `${jogo.homeScore > jogo.awayScore ? jogo.homeScore : jogo.awayScore} x ${jogo.homeScore > jogo.awayScore ? jogo.awayScore : jogo.homeScore}`
-  texto += `\n\nCom público de ${jogo.publico} pessoas (renda de ${moeda} ${jogo.renda}), o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`;
-  tweet += `\n\nCom público de ${jogo.publico} pessoas (renda de ${moeda} ${jogo.renda}), o Tigre ${resultado} ${adversario}. A partida terminou em ${placarMaiorNaFrente}, do nosso histórico de ${time.resumo.v}V/${time.resumo.e}E/${time.resumo.d}D (${time.resumo.j} jogos).`;
+  texto += `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`;
+  tweet += `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario}. A partida terminou em ${placarMaiorNaFrente}, do nosso histórico de ${time.resumo.v}V/${time.resumo.e}E/${time.resumo.d}D (${time.resumo.j} jogos).`;
   // Envia o primeiro tweet, com resumo;
   await postTweet(tweet);
   texto += `\n\nNosso histórico contra ${adversario} (${time.uf}) é o seguinte:`;
@@ -250,19 +250,6 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   })
   // Envia o segundo tweet, com escalação;
   await postTweet(tweet);
-  // if ((jogo.home_subs.length + jogo.away_subs.length) > 0) {
-  //   texto += `\n\n🙏 Substituições na partida:`
-  //   if (jogo.home_subs.length > 0) {
-  //     for (let idx = 0; idx < jogo.home_subs.length; idx += 2) {
-  //       texto += `\n[${jogo.home_subs[idx].minuto}'/${jogo.home_subs[idx].tempo}T - ${jogo.homeTeam}] ${jogo.home_subs[idx].nome} (${jogo.home_subs[idx].pos}) <> ${jogo.home_subs[idx + 1].nome} (${jogo.home_subs[idx + 1].pos})`
-  //     }
-  //   }
-  //   if (jogo.away_subs.length > 0) {
-  //     for (let idx = 0; idx < jogo.away_subs.length; idx += 2) {
-  //       texto += `\n[${jogo.away_subs[idx].minuto}'/${jogo.away_subs[idx].tempo}T - ${jogo.awayTeam}] ${jogo.away_subs[idx].nome} (${jogo.away_subs[idx].pos}) <> ${jogo.away_subs[idx + 1].nome} (${jogo.away_subs[idx + 1].pos})`
-  //     }
-  //   }
-  // }
   return texto;
 }
 
