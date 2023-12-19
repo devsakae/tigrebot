@@ -5,8 +5,9 @@ const publicacoes = require('./utils/autobot');
 const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
-const { jogounotigre, adversarios, partida, hojeNaHistoria, sorteiaJogoAleatorio } = require('./src/futebol');
-const { canal, publicaQuotedMessage, bomDiaComDestaque, publicaMessage } = require('./src/canal');
+const { jogounotigre, adversarios, partida, sorteiaJogoAleatorio } = require('./src/futebol');
+const { canal, publicaQuotedMessage, publicaMessage } = require('./src/canal');
+const { echoToGroups } = require('./utils/sender');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
@@ -70,6 +71,11 @@ client.on('message', async (m) => {
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!hojenahistoria')) {
     console.info('Admin pediu !hojenahistoria');
     return await sorteiaJogoAleatorio();
+  }
+
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
+    console.log('Echoing:', m.body.split(' ')[0].length + 1)
+    return await echoToGroups(m.body.substring(m.body.split(' ')[0].length + 1))
   }
 
   // Módulo Quotes (usa: MongoDB)
