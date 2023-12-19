@@ -2,12 +2,19 @@ const { client } = require('../src/connections');
 const config = require('../data/tigrebot.json');
 const { MessageMedia } = require('whatsapp-web.js');
 
-const sendTextToGroups = async text => await Promise.all(Object.keys(config.grupos).map(async grupo => await client.sendMessage(grupo, text)));
+const sendTextToGroups = async text => {
+  for (dest of Object.keys(config.grupos)) {
+    await client.sendMessage(dest, text)
+  }
+}
 
-const sendTextToChannels = async text => await Promise.all(Object.keys(config.canais).map(async c => await client.sendMessage(c, text)));
+const sendTextToChannels = async text => {
+  for (dest of Object.keys(config.canais)) {
+    await client.sendMessage(dest, text)
+  }
+}
 
 const echoToGroups = async text => await Promise.all(Object.keys(config.grupos).map(async g => await client.sendMessage(g, text)));
-
 const echoToChannel = async text => await Promise.all(Object.keys(config.canais).map(async c => await client.sendMessage(c, text)));
 
 const sendBolaoGroups = async text => {

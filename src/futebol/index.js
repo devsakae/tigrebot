@@ -226,7 +226,8 @@ const sorteiaJogoAleatorio = async () => {
   const today = new Date();
   const response = await fetchJogosDe(today);
   const texto = jogoDestaqueDoDia({ jogo: response.match, time: response.team });
-  await sendTextToChannels(texto);
+  console.log(texto)
+  // await sendTextToChannels(texto);
   return await sendTextToGroups(texto);
 }
 

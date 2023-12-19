@@ -76,8 +76,7 @@ client.on('message', async (m) => {
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
     const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
     console.log('Echoing:', echomsg)
-    return await echoToChannel(echomsg)
-    // return await echoToGroups(echomsg)
+    return await echoToGroups(echomsg)
   }
 
   // Módulo Quotes (usa: MongoDB)
