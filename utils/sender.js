@@ -4,9 +4,11 @@ const { MessageMedia } = require('whatsapp-web.js');
 
 const sendTextToGroups = async text => await Promise.all(Object.keys(config.grupos).map(async grupo => await client.sendMessage(grupo, text)));
 
-const sendTextToChannels = async text => await Promise.all(Object.keys(config.canais).map(async canal => await client.sendMessage(canal, text)));
+const sendTextToChannels = async text => await Promise.all(Object.keys(config.canais).map(async c => await client.sendMessage(c, text)));
 
 const echoToGroups = async text => await Promise.all(Object.keys(config.grupos).map(async g => await client.sendMessage(g, text)));
+
+const echoToChannel = async text => await Promise.all(Object.keys(config.canais).map(async c => await client.sendMessage(c, text)));
 
 const sendBolaoGroups = async text => {
   for (grupo of Object.keys(config.bolao.grupos)) {
@@ -53,4 +55,5 @@ module.exports = {
   sendInstagramToChannels,
   sendBolaoGroups,
   echoToGroups,
+  echoToChannel,
 }
