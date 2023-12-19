@@ -234,8 +234,7 @@ const hojeNaHistoria = async m => {
   const today = new Date();
   const response = await fetchJogosDe(today);
   const texto = jogoDestaqueDoDia({ jogo: response.match, time: response.team })
-  if (response) return await client.sendMessage(m.from, texto);
-  return;
+  return await client.sendMessage(m.from, texto);
 }
 
 module.exports = {
