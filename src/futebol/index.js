@@ -225,17 +225,9 @@ const fetchJogosDe = async (data) => {
 const sorteiaJogoAleatorio = async () => {
   const today = new Date();
   const response = await fetchJogosDe(today);
-  const texto = jogoDestaqueDoDia({ jogo: response.match, time: response.team });
-  console.log(texto)
-  // await sendTextToChannels(texto);
+  const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
+  await sendTextToChannels(texto);
   return await sendTextToGroups(texto);
-}
-
-const hojeNaHistoria = async m => {
-  const today = new Date();
-  const response = await fetchJogosDe(today);
-  const texto = jogoDestaqueDoDia({ jogo: response.match, time: response.team })
-  return await client.sendMessage(m.from, texto);
 }
 
 module.exports = {
@@ -244,6 +236,5 @@ module.exports = {
   jogadorDoTigreAleatorio,
   adversarios,
   partida,
-  hojeNaHistoria,
   sorteiaJogoAleatorio,
 };
