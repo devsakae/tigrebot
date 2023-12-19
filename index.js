@@ -5,9 +5,9 @@ const publicacoes = require('./utils/autobot');
 const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
-const { jogounotigre, adversarios, partida, sorteiaJogoAleatorio } = require('./src/futebol');
+const { jogounotigre, adversarios, partida, publicaJogoAleatorio } = require('./src/futebol');
 const { canal, publicaQuotedMessage, publicaMessage } = require('./src/canal');
-const { echoToGroups, echoToChannel } = require('./utils/sender');
+const { echoToGroups } = require('./utils/sender');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
@@ -33,7 +33,7 @@ const { echoToGroups, echoToChannel } = require('./utils/sender');
     publicacoes.bomDia('40 6 * * *') // Todos os dias às 06:40
     publicacoes.audio('08 14 * * 3,6'); // Quartas e sábados às 14:08
     publicacoes.atletaDestaque('10 10 * * 5') // Sexta às 10:10
-    // publicacoes.googleNewsCriciuma('*/12 6-22 * * *') // Google News Criciúma todo dia, das 6 as 22, a cada 12 minutos
+    publicacoes.jogosHistoricos('19 7 * * *') // Todos os dias às 07:19
   }
 })();
 
@@ -70,7 +70,7 @@ client.on('message', async (m) => {
   }
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!hojenahistoria')) {
     console.info('Admin pediu !hojenahistoria');
-    return await sorteiaJogoAleatorio();
+    return await publicaJogoAleatorio();
   }
 
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {

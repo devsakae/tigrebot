@@ -1,4 +1,5 @@
 const { client, criciuma } = require('../connections');
+const { MessageMedia } = require('whatsapp-web.js');
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { fetchWithParams, fetchApi } = require('../../utils');
@@ -6,7 +7,6 @@ const { saveLocal } = require('../../utils/handleFile');
 const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels, sendTextToGroups, sendTextToChannels } = require('../../utils/sender');
 const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
-const { MessageMedia } = require('whatsapp-web.js');
 const { falaAlgumaCoisa } = require('../jokes');
 const { golacoAleatorio } = require('../quotes');
 const { postTweet, postMediaTweet } = require('../../utils/twitter');

@@ -222,12 +222,25 @@ const fetchJogosDe = async (data) => {
   }
 }
 
-const sorteiaJogoAleatorio = async () => {
+const publicaJogoAleatorio = async () => {
   const today = new Date();
   const response = await fetchJogosDe(today);
-  const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
-  await sendTextToChannels(texto);
-  return await sendTextToGroups(texto);
+  if (response) {
+    const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
+    await sendTextToChannels(texto);
+    return await sendTextToGroups(texto);
+  }
+  console.info('Nenhum jogo hoje!');
+}
+
+const jogoDeHojeNaHistoria = async () => {
+  const today = new Date();
+  const response = await fetchJogosDe(today);
+  if (response) {
+    const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
+    return texto
+  }
+  return '';
 }
 
 module.exports = {
@@ -236,5 +249,6 @@ module.exports = {
   jogadorDoTigreAleatorio,
   adversarios,
   partida,
-  sorteiaJogoAleatorio,
+  publicaJogoAleatorio,
+  jogoDeHojeNaHistoria,
 };
