@@ -77,7 +77,6 @@ const getForecast = async () => {
       url: 'https://forecast9.p.rapidapi.com/rapidapi/forecast/-28.6783/-49.3704/summary/',
       host: 'forecast9.p.rapidapi.com',
     });
-    // let previsao = 'Em Criciúma/SC, hoje, '
     let previsao = prompts.bomdia.previsao[Math.floor(Math.random() * prompts.bomdia.previsao.length)];
     let long = previsao + ' ';
     let short = previsao + ' ';
@@ -85,7 +84,7 @@ const getForecast = async () => {
       long += `${forecastCodes[items[0].weather.state]} com `;
       short += `${forecastCodes[items[0].weather.state]} e `;
     }
-    long += `temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx), com sensação térmica de ${items[0].windchill.min} a ${items[0].windchill.max}°). `
+    long += `temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx), com sensações térmicas de ${items[0].windchill.min} a ${items[0].windchill.max}°. `
     if (items[0].weather.state === 6) long += `Precipitação ☔️ de ${items[0].prec.probability}%. `
     if (items[0].wind.significationWind) { long += `Ventos 💨 ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
     return { long: long, short: short };

@@ -3,7 +3,7 @@ const { fetchWithParams, fetchApi } = require('../../utils');
 const data = require('../bolao/data/data.json');
 const mongodb = require('mongodb');
 const { client, criciuma } = require('../connections');
-const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDeHoje } = require('./utils/functions');
+const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDeHoje, jogoDestaqueDoDia } = require('./utils/functions');
 const { sendTextToGroups, sendTextToChannels, sendMediaUrlToChannels, sendMediaUrlToGroups } = require('../../utils/sender');
 const { postTweet } = require('../../utils/twitter');
 
@@ -204,18 +204,37 @@ const partida = async (m) => {
   return await client.sendMessage(m.from, texto);
 }
 
+const fetchJogosDe = async (data) => {
+  const thisDay = data.getDate() + '/' + (data.getMonth() + 1);
+  try {
+    const response = await criciuma
+      .collection('jogos')
+      .find({ "jogos.date": { $regex: thisDay, $options: "i" } })
+      .toArray();
+    if (response.length === 0) throw new Error('Nenhum time encontrado');
+    const team = response[Math.floor(Math.random() * response.length)];
+    let match = team.jogos.filter(m => m.date.includes(thisDay));
+    match = match.length > 1 ? match[Math.floor(Math.random() * match.length)] : match[0];
+    return { match, team };
+  } catch (err) {
+    console.error(err);
+    return;
+  }
+}
+
+const sorteiaJogoAleatorio = async () => {
+  const today = new Date();
+  const response = await fetchJogosDe(today);
+  const texto = jogoDestaqueDoDia({ jogo: response.match, time: response.team });
+  await sendTextToChannels(texto);
+  return await sendTextToGroups(texto);
+}
+
 const hojeNaHistoria = async m => {
   const today = new Date();
-  const thisDay = today.getDate() + '/' + (today.getMonth() + 1);
-  const response = await criciuma
-    .collection('jogos')
-    .find({ "jogos.date": { $regex: thisDay, $options: "i" } })
-    .toArray();
-  if (response.length === 0) throw new Error('Nenhum time encontrado');
-  const team = response[Math.floor(Math.random() * response.length)];
-  let match = team.jogos.filter(m => m.date.includes(thisDay));
-  if (match.length > 1) match = match[Math.floor(Math.random() * match.length)];
-  return await client.sendMessage(m.from, jogoDeHoje({ jogo: match[0], time: team }));
+  const response = await fetchJogosDe(today);
+  if (response) return await client.sendMessage(m.from, jogoDestaqueDoDia({ jogo: response.match, time: response.team }));
+  return;
 }
 
 module.exports = {
@@ -225,4 +244,5 @@ module.exports = {
   adversarios,
   partida,
   hojeNaHistoria,
+  sorteiaJogoAleatorio,
 };

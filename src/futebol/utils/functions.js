@@ -1,3 +1,6 @@
+const prompts = require('../../../data/prompts.json');
+const { postTweet } = require('../../../utils/twitter');
+
 const calculaIdade = (date) => {
   const formattedDate = date.split('/');
   const birthdateTimeStamp = new Date(
@@ -55,11 +58,11 @@ const variosAtletas = (str, array) => {
 
 const organizaFestinha = (array) => {
   array.sort((a, b) => a.name > b.name ? 1 : -1);
-  let response = `A lista completa de atletas (e ex atletas) que nasceram no dia de hoje é a seguinte:\n`;
+  let response = `Outros atletas (e ex atletas) que nasceram no dia de hoje:\n`;
   if (array.some((p) => p.jogos.some((j) => j.jogounotigre))) response += '(🐯 = Jogou com a camisa do Tigre)\n'
   array.forEach(
     atleta => {
-      response += `\n‣ ${atleta.name} (${atleta.nickname} - ${atleta.position}), ${calculaIdade(atleta.birthday) + 1}º aniversário`
+      response += `\n∙ ${atleta.name} (${atleta.position})`
       if (atleta.jogos.some((j) => j.jogounotigre)) response += ' 🐯'
     }
   );
@@ -127,6 +130,7 @@ const jogoDeHoje = ({ jogo, time }) => {
     return acc;
   }, { gm: 0, gs: 0 });
   const today = new Date()
+  console.log(jogo.date);
   const sp = jogo.date.split('/')
   const matchDate = new Date(sp[2], sp[1], sp[0])
   const diff = today.getTime() - matchDate.getTime()
@@ -179,6 +183,90 @@ const jogoDeHoje = ({ jogo, time }) => {
   return texto;
 }
 
+const jogoDestaqueDoDia = async ({ jogo, time }) => {
+  const gols = time.jogos.reduce((acc, curr) => {
+    const check = curr.homeTeam.startsWith('CRICI')
+    check
+      ? acc.gm += curr.homeScore
+      : acc.gm += curr.awayScore;
+    check
+      ? acc.gs += curr.awayScore
+      : acc.gs += curr.homeScore
+    return acc;
+  }, { gm: 0, gs: 0 });
+  const today = new Date()
+  const sp = jogo.date.split('/')
+  const moeda = Number(sp[2]) >= 1994 ? 'R$' : Number(sp[2]) >= 1990 ? 'Cr$' ? Number(sp[2]) >= 1989 : 'Cz$' : 'Cr$';
+  const matchDate = new Date(sp[2], sp[1], sp[0])
+  const diff = today.getTime() - matchDate.getTime()
+  const years = Math.ceil(diff / (1000 * 3600 * 24 * 365));
+  const tigre = jogo.homeTeam.startsWith('CRICI')
+    ? { score: jogo.homeScore, escalacao: jogo.home_escalacao, gols: jogo.home_goals }
+    : { score: jogo.awayScore, escalacao: jogo.away_players, gols: jogo.away_goals };
+  const adversario = jogo.homeTeam.startsWith('CRICI') ? jogo.awayTeam : jogo.homeTeam;
+  const adversarioScore = jogo.homeTeam.startsWith('CRICI') ? jogo.awayScore : jogo.homeScore;
+  const resultado = tigre.score > adversarioScore ? 'venceu o(a)' : tigre.score < adversarioScore ? 'foi derrotado pelo(a)' : 'empatou com o(a)'
+  let texto = prompts.bomdia.jogododia[Math.floor(Math.random() * prompts.bomdia.jogododia.length)] + '\n\n'
+  let tweet = 'Grandes jogos do nosso @CriciumaEC: '
+  texto += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
+  tweet += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
+  const placarMaiorNaFrente = `${jogo.homeScore > jogo.awayScore ? jogo.homeScore : jogo.awayScore} x ${jogo.homeScore > jogo.awayScore ? jogo.awayScore : jogo.homeScore}`
+  texto += `\n\nCom público de ${jogo.publico} pessoas (renda de ${moeda} ${jogo.renda}), o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`;
+  tweet += `\n\nCom público de ${jogo.publico} pessoas (renda de ${moeda} ${jogo.renda}), o Tigre ${resultado} ${adversario}. A partida terminou em ${placarMaiorNaFrente}, do nosso histórico de ${time.resumo.v}V/${time.resumo.e}E/${time.resumo.d}D (${time.resumo.j} jogos).`;
+  // Envia o primeiro tweet, com resumo;
+  await postTweet(tweet);
+  texto += `\n\nNosso histórico contra ${adversario} (${time.uf}) é o seguinte:`;
+  const stats = `\n🎫 ${time.resumo.j} jogos\n👍 ${time.resumo.v} vitórias\n🫳 ${time.resumo.e} empates\n👎 ${time.resumo.d} derrotas\n⚽️ ${gols.gm} gols neles\n🥅 ${gols.gs} gols deles`;
+  texto += stats
+  tweet = `A escalação de Criciúma x ${adversario} (${time.uf}), válido por ${jogo.campeonato} em ${jogo.date.split('/')[2]} foi a seguinte:\n\n`;
+  if (jogo.homeScore > 0) {
+    texto += `\n\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por?' : `O(s) gol(s) de ${jogo.homeTeam} foi(ram) marcado(s) por:`}`;
+    jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === jogo.home_goals.length - 1 ? '.' : ''}`);
+  }
+  if (jogo.awayScore > 0) {
+    texto += `\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por?' : `O(s) gol(s) de ${jogo.awayTeam} foi(ram) marcado(s) por:`}`;
+    jogo.away_goals.forEach(
+      (m, i) =>
+        (texto += `${i > 0
+                    ? (i === jogo.home_goals.length - 2
+                      ? ' e'
+                      : ',')
+                    : ''
+        } ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${
+          i === jogo.home_goals.length - 1 ? '.' : ''
+        }`),
+    );
+  }
+  texto += `\n\nTreinados por ${jogo.home_treinador}, o time da casa tinha a seguinte escalação: `;
+  jogo.home_escalacao.forEach((p, i) => {
+    ycp = jogo.home_cards.find(c => c.nome === p.nome);
+    tweet += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.home_escalacao.length ? '.' : ''}`;
+    texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.home_escalacao.length ? '.' : ''}`;
+  })
+  texto += `\n\nCom ${jogo.away_treinador} no comando, os visitantes foram escalados assim: `;
+  jogo.away_players.forEach((p, i) => {
+    ycp = jogo.away_cards.find(c => c.nome === p.nome);
+    texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.away_players.length ? '.' : ''}`
+  })
+  // Envia o segundo tweet, com escalação;
+  await postTweet(tweet);
+  // if ((jogo.home_subs.length + jogo.away_subs.length) > 0) {
+  //   texto += `\n\n🙏 Substituições na partida:`
+  //   if (jogo.home_subs.length > 0) {
+  //     for (let idx = 0; idx < jogo.home_subs.length; idx += 2) {
+  //       texto += `\n[${jogo.home_subs[idx].minuto}'/${jogo.home_subs[idx].tempo}T - ${jogo.homeTeam}] ${jogo.home_subs[idx].nome} (${jogo.home_subs[idx].pos}) <> ${jogo.home_subs[idx + 1].nome} (${jogo.home_subs[idx + 1].pos})`
+  //     }
+  //   }
+  //   if (jogo.away_subs.length > 0) {
+  //     for (let idx = 0; idx < jogo.away_subs.length; idx += 2) {
+  //       texto += `\n[${jogo.away_subs[idx].minuto}'/${jogo.away_subs[idx].tempo}T - ${jogo.awayTeam}] ${jogo.away_subs[idx].nome} (${jogo.away_subs[idx].pos}) <> ${jogo.away_subs[idx + 1].nome} (${jogo.away_subs[idx + 1].pos})`
+  //     }
+  //   }
+  // }
+  return texto;
+}
+
+
 module.exports = {
   umAtleta,
   variosAtletas,
@@ -186,4 +274,5 @@ module.exports = {
   headToHead,
   formataJogo,
   jogoDeHoje,
+  jogoDestaqueDoDia,
 };
