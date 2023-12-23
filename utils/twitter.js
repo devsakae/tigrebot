@@ -22,9 +22,7 @@ const postMediaTweet = async ({ media, text }) => {
   try {
     const source = Buffer.from(media.data, 'base64');
     const mediaId = await client.v1.uploadMedia(source, { mimeType: media.mimetype });
-    console.log('MediaId uploaded', mediaId);
     const tweet = await client.v2.tweet({ text: cutToFit(text), media: { media_ids: [mediaId] } });
-    console.log('Tweet sent!', tweet);
     return console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
   } catch (error) {
     return console.error(`Failed to post tweet: ${error}`);

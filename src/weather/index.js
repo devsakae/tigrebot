@@ -27,9 +27,10 @@ const getWeather = async () => {
 }
 
 const forecastCodes = {
-  0: 'tempo ensolarado ☀️',
-  1: 'céu com poucas nuvens (até 3/8 do céu coberto) 🌤',
-  2: 'céu parcialmente nublado (50-75% do céu coberto), com sol intermitente ⛅️',
+  // Para hoje, a previsão é de
+  0: 'ir pra praia (quem pode) ☀️',
+  1: 'sol ☀️',
+  2: 'céu parcialmente nublado, com sol intermitente ⛅️',
   3: 'céu nublado ☁️',
   4: 'tempo fechado, com neblina 😶‍🌫️',
   5: 'chuva em alguns lugares 🌦',
@@ -37,8 +38,8 @@ const forecastCodes = {
   7: 'clima esquisito, com possibilidade de granizo 🌨',
   8: 'muita chuva ☔️',
   0: 'vai ter tempestades ⛈',
-  10: 'céu com poucas nuvens 🌤',
-  20: 'céu com muitas nuvens 🌥',
+  10: 'sol, com algumas nuvens 🌤',
+  20: 'sol e várias nuvens 🌥',
   30: 'tempo fechado (totalmente nublado) ☁️',
   40: 'clima ensolarado depois da névoa 🌤',
   45: 'clima ensolarado depois da névoa 🌤',
@@ -84,8 +85,8 @@ const getForecast = async () => {
       long += `${forecastCodes[items[0].weather.state]} com `;
       short += `${forecastCodes[items[0].weather.state]} e`;
     }
-    long += `temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx), com sensações térmicas de ${items[0].windchill.min} a ${items[0].windchill.max}°. `
-    short += `temperaturas 🌡 de ${items[0].temperature.min} (mín) a ${items[0].temperature.max}°.`;
+    long += `temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx) e sensação térmica na casa de ${items[0].windchill.min}-${items[0].windchill.max}°. `
+    short += `temperaturas 🌡 entre ${items[0].temperature.min} e ${items[0].temperature.max}°.`;
     if (items[0].weather.state === 6) long += `Precipitação ☔️ de ${items[0].prec.probability}%. `
     if (items[0].wind.significationWind) { long += `Ventos 💨 ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
     return { long, short };
