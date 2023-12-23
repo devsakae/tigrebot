@@ -29,11 +29,12 @@ const { echoToGroups } = require('./utils/sender');
     return console.error(err);
   } finally {
     console.info('\n' + prompts.admin.welcome);
+
     // Programações automáticas
-    publicacoes.bomDia('40 6 * * *') // Todos os dias às 06:40
-    publicacoes.audio('08 14 * * 3,6'); // Quartas e sábados às 14:08
-    publicacoes.atletaDestaque('10 10 * * 5') // Sexta às 10:10
-    publicacoes.jogosHistoricos('19 7 * * *') // Todos os dias às 07:19
+    publicacoes.bomDia(publicacoes.cedo + "* * *") // Todos os dias, entre 5:02 e 7:32
+    publicacoes.audio(publicacoes.manha + '* * 3,6'); // Quartas e sábados, entre 8:12 e 10:52
+    publicacoes.atletaDestaque(publicacoes.manha + '* * 2,5') // Terças e sábados, entre 8:12 e 10:52
+    publicacoes.jogosHistoricos(publicacoes.noite + '* * *') // Todos os dias, entre 18:04 e 20:46
   }
 })();
 

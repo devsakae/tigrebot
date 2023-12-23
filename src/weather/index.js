@@ -82,15 +82,16 @@ const getForecast = async () => {
     let short = previsao + ' ';
     if (forecastCodes[items[0].weather.state]) {
       long += `${forecastCodes[items[0].weather.state]} com `;
-      short += `${forecastCodes[items[0].weather.state]} e `;
+      short += `${forecastCodes[items[0].weather.state]} e`;
     }
     long += `temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx), com sensações térmicas de ${items[0].windchill.min} a ${items[0].windchill.max}°. `
+    short += `temperaturas 🌡 de ${items[0].temperature.min} (mín) a ${items[0].temperature.max}°.`;
     if (items[0].weather.state === 6) long += `Precipitação ☔️ de ${items[0].prec.probability}%. `
     if (items[0].wind.significationWind) { long += `Ventos 💨 ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
-    return { long: long, short: short };
+    return { long, short };
   } catch (err) {
     console.error(err);
-    return 'Não tem previsão do clima hoje :('
+    return { long: '', short: 'Hoje não temos previsão do tempo porque deu pau na API :(' }
   }
 }
 

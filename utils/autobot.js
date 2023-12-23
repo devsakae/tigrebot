@@ -4,6 +4,12 @@ const { falaAlgumaCoisa } = require('../src/jokes');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../src/futebol');
 const { atualizaSobreCriciuma } = require('../src/news');
 
+const sortingNumbers = (start, finish) => (Math.floor(Math.random() * (finish - start + 1) + start)).toString();
+const cedo = () => sortingNumbers(2, 32).concat(" ").concat(sortingNumbers(5, 7)).concat(" ");
+const manha = () => sortingNumbers(12, 52).concat(" ").concat(sortingNumbers(8, 10)).concat(" ");
+const tarde = () => sortingNumbers(15, 59).concat(" ").concat(sortingNumbers(14, 16)).concat(" ");
+const noite  = () => sortingNumbers(4, 46).concat(" ").concat(sortingNumbers(18, 20)).concat(" ");
+
 const bomDia = time => {
   cron.schedule(time, async () => {
     const today = new Date();
@@ -65,4 +71,8 @@ module.exports = {
   atletaDestaque,
   googleNewsCriciuma,
   jogosHistoricos,
+  cedo,
+  manha,
+  tarde,
+  noite,
 }
