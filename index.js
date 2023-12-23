@@ -32,18 +32,10 @@ const cron = require('node-cron');
     console.info('\n' + prompts.admin.welcome);
 
     // Programações automáticas
-    const teste = publicacoes.cedo + "* * *"
-    console.log('Cron job testing')
-    console.log(teste);
-    console.log(typeof teste);
-    const valid = cron.validate(teste)
-    console.log('valid?', valid)
-    const validyes = cron.validate('10 2 * * *');
-    console.log('test valid?', validyes)
-    // publicacoes.bomDia(publicacoes.cedo + "* * *") // Todos os dias, entre 5:02 e 7:32
-    // publicacoes.audio(publicacoes.manha + '* * 3,6'); // Quartas e sábados, entre 8:12 e 10:52
-    // publicacoes.atletaDestaque(publicacoes.manha + '* * 2,5') // Terças e sábados, entre 8:12 e 10:52
-    // publicacoes.jogosHistoricos(publicacoes.noite + '* * *') // Todos os dias, entre 18:04 e 20:46
+    publicacoes.bomDia(publicacoes.cedo() + "* * *") // Todos os dias, entre 5:02 e 7:32
+    publicacoes.audio(publicacoes.manha() + '* * 3,6'); // Quartas e sábados, entre 8:12 e 10:52
+    publicacoes.atletaDestaque(publicacoes.manha() + '* * 2,5') // Terças e sábados, entre 8:12 e 10:52
+    publicacoes.jogosHistoricos(publicacoes.noite() + '* * *') // Todos os dias, entre 18:04 e 20:46
   }
 })();
 
