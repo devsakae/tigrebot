@@ -107,12 +107,15 @@ client.on('message', async (m) => {
 client.on('message_reaction', async (m) => {
   if (m && m.reaction === '❤️' && m.senderId === process.env.BOT_OWNER) {
     const msg = await client.getMessageById(m.msgId._serialized);
+    console.log('Adding quote by heart')
     return await addQuote(msg);
   }
   if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
     const message = await client.getMessageById(m.msgId._serialized);
     if (message) {
       const reactions = await message.getReactions();
+      console.log('reactions:', reactions);
+      console.log('reactions find.senders:', reactions.find((rct) => rct.id === '\u26BD').senders)
       if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
         console.log('3 ou mais gols!')
         if (message.fromMe) return;
