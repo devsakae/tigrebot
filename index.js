@@ -30,12 +30,11 @@ const cron = require('node-cron');
     return console.error(err);
   } finally {
     console.info('\n' + prompts.admin.welcome);
-
     // Programações automáticas
-    publicacoes.bomDia(publicacoes.cedo() + "* * *") // Todos os dias, entre 5:02 e 7:32
-    publicacoes.audio(publicacoes.manha() + '* * 3,6'); // Quartas e sábados, entre 8:12 e 10:52
-    publicacoes.atletaDestaque(publicacoes.manha() + '* * 2,5') // Terças e sábados, entre 8:12 e 10:52
-    publicacoes.jogosHistoricos(publicacoes.noite() + '* * *') // Todos os dias, entre 18:04 e 20:46
+    publicacoes.bomDia("30 6 * * *") // Todos os dias às 6h30min
+    publicacoes.audio('20 9 * * 3,6'); // Quartas e sábados às 9h20min
+    publicacoes.atletaDestaque('20 9 * * 2,5') // Terças e sextas às 9h20min
+    publicacoes.jogosHistoricos('45 16 * * *') // Todos os dias às 16h45min
   }
 })();
 
