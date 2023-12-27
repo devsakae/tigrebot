@@ -40,9 +40,9 @@ const umAtleta = (array) => {
     clubes.forEach((c, i) => response += `${i === 0 ? '' : i === (clubes.length - 1) ? ' e ' : ', '}${c}${i === (clubes.length - 1) ? '.' : ''}`)
   }
   response += `\n\nHistórico completo:`
-  array[0].jogos.forEach((jogo) => {
+  array[0].jogos.forEach(jogo => {
     response += `\n\n➤ *${jogo.torneio}* (${jogo.ano})`;
-    response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'jogos' : 'jogo'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ${jogo.gols > 1 ? `⚽️ ${jogo.gols} gols` : jogo.gols === 0 ? '' : '⚽️ 1 gol'}`
+    response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'jogos' : 'jogo'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ${+(jogo.gols) > 1 ? `⚽️ ${jogo.gols} gols` : +(jogo.gols) === 0 ? '' : '⚽️ 1 gol'}`
     if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube}`
   });
   response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - devsakae.tech/tigrebot'
