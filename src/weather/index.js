@@ -83,7 +83,7 @@ const getForecast = async () => {
     let short = previsao + ' ';
     if (forecastCodes[items[0].weather.state]) {
       long += `${forecastCodes[items[0].weather.state]} com `;
-      short += `${forecastCodes[items[0].weather.state]} e`;
+      short += `${forecastCodes[items[0].weather.state]} com `;
     }
     long += `temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx) e sensação térmica na casa de ${items[0].windchill.min}-${items[0].windchill.max}°. `
     short += `temperaturas 🌡 entre ${items[0].temperature.min} e ${items[0].temperature.max}°.`;
