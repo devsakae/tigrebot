@@ -105,33 +105,32 @@ client.on('message', async (m) => {
 });
 
 client.on('message_reaction', async (m) => {
-  if (m.fromMe) return;
-  const message = await client.getMessageById(m.msgId._serialized);
-  if (message) {
-    if (m && m.reaction === '❤️' && m.senderId === process.env.BOT_OWNER) {
-      console.log('Adding quote by heart')
-      return await addQuote(message);
-    }
-    if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
-      if (message) {
-        const reactions = await message.getReactions();
-        console.log('reactions:', reactions);
-        console.log('reactions find.senders:', reactions.find((rct) => rct.id === '\u26BD').senders)
-        if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
-          console.log('3 ou mais gols!')
-          await message.react('🏆')
-          return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum!\n\nAh sim, também salvei ele no banco de dados de quotes... Dá um !quote aí');
-        }
-        return;
-      }
-      return;
-    }
-    if (m && m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
-      console.info('Republicando mensagem');
-      const message = await client.getMessageById(m.msgId._serialized);
-      if (message) return await publicaMessage(message);
-      return;
-    }
+  // if (m && m.reaction === '❤️' && m.senderId === process.env.BOT_OWNER) {
+  //   const msg = await client.getMessageById(m.msgId._serialized);
+  //   console.log('Adding quote by heart')
+  //   return await addQuote(msg);
+  // }
+  // if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
+  //   const message = await client.getMessageById(m.msgId._serialized);
+  //   if (message) {
+  //     const reactions = await message.getReactions();
+  //     console.log('reactions:', reactions);
+  //     console.log('reactions find.senders:', reactions.find((rct) => rct.id === '\u26BD').senders)
+  //     if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
+  //       console.log('3 ou mais gols!')
+  //       if (message.fromMe) return;
+  //       await message.react('🏆')
+  //       return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum!\n\nAh sim, também salvei ele no banco de dados de quotes... Dá um !quote aí (mentira, o Sakae ainda não codou essa parte');
+  //     }
+  //     return;
+  //   }
+  //   return;
+  // }
+  if (m && m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
+    console.info('Republicando mensagem');
+    const message = await client.getMessageById(m.msgId._serialized);
+    if (message) return await publicaMessage(message);
+    return;
   }
 })
 

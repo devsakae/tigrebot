@@ -3,11 +3,11 @@ const { formatQuote, bestQuote } = require('./utils/functions');
 
 const addQuote = async (m) => {
   console.info('Salvando quote no banco de dados')
+  console.log(m);
   let texto;
   if (m.hasQuotedMsg) {
     console.info('Mensagem possui quote, verificando...')
     const quoted = await m.getQuotedMessage();
-    console.log(quoted);
     if (m.hasMedia || quoted.hasMedia) return await m.reply('Uma ou mais mensagens a serem adicionadas possuem mídia. Não será possível adicionar como quote (deve conter apenas texto)');
     const quotedAuthor = await client.getContactById(quoted.author);
     texto += `\`\`\`${quoted.body}\`\`\` (${quotedAuthor})\n\n`
@@ -22,9 +22,6 @@ const addQuote = async (m) => {
   console.log(reactions);
   // const gols = reactions.reduce((acc, curr) => acc += curr.senders.length, 0)
   // console.log('Total de reações', gols)
-  const chat = await m.getChat();
-  console.log('Chat', chat);
-  // const gols = reactions.find(rct => rct.id === '\u26BD').senders.length;
   let quote = {
     quote: texto,
     autor: autor,

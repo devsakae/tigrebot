@@ -70,7 +70,7 @@ const bomDiaComDestaque = async () => {
 
   // Busca atletas aniversariando hoje
   const today = new Date();
-  const birthDate = today.toLocaleDateString('pt-br').substring(0, 5);
+  const birthDate = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
   const aniversariantes = await criciuma
     .collection('atletas')
     .find({ 'birthday': { $regex: birthDate } })
