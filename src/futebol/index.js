@@ -72,7 +72,6 @@ const calculaIdade = (date) => {
   return currentAge;
 };
 
-
 const jogounotigre = async (m) => {
   const content = m.body.substring(m.body.indexOf(' ')).trim();
   const atletasDoTigre = await criciuma

@@ -9,7 +9,7 @@ const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { falaAlgumaCoisa } = require('../jokes');
 const { golacoAleatorio } = require('../quotes');
-const { postTweet, postMediaTweet } = require('../../utils/twitter');
+const { postTweet, postMediaTweet, replyTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 
@@ -64,7 +64,7 @@ const bomDiaComDestaque = async () => {
     response += legenda_previsao.long;
   }
 
-  postTweet(tweet);
+  const firstTweet = await postTweet(tweet);
   tweet = '';
 
   // Busca as últimas notícias de Criciúma
@@ -109,7 +109,7 @@ const bomDiaComDestaque = async () => {
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s) e venceu ${totalJogos.v} jogos.`;
       await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
-      return await postTweet(tweet);
+      return await replyTweet({ id: firstTweet, text: tweet });
     }
     // Adiciona a lista de aniversariantes SEM atletas do Tigre
     response += '\n\n'
@@ -118,7 +118,7 @@ const bomDiaComDestaque = async () => {
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
   await sendTextToChannels(response);
   await sendTextToGroups(response);
-  return await postTweet(tweet);
+  return await replyTweet({ id: firstTweet, text: tweet });
 }
 
 const saveLocalInstagram = (update) => {

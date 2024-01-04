@@ -12,9 +12,20 @@ const cutToFit = text => text.length < 281 ? text : text.substring(0, ).substrin
 const postTweet = async text => {
   try {
     const tweet = await client.v2.tweet(cutToFit(text));
-    return console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
+    console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
+    return tweet.data.id;
   } catch (error) {
     return console.error(`Failed to post tweet: ${error}`);
+  }
+}
+
+const replyTweet = async ({ id, text }) => {
+  try {
+    const tweet = await client.v1.reply(text, id);
+    console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
+    return tweet.data.id;
+  } catch (err) {
+    return console.error('Erro ao responder ao tweet');
   }
 }
 
@@ -32,4 +43,5 @@ const postMediaTweet = async ({ media, text }) => {
 module.exports = {
   postTweet,
   postMediaTweet,
+  replyTweet,
 }

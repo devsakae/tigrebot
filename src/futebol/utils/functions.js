@@ -1,5 +1,5 @@
 const prompts = require('../../../data/prompts.json');
-const { postTweet } = require('../../../utils/twitter');
+const { postTweet, replyTweet } = require('../../../utils/twitter');
 
 const calculaIdade = (date) => {
   const formattedDate = date.split('/');
@@ -214,17 +214,17 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   texto += `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`;
   tweet += `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario}. A partida terminou em ${placarMaiorNaFrente}, do nosso histórico de ${time.resumo.v}V/${time.resumo.e}E/${time.resumo.d}D (${time.resumo.j} jogos).`;
   // Envia o primeiro tweet, com resumo;
-  await postTweet(tweet);
+  const firstTweet = await postTweet(tweet);
   texto += `\n\nNosso histórico contra ${adversario} (${time.uf}) é o seguinte:`;
   const stats = `\n🎫 ${time.resumo.j} jogos\n👍 ${time.resumo.v} vitórias\n🫳 ${time.resumo.e} empates\n👎 ${time.resumo.d} derrotas\n⚽️ ${gols.gm} gols neles\n🥅 ${gols.gs} gols deles`;
   texto += stats
-  tweet = `A escalação de Criciúma x ${adversario} (${time.uf}), válido por ${jogo.campeonato} em ${jogo.date.split('/')[2]} foi a seguinte:\n\n`;
+  tweet = `A escalação do @CriciumaEC era a seguinte: `;
   if (jogo.homeScore > 0) {
     texto += `\n\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por?' : `O(s) gol(s) de ${jogo.homeTeam} foi(ram) marcado(s) por:`}`;
     jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === jogo.home_goals.length - 1 ? '.' : ''}`);
   }
   if (jogo.awayScore > 0) {
-    texto += `\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por?' : `O(s) gol(s) de ${jogo.awayTeam} foi(ram) marcado(s) por:`}`;
+    texto += `\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por' : `O(s) gol(s) dos caras foi(ram) marcado(s) por:`}`;
     jogo.away_goals.forEach(
       (m, i) =>
         (texto += `${i > 0
@@ -232,7 +232,7 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
                       ? ' e'
                       : ',')
                     : ''
-        } ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${
+        } ${m.autor} (${m.minuto}'/${m.tempo}T)${
           i === jogo.home_goals.length - 1 ? '.' : ''
         }`),
     );
@@ -249,7 +249,7 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
     texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.away_players.length ? '.' : ''}`
   })
   // Envia o segundo tweet, com escalação;
-  await postTweet(tweet);
+  await replyTweet({ id: firstTweet, text: tweet});
   return texto;
 }
 

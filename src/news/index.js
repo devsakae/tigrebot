@@ -27,7 +27,7 @@ const getNovidades = async () => {
     response.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
     texto += '\n\n🇧🇷 O que é notícia no resto do país:\n'
     organized.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
-    return { long: texto, short: `Notícia destaque para Criciúma: ${response[0].title}. No país: ${organized[0].title}` };
+    return { long: texto, short: `É destaque hoje em Criciúma: ${response[0].title}.\n\nE no resto do país: ${organized[0].title}` };
   }
   console.error('Error fetching news');
   return;
