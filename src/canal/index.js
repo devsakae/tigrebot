@@ -11,6 +11,7 @@ const { falaAlgumaCoisa } = require('../jokes');
 const { golacoAleatorio } = require('../quotes');
 const { postTweet, postMediaTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
+const feriados = require('../../data/2024feriados.json');
 
 const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
@@ -44,7 +45,16 @@ const bomDiaComDestaque = async () => {
   const legenda_greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
   let response = '👉 ' + legenda_greeting;
   let tweet = legenda_greeting
-  90
+  
+  // Hoje tem feriado no país? Magina!
+  const legenda_feriados = diasEspeciais();
+  if (legenda_feriados) {
+    response += '\n'
+    response += legenda_feriados;
+    tweet += '\n'
+    tweet += legenda_feriados
+  }
+
   // Pega a previsão do tempo em Criciúma/SC para hoje
   const legenda_previsao = await getForecast()
   if (legenda_previsao) {
@@ -54,11 +64,15 @@ const bomDiaComDestaque = async () => {
     response += legenda_previsao.long;
   }
 
+  postTweet(tweet);
+  tweet = '';
+
   // Busca as últimas notícias de Criciúma
   const legenda_news = await getNovidades();
   if (legenda_news) {
     response += '\n\n';
-    response += legenda_news;
+    response += legenda_news.long;
+    tweet = legenda_news.short;
   }
 
   // Pega um golaço aleatório do fórum e adiciona na resposta
@@ -272,6 +286,21 @@ const publicaMessage = async (m) => {
   }
   await sendTextToGroups(m.body);
   return await sendTextToChannels(m.body);
+}
+
+const diasEspeciais = () => {
+  const today = new Date();
+  const todayComZero = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
+  let response = '';
+  response += feriados.nacional.find(f => f.data.startsWith(todayComZero))?.descricao || ''
+  if (response.length > 0) response += '\n';  
+  const fest = feriados.estadual.filter(f => f.data.startsWith(todayComZero))
+  fest.length === 1
+    ? response += `Hoje é ${fest[0].nome} no(a) ${fest[0].uf}`
+    : fest.forEach(f => response += `No estado do(a) ${f.uf}, comemora-se ${f.nome}.`)
+  const fmun = feriados.municipal.filter(f => f.data.startsWith(todayComZero))
+  fmun.length > 0 && fmun.forEach((f, i) => response += `${i === (fmun.length - 1) && fmun.length > 1 ? ' e ' : i > 0 ? ', ' : 'Comemoram feriado municipal hoje a(s) cidade(s) de '}${f.municipio} (${f.uf})${i === (fmun.length - 1) ? '.' : ''}`)
+  return response;
 }
 
 module.exports = {

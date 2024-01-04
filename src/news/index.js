@@ -25,9 +25,9 @@ const getNovidades = async () => {
   if (response || response.length > 0) {
     let texto = prompts.bomdia.news[Math.floor(Math.random() * prompts.bomdia.news.length)] + '\n\n🟢🔴 Destaques para Criciúma/SC:\n'
     response.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
-    texto += '\n\n🌎 O que é notícia no mundo:\n'
+    texto += '\n\n🇧🇷 O que é notícia no resto do país:\n'
     organized.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
-    return texto;
+    return { long: texto, short: `Notícia destaque para Criciúma: ${response[0].title}. No país: ${organized[0].title}` };
   }
   console.error('Error fetching news');
   return;
