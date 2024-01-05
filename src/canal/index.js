@@ -293,13 +293,13 @@ const diasEspeciais = () => {
   const todayComZero = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
   let response = '';
   response += feriados.nacional.find(f => f.data.startsWith(todayComZero))?.descricao || ''
-  if (response.length > 0) response += '\n';  
+  if (response.length > 0) response += '. \n';  
   const fest = feriados.estadual.filter(f => f.data.startsWith(todayComZero))
   fest.length === 1
-    ? response += `Hoje é ${fest[0].nome} no(a) ${fest[0].uf}`
-    : fest.forEach(f => response += `No estado do(a) ${f.uf}, comemora-se ${f.nome}.`)
+    ? response += `Hoje é ${fest[0].nome} no estado do(a) ${fest[0].uf}.`
+    : fest.forEach(f => response += `No estado do(a) ${f.uf}, é ${f.nome}.`)
   const fmun = feriados.municipal.filter(f => f.data.startsWith(todayComZero))
-  fmun.length > 0 && fmun.forEach((f, i) => response += `${i === (fmun.length - 1) && fmun.length > 1 ? ' e ' : i > 0 ? ', ' : 'Comemoram feriado municipal hoje a(s) cidade(s) de '}${f.municipio} (${f.uf})${i === (fmun.length - 1) ? '.' : ''}`)
+  fmun.length > 0 && fmun.forEach((f, i) => response += `${i === (fmun.length - 1) && fmun.length > 1 ? ' e ' : i > 0 ? ', ' : '\nE comemora(m) feriado municipal hoje a(s) cidade(s) de '}${f.municipio} (${f.uf})${i === (fmun.length - 1) ? '.' : ''}`)
   return response;
 }
 
