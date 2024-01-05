@@ -204,7 +204,8 @@ const partida = async (m) => {
 }
 
 const fetchJogosDe = async (data) => {
-  const thisDay = data.getDate() + '/' + (data.getMonth() + 1);
+  const today = new Date();
+  const thisDay = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
   try {
     const response = await criciuma
       .collection('jogos')
