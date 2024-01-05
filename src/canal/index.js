@@ -109,8 +109,8 @@ const bomDiaComDestaque = async () => {
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s) e venceu ${totalJogos.v} jogos.`;
       await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
-      //return await replyTweet({ id: firstTweet, text: tweet });
-      return await postTweet(tweet);
+      // return await postTweet(tweet);
+      return await replyTweet({ id: firstTweet, text: tweet });
     }
     // Adiciona a lista de aniversariantes SEM atletas do Tigre
     response += '\n\n'
@@ -119,8 +119,8 @@ const bomDiaComDestaque = async () => {
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
   await sendTextToChannels(response);
   await sendTextToGroups(response);
-  //return await replyTweet({ id: firstTweet, text: tweet });
-  return await postTweet(tweet);
+  // return await postTweet(tweet);
+  return await replyTweet({ id: firstTweet, text: tweet });
 }
 
 const saveLocalInstagram = (update) => {
@@ -269,11 +269,8 @@ const publicaQuotedMessage = async (m) => {
 }
 
 const publicaMessage = async (m) => {
-  console.log('Publicando mensagem', m.body);
   if (m.hasMedia) {
-    console.log('Baixando mídia...')
     const media = await m.downloadMedia()
-    console.log('Mídia baixada!', media)
     const message = new MessageMedia(
       media.mimetype,
       media.data.toString('base64')

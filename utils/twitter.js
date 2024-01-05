@@ -21,7 +21,8 @@ const postTweet = async text => {
 
 const replyTweet = async ({ id, text }) => {
   try {
-    const tweet = await client.v1.reply(text, id);
+    //const tweet = await client.v1.reply(text, id);
+    const tweet = await client.v2.reply({ status: text, toTweetId: id });
     console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
     return tweet.data.id;
   } catch (err) {
