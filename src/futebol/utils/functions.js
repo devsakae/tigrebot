@@ -249,7 +249,8 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
     texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.away_players.length ? '.' : ''}`
   })
   // Envia o segundo tweet, com escalação;
-  await replyTweet({ id: firstTweet, text: tweet});
+  await postTweet(tweet)
+  // await replyTweet({ id: firstTweet, text: tweet}); // Não funciona? Averiguar...
   return texto;
 }
 

@@ -109,7 +109,8 @@ const bomDiaComDestaque = async () => {
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s) e venceu ${totalJogos.v} jogos.`;
       await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
-      return await replyTweet({ id: firstTweet, text: tweet });
+      //return await replyTweet({ id: firstTweet, text: tweet });
+      return await postTweet(tweet);
     }
     // Adiciona a lista de aniversariantes SEM atletas do Tigre
     response += '\n\n'
@@ -118,7 +119,8 @@ const bomDiaComDestaque = async () => {
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
   await sendTextToChannels(response);
   await sendTextToGroups(response);
-  return await replyTweet({ id: firstTweet, text: tweet });
+  //return await replyTweet({ id: firstTweet, text: tweet });
+  return await postTweet(tweet);
 }
 
 const saveLocalInstagram = (update) => {
