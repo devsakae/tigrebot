@@ -12,6 +12,7 @@ const { golacoAleatorio } = require('../quotes');
 const { postTweet, postMediaTweet, replyTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
+const { default: axios } = require('axios');
 
 const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
@@ -75,8 +76,15 @@ const bomDiaComDestaque = async () => {
     tweet = legenda_news.short;
   }
 
+  // Quarta, sexta ou domingo? Resultado da Timemania do dia anterior!
+  if (today.getDay() === 0 || today.getDay() === 3 || today.getDay() === 5) {
+    const legenda_timemania = await timemania();
+    response += '\n\n'
+    response += legenda_timemania
+  }
+
   // Pega um golaço aleatório do fórum e adiciona na resposta
-  const legenda_forum = await golacoAleatorio()
+  const legenda_forum = await golacoAleatorio();
   if (legenda_forum) {
     response += '\n\n';
     response += legenda_forum;
@@ -109,8 +117,8 @@ const bomDiaComDestaque = async () => {
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s) e venceu ${totalJogos.v} jogos.`;
       await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
-      // return await postTweet(tweet);
-      return await replyTweet({ id: firstTweet, text: tweet });
+      // return await replyTweet({ id: firstTweet, text: tweet });
+      return await postTweet(tweet);
     }
     // Adiciona a lista de aniversariantes SEM atletas do Tigre
     response += '\n\n'
@@ -119,8 +127,8 @@ const bomDiaComDestaque = async () => {
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
   await sendTextToChannels(response);
   await sendTextToGroups(response);
-  // return await postTweet(tweet);
-  return await replyTweet({ id: firstTweet, text: tweet });
+  // return await replyTweet({ id: firstTweet, text: tweet });
+  return await postTweet(tweet);
 }
 
 const saveLocalInstagram = (update) => {
@@ -298,8 +306,33 @@ const diasEspeciais = () => {
     ? response += `Hoje é ${fest[0].nome} no estado do(a) ${fest[0].uf}.`
     : fest.forEach(f => response += `No estado do(a) ${f.uf}, é ${f.nome}.`)
   const fmun = feriados.municipal.filter(f => f.data.startsWith(todayComZero))
-  fmun.length > 0 && fmun.forEach((f, i) => response += `${i === (fmun.length - 1) && fmun.length > 1 ? ' e ' : i > 0 ? ', ' : '\nE comemora(m) feriado municipal hoje a(s) cidade(s) de '}${f.municipio} (${f.uf})${i === (fmun.length - 1) ? '.' : ''}`)
+  fmun.length > 0 && fmun.forEach((f, i) => response += `${i === (fmun.length - 1) && fmun.length > 1 ? ' e ' : i > 0 ? ', ' : '\nComemora(m) feriado municipal hoje a(s) cidade(s) de '}${f.municipio} (${f.uf})${i === (fmun.length - 1) ? '.' : ''}`)
   return response;
+}
+
+const timemania = async () => {
+  const url = "https://loteriascaixa-api.herokuapp.com/api/timemania/latest";
+  try {
+    let response;
+    const { data } = await axios.request({
+      method: 'GET',
+      url: url,
+    });
+    if (data.timeCoracao.startsWith('CRICI')) response = 'Deu 🐯 Tigre 🟡⚫️⚪️ na Timemania!!'
+    else response = `Time do coração na Timemania: ${data.timeCoracao}.`;
+    response += `\n\n🍀 Concurso: ${data.concurso} em ${data.data}`;
+    response += `\n📍 Sorteio: ${data.local}`;
+    response += `\n📝 Dezenas: `
+    data.dezenas.map((d, i) => response += `${i === 0 ? '' : ' - '}${d}`);
+    if (data.acumulou) response += `\n\nNinguém acertou as sete dezenas, e o prêmio estimado para o próximo concurso é de ${data.valorAcumuladoProximoConcurso.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}`;
+    return response;
+  } catch (err) {
+    console.error("Error", err)
+  }
+}
+
+const loterias = async () => {
+
 }
 
 module.exports = {
@@ -309,4 +342,6 @@ module.exports = {
   publicaQuotedMessage,
   fetchInstaId,
   publicaMessage,
+  timemania,
+  loterias,
 };
