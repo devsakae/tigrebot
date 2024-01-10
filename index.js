@@ -39,7 +39,7 @@ const cron = require('node-cron');
 })();
 
 client.on('message', async (m) => {
-  // if (m.author === process.env.BOT_OWNER && m.body === '!buena') return await bomDiaComDestaque();
+  if (m.author === process.env.BOT_OWNER && m.body === '!bomdia') return await bomDiaComDestaque();
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)
 
