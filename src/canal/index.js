@@ -42,6 +42,7 @@ const canal = async (m) => {
 };
 
 const bomDiaComDestaque = async () => {
+  const today = new Date();
   // Inicia o bom dia
   const legenda_greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
   let response = '👉 ' + legenda_greeting;
@@ -91,7 +92,6 @@ const bomDiaComDestaque = async () => {
   }
 
   // Busca atletas aniversariando hoje
-  const today = new Date();
   const birthDate = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
   const aniversariantes = await criciuma
     .collection('atletas')
