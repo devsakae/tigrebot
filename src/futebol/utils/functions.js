@@ -183,6 +183,9 @@ const jogoDeHoje = ({ jogo, time }) => {
   return texto;
 }
 
+const golsDoTigre = score => score === 1 ? 'Nosso único gol foi marcado por' : 'Nossos gols foram anotados por';
+const golsDosCara = score => score === 1 ? 'O gol deles foi marcado por' : 'Os gols deles foram marcados por';
+
 const jogoDestaqueDoDia = async ({ jogo, time }) => {
   const gols = time.jogos.reduce((acc, curr) => {
     const check = curr.homeTeam.startsWith('CRICI')
@@ -214,33 +217,34 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   texto += `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`;
   tweet += `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario}. A partida terminou em ${placarMaiorNaFrente}, do nosso histórico de ${time.resumo.v}V/${time.resumo.e}E/${time.resumo.d}D (${time.resumo.j} jogos).`;
   // Envia o primeiro tweet, com resumo;
-  const firstTweet = await postTweet(tweet);
+  await postTweet(tweet);
   texto += `\n\nNosso histórico contra ${adversario} (${time.uf}) é o seguinte:`;
   const stats = `\n🎫 ${time.resumo.j} jogos\n👍 ${time.resumo.v} vitórias\n🫳 ${time.resumo.e} empates\n👎 ${time.resumo.d} derrotas\n⚽️ ${gols.gm} gols neles\n🥅 ${gols.gs} gols deles`;
   texto += stats
   tweet = `A escalação do @CriciumaEC era a seguinte: `;
   if (jogo.homeScore > 0) {
-    texto += `\n\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por?' : `O(s) gol(s) de ${jogo.homeTeam} foi(ram) marcado(s) por:`}`;
+    texto += `\n\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? golsDoTigre(jogo.homeScore) : golsDosCara(jogo.homeScore)}`;
     jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.home_goals.length - 1 ? '.' : ''}`);
   }
   if (jogo.awayScore > 0) {
-    texto += `\n\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por' : 'O(s) gol(s) dos caras foi(ram) marcado(s) por:'}`;
+    texto += `\n\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? golsDoTigre(jogo.awayScore) : golsDosCara(jogo.awayScore)}`;
     jogo.away_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.away_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.away_goals.length - 1 ? '.' : ''}`);
   }
   texto += `\n\nTreinados por ${jogo.home_treinador}, o time da casa tinha a seguinte escalação: `;
   jogo.home_escalacao.forEach((p, i) => {
-    ycp = jogo.home_cards.find(c => c.nome === p.nome);
+    ycp = jogo?.home_cards.find(c => c.nome === p.nome);
+    sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
     tweet += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.home_escalacao.length ? '.' : ''}`;
-    texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.home_escalacao.length ? '.' : ''}`;
+    texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
   })
   texto += `\n\nCom ${jogo.away_treinador} no comando, os visitantes foram escalados assim: `;
   jogo.away_players.forEach((p, i) => {
-    ycp = jogo.away_cards.find(c => c.nome === p.nome);
-    texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.away_players.length ? '.' : ''}`
+    ycp = jogo?.away_cards.find(c => c.nome === p.nome);
+    sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
+    texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
   })
   // Envia o segundo tweet, com escalação;
   await postTweet(tweet)
-  // await replyTweet({ id: firstTweet, text: tweet}); // Não funciona? Averiguar...
   return texto;
 }
 
