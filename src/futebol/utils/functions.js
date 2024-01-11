@@ -221,21 +221,11 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   tweet = `A escalação do @CriciumaEC era a seguinte: `;
   if (jogo.homeScore > 0) {
     texto += `\n\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por?' : `O(s) gol(s) de ${jogo.homeTeam} foi(ram) marcado(s) por:`}`;
-    jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === jogo.home_goals.length - 1 ? '.' : ''}`);
+    jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.home_goals.length - 1 ? '.' : ''}`);
   }
   if (jogo.awayScore > 0) {
-    texto += `\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por' : `O(s) gol(s) dos caras foi(ram) marcado(s) por:`}`;
-    jogo.away_goals.forEach(
-      (m, i) =>
-        (texto += `${i > 0
-                    ? (i === jogo.home_goals.length - 2
-                      ? ' e'
-                      : ',')
-                    : ''
-        } ${m.autor} (${m.minuto}'/${m.tempo}T)${
-          i === jogo.home_goals.length - 1 ? '.' : ''
-        }`),
-    );
+    texto += `\n\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? 'Nossos gols foram marcados por' : 'O(s) gol(s) dos caras foi(ram) marcado(s) por:'}`;
+    jogo.away_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.away_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.away_goals.length - 1 ? '.' : ''}`);
   }
   texto += `\n\nTreinados por ${jogo.home_treinador}, o time da casa tinha a seguinte escalação: `;
   jogo.home_escalacao.forEach((p, i) => {
