@@ -35,7 +35,7 @@ const umAtleta = (array) => {
   if (jogos.length > 0) response += ` Pelo Tigre, disputou ${total.jogos} partidas e teve um aproveitamento de ${aproveitamento.toFixed(1)}%.\n\nSua última partida com a camisa mais bonita do mundo 🟡⚫️⚪️ foi por ${jogos[0].torneio} de ${jogos[0].ano}, tendo ${array[0].nickname} disputado ${jogos[0].jogos} jogos e conquistado ${jogos[0].v} vitórias, ${jogos[0].e} empates e ${jogos[0].d} derrotas (aproveitamento de ${(((Number(jogos[0].v) * 3) + Number(jogos[0].e)) / (Number(jogos[0].jogos) * 3) * 100).toFixed(1)}%).`
   if (clubes.length > 0) {
     response + '\n\n';
-    if (jogos.length > 0) response += 'Além do nosso glorioso tricolor, ';
+    if (jogos.length > 0) response += '\n\nAlém do nosso glorioso tricolor, ';
     response += `${array[0].nickname} jogou contra a gente 😡 vestindo a(s) camisa(s) de `
     clubes.forEach((c, i) => response += `${i === 0 ? '' : i === (clubes.length - 1) ? ' e ' : ', '}${c}${i === (clubes.length - 1) ? '.' : ''}`)
   }
@@ -234,7 +234,7 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   jogo.home_escalacao.forEach((p, i) => {
     ycp = jogo?.home_cards.find(c => c.nome === p.nome);
     sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
-    tweet += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.home_escalacao.length ? '.' : ''}`;
+    tweet += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${i === jogo.home_escalacao.length ? '.' : ''}`;
     texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
   })
   texto += `\n\nCom ${jogo.away_treinador} no comando, os visitantes foram escalados assim: `;

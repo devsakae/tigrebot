@@ -8,7 +8,6 @@ const { help, saveLocal } = require('./utils/index');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio } = require('./src/futebol');
 const { canal, publicaQuotedMessage, publicaMessage, bomDiaComDestaque } = require('./src/canal');
 const { echoToGroups } = require('./utils/sender');
-const cron = require('node-cron');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
