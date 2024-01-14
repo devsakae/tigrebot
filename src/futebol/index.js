@@ -308,6 +308,7 @@ const proximaPartida = async () => {
       const task = cron.schedule(schedstart, async () => {
         await sendTextToChannels(response);
         await sendTextToGroups(response);
+        await postTweet(response + '\n\n@CriciumaEC #DaleTigre #VamosTigre');
       }, {
         scheduled: true,
         timezone: "America/Sao_Paulo"
