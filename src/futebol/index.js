@@ -252,7 +252,7 @@ const fetchProximasPartidas = async () => {
       url: "https://footapi7.p.rapidapi.com/api/team/1984/matches/next/0",
       headers: {
         'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-        'X-RapidAPI-Host': config.bolao.host,
+        'X-RapidAPI-Host': "footapi7.p.rapidapi.com",
       },
     });
     if (data.events.length === 0) throw new Error('Nenhuma partida programada');
@@ -271,7 +271,7 @@ const fetchMatchById = async id => {
       url: "https://footapi7.p.rapidapi.com/api/match/" + id,
       headers: {
         'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-        'X-RapidAPI-Host': config.bolao.host,
+        'X-RapidAPI-Host': "footapi7.p.rapidapi.com",
       },
     });
     if (data.event) return data.event;
