@@ -33,9 +33,9 @@ const start = async (m) => {
     if (team_leagues && team_leagues.length > 0) await bolao.collection('fixtures').insertMany(team_leagues);
   } catch (err) {
     console.error(prompts.errors.no_data_fetched, '\n', err);
-    return client.sendMessage(m.from, err);
+    return await client.sendMessage(m.from, err);
   } finally {
-    sendTextToGroups(prompts.bolao.start);
+    await client.sendMessage(m.from, prompts.bolao.start);
     return await abreRodada();
   }
 };
@@ -59,7 +59,6 @@ const pesquisaProximaRodada = async () => {
     .collection('fixtures')
     .find({ next_matches: { $gte: 1 } })
     .toArray();
-  console.log(getNextMatches);
   if (getNextMatches.length > 0) {
     console.log('Tem nextmatch na database')
     const nextMatch = getNextMatches.find((m) => m.hora > today);
@@ -80,7 +79,7 @@ const pegaProximaRodada = async () => {
         next: 10,
       },
     });
-    if (response.length === 0) return { error: prompts.errors.no_round };
+    if (response.length === 0) throw new Error(prompts.errors.no_round);
     const responseTratada = response.map((item) => ({
       id: item.fixture.id,
       homeTeam: item.teams.home.name,

@@ -1,12 +1,13 @@
 const { MessageMedia } = require('whatsapp-web.js');
-const { fetchWithParams, fetchApi } = require('../../utils');
-const data = require('../bolao/data/data.json');
 const mongodb = require('mongodb');
+const config = require('../../data/tigrebot.json');
+const prompts = require('../../data/prompts.json');
 const { client, criciuma } = require('../connections');
 const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDeHoje, jogoDestaqueDoDia } = require('./utils/functions');
 const { sendTextToGroups, sendTextToChannels, sendMediaUrlToChannels, sendMediaUrlToGroups } = require('../../utils/sender');
 const { postTweet } = require('../../utils/twitter');
-
+const { default: axios } = require('axios');
+const cron = require('node-cron');
 // const predictions = async (m) => {
 //   const thisBolao = data[m.from];
 //   if (!thisBolao) return { message: 'Nenhum bolão ativo no momento.' };
@@ -244,12 +245,93 @@ const jogoDeHojeNaHistoria = async () => {
   return '';
 }
 
+const fetchProximasPartidas = async () => {
+  try {
+    const { data } = await axios.request({
+      method: 'GET',
+      url: "https://footapi7.p.rapidapi.com/api/team/1984/matches/next/0",
+      headers: {
+        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+        'X-RapidAPI-Host': config.bolao.host,
+      },
+    });
+    if (data.events.length === 0) throw new Error('Nenhuma partida programada');
+    return data.events;
+  }
+  catch (err) {
+    console.error(err);
+    return '';
+  }
+}
+
+const fetchMatchById = async id => {
+  try {
+    const { data } = await axios.request({
+      method: 'GET',
+      url: "https://footapi7.p.rapidapi.com/api/match/" + id,
+      headers: {
+        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+        'X-RapidAPI-Host': config.bolao.host,
+      },
+    });
+    if (data.event) return data.event;
+    throw new Error('Nenhuma partida programada');
+  }
+  catch (err) {
+    console.error(err);
+    return '';
+  }
+}
+
+const proximaPartida = async () => {
+  const res = await fetchProximasPartidas();
+  if (res.length > 0) {
+    const match = await fetchMatchById(res[0].id);
+    const dataehora = new Date(res[0].startTimestamp * 1000)
+    const horadojogo = dataehora.toLocaleString('pt-br', {
+      month: "long",
+      day: "numeric",  
+      weekday: "long",
+      hour: "numeric",
+      minute: "numeric"
+    });
+    let response = prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
+    response += '\n';
+    response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
+    response += `\n🏆 ${res[0].season.name}`;
+    response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
+    if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
+    const schedstart = '0 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
+    const schedstop = '15 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
+    if (cron.validate(schedstart)) {
+      console.info('Tarefa programada para ', sched, ' - Envio da mensagem:\n\n', response)
+      const task = cron.schedule(schedstart, async () => {
+        await sendTextToChannels(response);
+        await sendTextToGroups(response);
+      }, {
+        scheduled: true,
+        timezone: "America/Sao_Paulo"
+      });
+      cron.schedule(schedstop, () => {
+        task.stop();
+        proximaPartida();
+      }, {
+        scheduled: true,
+        timezone: "America/Sao_Paulo"
+      });
+    }
+    console.log('Scheduled to: ', schedstart, ' - Valid: ', cron.validate(schedstart));
+  }
+}
+
 module.exports = {
   jogounotigre,
+  proximaPartida,
   aniversariantesDoDia,
   jogadorDoTigreAleatorio,
   adversarios,
   partida,
   publicaJogoAleatorio,
   jogoDeHojeNaHistoria,
+  proximaPartida,
 };

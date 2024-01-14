@@ -221,7 +221,6 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   texto += `\n\nNosso histórico contra ${adversario} (${time.uf}) é o seguinte:`;
   const stats = `\n🎫 ${time.resumo.j} jogos\n👍 ${time.resumo.v} vitórias\n🫳 ${time.resumo.e} empates\n👎 ${time.resumo.d} derrotas\n⚽️ ${gols.gm} gols neles\n🥅 ${gols.gs} gols deles`;
   texto += stats
-  tweet = `A escalação do @CriciumaEC era a seguinte: `;
   if (jogo.homeScore > 0) {
     texto += `\n\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? golsDoTigre(jogo.homeScore) : golsDosCara(jogo.homeScore)}`;
     jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.home_goals.length - 1 ? '.' : ''}`);
@@ -234,7 +233,6 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   jogo.home_escalacao.forEach((p, i) => {
     ycp = jogo?.home_cards.find(c => c.nome === p.nome);
     sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
-    tweet += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${i === jogo.home_escalacao.length ? '.' : ''}`;
     texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
   })
   texto += `\n\nCom ${jogo.away_treinador} no comando, os visitantes foram escalados assim: `;
@@ -243,8 +241,6 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
     sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
     texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
   })
-  // Envia o segundo tweet, com escalação;
-  await postTweet(tweet)
   return texto;
 }
 

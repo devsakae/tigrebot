@@ -13,6 +13,7 @@ const { postTweet, postMediaTweet, replyTweet } = require('../../utils/twitter')
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
+const cron = require('node-cron');
 
 const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
@@ -331,10 +332,6 @@ const timemania = async () => {
   }
 }
 
-const loterias = async () => {
-
-}
-
 module.exports = {
   canal,
   instagramThis,
@@ -343,5 +340,4 @@ module.exports = {
   fetchInstaId,
   publicaMessage,
   timemania,
-  loterias,
 };

@@ -5,7 +5,7 @@ const publicacoes = require('./utils/autobot');
 const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
 const { help, saveLocal } = require('./utils/index');
-const { jogounotigre, adversarios, partida, publicaJogoAleatorio } = require('./src/futebol');
+const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida } = require('./src/futebol');
 const { canal, publicaQuotedMessage, publicaMessage, bomDiaComDestaque } = require('./src/canal');
 const { echoToGroups } = require('./utils/sender');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
@@ -34,6 +34,7 @@ const { echoToGroups } = require('./utils/sender');
     publicacoes.audio('20 9 * * 3,6'); // Quartas e sábados às 9h20min
     publicacoes.atletaDestaque('20 9 * * 2,5') // Terças e sextas às 9h20min
     publicacoes.jogosHistoricos('45 16 * * *') // Todos os dias às 16h45min
+    proximaPartida() // Publica sobre a partida do Tigre no dia do jogo às 8h00min
   }
 })();
 
