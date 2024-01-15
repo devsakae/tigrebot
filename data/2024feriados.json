@@ -9,6 +9,30 @@
       "municipio": ""
     },
     {
+      "data": "14/01",
+      "nome": "Dia do Treinador de Futebol",
+      "tipo": "NACIONAL",
+      "descricao": "O treinador de futebol é uma das figuras essenciais na formação de novos atletas e também para a condução de uma equipe. Hoje, comemora-se o dia do treinador de futebol! Parabéns, professores!",
+      "uf": "",
+      "municipio": ""
+    },
+    {
+      "data": "10/02",
+      "nome": "Dia do Atleta Profissional",
+      "tipo": "NACIONAL",
+      "descricao": "Superar os limites do corpo e da mente faz parte da vida de um atleta profissional. Hoje, comemora-se no Brasil o Dia do Atleta Profissional. A você, nosso amigo assinante e atleta profissional, os nossos parabéns!",
+      "uf": "",
+      "municipio": ""
+    },
+    {
+      "data": "17/03",
+      "nome": "Comerciário vira Criciúma",
+      "tipo": "NACIONAL",
+      "descricao": "No dia 17 de março de 1978, foi realizada uma Assembleia Geral Extraordinária do Conselho Deliberativo do Comerciário Esporte Clube. Na pauta, a mudança de nome para Criciúma Esporte Clube. Relembre essa história no post do antigo blog Dale Tigre, que reproduz uma reportagem do jornal O Estado: https://daletigrenovamente.wordpress.com/2010/03/01/como-tudo-comecou-2/",
+      "uf": "",
+      "municipio": ""
+    },
+    {
       "data": "29/03",
       "nome": "Sexta-Feira Santa",
       "tipo": "NACIONAL",
@@ -29,6 +53,30 @@
       "nome": "Dia do Trabalho",
       "tipo": "NACIONAL",
       "descricao": "O Dia do Trabalhador ou Dia Internacional dos Trabalhadores é celebrado anualmente no dia 1º de Maio em numerosos países do mundo, sendo feriado no Brasil, em Portugal e em outros países.",
+      "uf": "",
+      "municipio": ""
+    },
+    {
+      "data": "13/05",
+      "nome": "Fundação do Criciúma Esporte Clube",
+      "tipo": "NACIONAL",
+      "descricao": "Quem diria que o aquele clube fundado em 13 de maio de 1947 com o nome de Comerciário Esporte Clube se tornaria uma paixão tão quente? Parabéns, Tigre! 🟡⚫️⚪️",
+      "uf": "",
+      "municipio": ""
+    },
+    {
+      "data": "23/06",
+      "nome": "Dia do Desporto",
+      "tipo": "NACIONAL",
+      "descricao": "Em 1998, a Lei 9.615 instituiu o dia 23 de junho como o Dia do Desporto, seguindo a tendência mundial de comemorar, nesse mesmo dia, o Dia Mundial do Desporto Olímpico.",
+      "uf": "",
+      "municipio": ""
+    },
+    {
+      "data": "19/07",
+      "nome": "Dia do futebol",
+      "tipo": "NACIONAL",
+      "descricao": "Em 19 de julho de 1900, foi criado o Sport Clube Rio Grande (RS). Esse foi o primeiro clube de futebol organizado e registrado no país. Por isso, todo dia 19 de julho, comemoramos o Dia Nacional do Futebol! ⚽️",
       "uf": "",
       "municipio": ""
     },

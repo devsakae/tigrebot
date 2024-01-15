@@ -304,7 +304,6 @@ const proximaPartida = async () => {
     const schedstart = '0 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     const schedstop = '15 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     if (cron.validate(schedstart)) {
-      console.info('Tarefa programada para ', schedstart, ' - Envio da mensagem:\n\n', response)
       const task = cron.schedule(schedstart, async () => {
         await sendTextToChannels(response);
         await sendTextToGroups(response);
@@ -321,7 +320,6 @@ const proximaPartida = async () => {
         timezone: "America/Sao_Paulo"
       });
     }
-    console.log('Scheduled to: ', schedstart, ' - Valid: ', cron.validate(schedstart));
   }
 }
 
