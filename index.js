@@ -33,7 +33,7 @@ const { echoToGroups } = require('./utils/sender');
     publicacoes.bomDia("30 6 * * *") // Todos os dias às 6h30min
     publicacoes.audio('20 9 * * 3,6'); // Quartas e sábados às 9h20min
     publicacoes.atletaDestaque('20 9 * * 2,5') // Terças e sextas às 9h20min
-    publicacoes.jogosHistoricos('45 16 * * *') // Todos os dias às 16h45min
+    publicacoes.jogosHistoricos('45 13 * * *') // Todos os dias às 13h45min
     proximaPartida() // Publica sobre a partida do Tigre no dia do jogo às 8h00min
   }
 })();
