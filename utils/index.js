@@ -1,4 +1,3 @@
-const { help } = require('./help');
 const { fetchApi, fetchWithParams } = require('./fetchApi');
 const { saveLocal } = require('./handleFile');
 const {
@@ -11,7 +10,6 @@ const {
 } = require('./sender');
 
 module.exports = {
-  help,
   fetchApi,
   fetchWithParams,
   saveLocal,

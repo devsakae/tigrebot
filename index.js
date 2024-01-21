@@ -4,7 +4,7 @@ const { client, mongoclient } = require('./src/connections');
 const publicacoes = require('./utils/autobot');
 const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
-const { help, saveLocal } = require('./utils/index');
+const { saveLocal } = require('./utils/index');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida } = require('./src/futebol');
 const { canal, publicaQuotedMessage, publicaMessage, bomDiaComDestaque } = require('./src/canal');
 const { echoToGroups } = require('./utils/sender');
@@ -47,13 +47,6 @@ client.on('message', async (m) => {
   if ((m.from === process.env.BOT_OWNER || m.author === process.env.BOT_OWNER) && m.body.startsWith('/')) {
     console.info('Admin solicitou', m.body);
     return await canal(m);
-  }
-
-  // Help system
-  if (m.body === '!help') {
-    console.info('Alguém solicitou !help');
-    const response = help();
-    return m.reply(response);
   }
 
   // Módulo Futebol (usa: Api-Football e FootApi7)

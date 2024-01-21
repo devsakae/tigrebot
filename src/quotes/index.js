@@ -2,8 +2,22 @@ const { db, forum, criciuma, client } = require('../connections');
 const { formatQuote, bestQuote } = require('./utils/functions');
 
 const addQuote = async (m) => {
-  console.info('Salvando quote no banco de dados')
-  console.log(m);
+  const quoteparts = m.body.split(':');
+  const myquote = quoteparts[1].trim();
+  const myauthor = quoteparts[0].trim();
+  const mytitle = await m.getChat();
+  let quote = {
+    quote: myquote,
+    autor: myauthor,
+    data: new Date(),
+    gols: 1,
+    titulo: mytitle
+  };
+  const result = await forum.insertOne(quote);
+  return m.reply(`✔️ Quote salva com id _${result.insertedId}_`);
+}
+
+const quoteAddQuote = async (m) => {
   let texto;
   if (m.hasQuotedMsg) {
     console.info('Mensagem possui quote, verificando...')
