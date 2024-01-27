@@ -17,36 +17,36 @@ const addQuote = async (m) => {
   return m.reply(`✔️ Quote salva com id _${result.insertedId}_`);
 }
 
-const quoteAddQuote = async (m) => {
-  let texto;
-  if (m.hasQuotedMsg) {
-    console.info('Mensagem possui quote, verificando...')
-    const quoted = await m.getQuotedMessage();
-    if (m.hasMedia || quoted.hasMedia) return await m.reply('Uma ou mais mensagens a serem adicionadas possuem mídia. Não será possível adicionar como quote (deve conter apenas texto)');
-    const quotedAuthor = await client.getContactById(quoted.author);
-    texto += `\`\`\`${quoted.body}\`\`\` (${quotedAuthor})\n\n`
-    console.log('Texto a ser quotado:', texto)
-  }
-  texto += m.body;
-  console.log('Texto integral', texto);
-  const autorObj = await client.getContactById(m.author);
-  const autor = autorObj.name | autorObj.pushname | autorObj.shortName
-  console.log('Autor original', autor);
-  const reactions = await m.getReactions();
-  console.log(reactions);
-  // const gols = reactions.reduce((acc, curr) => acc += curr.senders.length, 0)
-  // console.log('Total de reações', gols)
-  let quote = {
-    quote: texto,
-    autor: autor,
-    data: new Date(),
-    // gols: gols,
-    titulo: chat.name
-  };
-  console.log('Final:', quote);
-  // const result = await forum.insertOne(quote);
-  // return m.reply(`✔️ Quote salva com id _${result.insertedId}_`);
-}
+// const quoteAddQuote = async (m) => {
+//   let texto;
+//   if (m.hasQuotedMsg) {
+//     console.info('Mensagem possui quote, verificando...')
+//     const quoted = await m.getQuotedMessage();
+//     if (m.hasMedia || quoted.hasMedia) return await m.reply('Uma ou mais mensagens a serem adicionadas possuem mídia. Não será possível adicionar como quote (deve conter apenas texto)');
+//     const quotedAuthor = await client.getContactById(quoted.author);
+//     texto += `\`\`\`${quoted.body}\`\`\` (${quotedAuthor})\n\n`
+//     console.log('Texto a ser quotado:', texto)
+//   }
+//   texto += m.body;
+//   console.log('Texto integral', texto);
+//   const autorObj = await client.getContactById(m.author);
+//   const autor = autorObj.name | autorObj.pushname | autorObj.shortName
+//   console.log('Autor original', autor);
+//   const reactions = await m.getReactions();
+//   console.log(reactions);
+//   // const gols = reactions.reduce((acc, curr) => acc += curr.senders.length, 0)
+//   // console.log('Total de reações', gols)
+//   let quote = {
+//     quote: texto,
+//     autor: autor,
+//     data: new Date(),
+//     // gols: gols,
+//     titulo: chat.name
+//   };
+//   console.log('Final:', quote);
+//   // const result = await forum.insertOne(quote);
+//   // return m.reply(`✔️ Quote salva com id _${result.insertedId}_`);
+// }
 
 const quotes = async (m) => {
   const chat = await m.getChat();
@@ -84,7 +84,7 @@ const quotes = async (m) => {
 
       if (quotesdated.length < 1) return m.reply('Sabe o que eu encontrei?? Sabes???        nada')
       const bestByDate = bestQuote(quotesdated);
-      return client.sendMessage(m.from, bestByDate);
+      return await client.sendMessage(m.from, bestByDate);
 
     case '!autor':
       const quotesfrom = await db
@@ -117,30 +117,24 @@ const quotes = async (m) => {
       const response = bestQuote(foundquote);
       return await client.sendMessage(m.from, response);
 
-    // Novo !addquote com base em replies!
+    // Adiciona uma quote nova na coleção do grupo
     case '!addquote':
-      await addQuote(m);
-      break;
-
-    // // Adiciona uma quote nova na coleção do grupo
-    // case '!addquote':
-    //   const knife = content.indexOf(':');
-    //   if (knife === -1 || content.substring(0, knife).indexOf(',') === -1)
-    //     return m.reply('Aprende a adicionar quote seu burro 🙈');
-    //   // Adiciona mais 1 na conta da coleção config
-    //   const autor = content.substring(0, knife).trim().split(',')[0];
-    //   const data = content.substring(content.indexOf(',') + 2, knife).trim();
-    //   const newcontent = content.substring(knife + 2);
-    //   const quote = {
-    //     quote: newcontent,
-    //     autor: autor,
-    //     data: data,
-    //     gols: 1,
-    //     titulo: '(Mensagem no grupo)'
-    //   };
-    //   const result = await forum.insertOne(quote);
-    //   m.reply(`✔️ Quote salva com id _${result.insertedId}_`);
-    //   break;
+      const knife = content.indexOf(':');
+      if (knife === -1 || content.substring(0, knife).indexOf(',') === -1)
+        return m.reply('Aprende a adicionar quote seu burro 🙈');
+      // Adiciona mais 1 na conta da coleção config
+      const autor = content.substring(0, knife).trim().split(',')[0];
+      const data = content.substring(content.indexOf(',') + 2, knife).trim();
+      const newcontent = content.substring(knife + 2);
+      const quote = {
+        quote: newcontent,
+        autor: autor,
+        data: data,
+        gols: 1,
+        titulo: '(Mensagem no grupo)'
+      };
+      const result = await forum.insertOne(quote);
+      return await m.reply(`✔️ Quote salva com id _${result.insertedId}_`);
 
     // Apaga quotes por meio do id
     case '!delquote':

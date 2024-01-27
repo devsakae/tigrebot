@@ -8,6 +8,11 @@ function saveLocal(data) {
   fs.writeFileSync('./data/tigrebot.json', JSON.stringify(data, null, 4), 'utf-8', (err) => err && checkFolder())
 }
 
+function savePrompts(data) {
+  fs.writeFileSync('./data/prompts.json', JSON.stringify(data, null, 4), 'utf-8', (err) => err && checkFolder())
+}
+
 module.exports = {
   saveLocal,
+  savePrompts,
 }

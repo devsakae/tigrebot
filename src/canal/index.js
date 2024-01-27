@@ -3,7 +3,7 @@ const { MessageMedia } = require('whatsapp-web.js');
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { fetchWithParams, fetchApi } = require('../../utils');
-const { saveLocal } = require('../../utils/handleFile');
+const { saveLocal, savePrompts } = require('../../utils/handleFile');
 const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels, sendTextToGroups, sendTextToChannels } = require('../../utils/sender');
 const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
@@ -18,6 +18,7 @@ const cron = require('node-cron');
 const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
 const canal = async (m) => {
+  if (m.body.startsWith('/add')) return await addToFile(m);
   if (m.body.startsWith('/audio')) return await falaAlgumaCoisa();
   if (m.body.startsWith('/help')) {
     return client.sendMessage(
@@ -54,8 +55,6 @@ const bomDiaComDestaque = async () => {
   if (legenda_feriados) {
     response += '\n'
     response += legenda_feriados;
-    tweet += '\n'
-    tweet += legenda_feriados
   }
 
   // Pega a previsão do tempo em Criciúma/SC para hoje
@@ -67,7 +66,7 @@ const bomDiaComDestaque = async () => {
     response += legenda_previsao.long;
   }
 
-  const firstTweet = await postTweet(tweet);
+  await postTweet(tweet);
   tweet = '';
 
   // Busca as últimas notícias de Criciúma
@@ -306,8 +305,8 @@ const diasEspeciais = () => {
   fest.length === 1
     ? response += `Hoje é ${fest[0].nome} no estado do(a) ${fest[0].uf}.`
     : fest.forEach(f => response += `No estado do(a) ${f.uf}, é ${f.nome}.`)
-  const fmun = feriados.municipal.filter(f => f.data.startsWith(todayComZero))
-  fmun.length > 0 && fmun.forEach((f, i) => response += `${i === (fmun.length - 1) && fmun.length > 1 ? ' e ' : i > 0 ? ', ' : '\nComemora(m) feriado municipal hoje a(s) cidade(s) de '}${f.municipio} (${f.uf})${i === (fmun.length - 1) ? '.' : ''}`)
+  // const fmun = feriados.municipal.filter(f => f.data.startsWith(todayComZero))
+  // fmun.length > 0 && fmun.forEach((f, i) => response += `${i === (fmun.length - 1) && fmun.length > 1 ? ' e ' : i > 0 ? ', ' : '\nComemora(m) feriado municipal hoje a(s) cidade(s) de '}${f.municipio} (${f.uf})${i === (fmun.length - 1) ? '.' : ''}`)
   return response;
 }
 
@@ -319,17 +318,34 @@ const timemania = async () => {
       method: 'GET',
       url: url,
     });
-    if (data.timeCoracao.startsWith('CRICI')) response = 'Deu 🐯 Tigre 🟡⚫️⚪️ na Timemania!!'
+    if (data.timeCoracao.startsWith('CRICI')) response = 'Deu *TIGRE* 🟡⚫️⚪️ na Timemania!! 🐯 🐯 🐯'
     else response = `Time do coração na Timemania: ${data.timeCoracao}.`;
     response += `\n\n🍀 Concurso: ${data.concurso} em ${data.data}`;
     response += `\n📍 Sorteio: ${data.local}`;
     response += `\n📝 Dezenas: `
     data.dezenas.map((d, i) => response += `${i === 0 ? '' : ' - '}${d}`);
     if (data.acumulou) response += `\n\nNinguém acertou as sete dezenas, e o prêmio estimado para o próximo concurso é de ${data.valorAcumuladoProximoConcurso.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}`;
+    if (data.timeCoracao.startsWith('CRICI')) setTimeout(() => postTweet(response), 30000);
     return response;
   } catch (err) {
     console.error("Error", err)
   }
+}
+
+const addToFile = async m => {
+  // Uso: /add errors.teste Isso é apenas um teste.
+  const msgArr = m.body.split(' ');
+  const mykeys = msgArr[1];
+  if (mykeys === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts)));
+  const promptkey = mykeys.split('.')[0]
+  const newkey = mykeys.split('.')[1]
+  const myprompt = m.body.substring(6 + mykeys.length).trim();
+  prompts[promptkey] = {
+    ...prompts[promptkey],
+    [newkey]: myprompt
+  }
+  savePrompts(prompts);
+  return await client.sendMessage(m.from, 'Prompt adicionado.');
 }
 
 module.exports = {

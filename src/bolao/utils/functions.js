@@ -7,6 +7,36 @@ const getCommand = (raw) => {
 }
 
 const forMatch = (match) => {
+  const data = new Date(fixture.timestamp * 1000);
+  return `🚨🚨 BOLÃO ABERTO! 🚨🚨
+
+⚽️ ${match.teams.home.name} x ${match.teams.away.name} 🏆 ${match.league.name} 🗓 ${data.toLocaleString('pt-br')}
+
+*COMO JOGAR*: Responda essa mensagem com apenas seu palpite, no formato:
+
+👉👉 *<mandante> <placar> x <placar> <visitante>* 👈👈
+ex.: ${match.teams.home.name} ${Math.floor(Math.random() * 5)} x ${Math.floor(Math.random() * 5)} ${match.teams.away.name}
+
+Palpites válidos somente se enviados em até *10 minutos* antes da partida e o Bot tiver reagido à mensagem com o emoji 🎟. Se não tiver, o palpite não é válido!
+
+*REGRAS*: As rodadas são abertas às 19h do dia anterior à partida.
+
+✅ Acertou o placar em cheio: *4 pontos*
+✅ Acertar o vencedor + diferença de gols: *3 pontos*
+✅ Acertar vitória ou derrota e o placar de apenas um dos times: *2 pontos*
+✅ Acertar vitória, empate ou derrota: *1 ponto*
+🟡 Tigre venceu? Todo mundo ganha *+1 ponto* 🐯
+🚫 Repetir palpite
+⚖️ Desempate: Palpite mais rápido da última rodada leva a melhor.
+
+Boa sorte!
+
+Sistema de bolão ©️ devsakae.tech/tigrebot
+Id da partida: ${match.fixture.id}`;
+};
+
+
+const oldForMatch = (match) => {
   const data = new Date(match.hora);
   return `🚨🚨 BOLÃO ABERTO! 🚨🚨
 
