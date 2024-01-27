@@ -44,43 +44,41 @@
     "Hola, que tal? Não né? Você não é torcedor do Figueirense... Bom dia.",
     "O que que é um pontinho preto e branco no final da tabela? Bom dia."
   ],
-  "bomdia": {
-    "previsao": [
-      "Em Criciúma, hoje,",
-      "O clima para a cidade hoje será de",
-      "Previsão do tempo para hoje é de",
-      "Teremos",
-      "Clima com",
-      "Aqui em Criciúma teremos",
-      "Para hoje, a previsão é de",
-      "Previsão de",
-      "Na cidade, vai ter"
-    ],
-    "news": [
-      "Pra ficar bem informado, só acessando o canal TigreLOG pra saber que:",
-      "Um homem bem informado vale por 2. Ou algo assim. Seguem as últimas notícias da cidade:",
-      "Hora de se atualizar com as notícias mais recentes:",
-      "Confira o que saiu na mídia sobre Criciúma:",
-      "Últimas notícias de Criciúma na imprensa:",
-      "Veja os destaques da mídia sobre Criciúma:",
-      "Que tal conferir as mais recentes novidades?",
-      "Comece seu dia sabendo que:",
-      "O seu jornal diário de notícias pelo WhatsApp! Veja as últimas notícias de Criciúma:",
-      "Novidades sobre Criciúma na mídia e na imprensa para hoje:"
-    ],
-    "jogododia": [
-      "🟡⚫️⚪️ Hoje, na história do Tigre...",
-      "Daqueles confrontos inesquecíveis do nosso Criciúma!",
-      "ERA UMA VEZ... Mais um jogo do Tigre que ninguém esquece!",
-      "Quem lembra dessa partida?",
-      "Boh, o Tigre jogou esse jogo mesmo né?",
-      "Grandes jogos do nosso Criciúma!",
-      "Mais uma da série JOGOS DO TIGRE 🐯",
-      "Nosso tricolor predestinado jogava nesse dia. Quer saber mais? Leia a seguir!",
-      "Temos muitos jogos no banco de dados! Siga nosso canal em devsakae.tech/tigrebot",
-      "Um grande jogo. Uma grande história."
-    ]
-  },
+  "previsao": [
+    "Em Criciúma, hoje,",
+    "O clima para a cidade hoje será de",
+    "Previsão do tempo para hoje é de",
+    "Teremos",
+    "Clima com",
+    "Aqui em Criciúma teremos",
+    "Para hoje, a previsão é de",
+    "Previsão de",
+    "Na cidade, vai ter"
+  ],
+  "news": [
+    "Pra ficar bem informado, só acessando o canal TigreLOG pra saber que:",
+    "Um homem bem informado vale por 2. Ou algo assim. Seguem as últimas notícias da cidade:",
+    "Hora de se atualizar com as notícias mais recentes:",
+    "Confira o que saiu na mídia sobre Criciúma:",
+    "Últimas notícias de Criciúma na imprensa:",
+    "Veja os destaques da mídia sobre Criciúma:",
+    "Que tal conferir as mais recentes novidades?",
+    "Comece seu dia sabendo que:",
+    "O seu jornal diário de notícias pelo WhatsApp! Veja as últimas notícias de Criciúma:",
+    "Novidades sobre Criciúma na mídia e na imprensa para hoje:"
+  ],
+  "jogododia": [
+    "🟡⚫️⚪️ Hoje, na história do Tigre...",
+    "Daqueles confrontos inesquecíveis do nosso Criciúma!",
+    "ERA UMA VEZ... Mais um jogo do Tigre que ninguém esquece!",
+    "Quem lembra dessa partida?",
+    "Boh, o Tigre jogou esse jogo mesmo né?",
+    "Grandes jogos do nosso Criciúma!",
+    "Mais uma da série JOGOS DO TIGRE 🐯",
+    "Nosso tricolor predestinado jogava nesse dia. Quer saber mais? Leia a seguir!",
+    "Temos muitos jogos no banco de dados! Siga nosso canal em devsakae.tech/tigrebot",
+    "Um grande jogo. Uma grande história."
+  ],
   "oraculo": [
     "Sim. Definitivamente sim.",
     "É claro que não 👎",

@@ -78,7 +78,7 @@ const getForecast = async () => {
       url: 'https://forecast9.p.rapidapi.com/rapidapi/forecast/-28.6783/-49.3704/summary/',
       host: 'forecast9.p.rapidapi.com',
     });
-    let previsao = prompts.bomdia.previsao[Math.floor(Math.random() * prompts.bomdia.previsao.length)];
+    let previsao = prompts.previsao[Math.floor(Math.random() * prompts.previsao.length)];
     let long = previsao + ' ';
     let short = previsao + ' ';
     if (forecastCodes[items[0].weather.state]) {

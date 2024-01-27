@@ -23,7 +23,7 @@ const getNovidades = async () => {
   const response = articles.items.filter(a => new Date(a.pubDate) > yesterday).sort((a, b) => a.pubDate > b.pubDate ? -1 : 1)
   const organized = worldNews.items.filter(a => new Date(a.pubDate) > yesterday).sort((a, b) => a.pubDate > b.pubDate ? -1 : 1)
   if (response || response.length > 0) {
-    let texto = prompts.bomdia.news[Math.floor(Math.random() * prompts.bomdia.news.length)] + '\n\n🟢🔴 Destque em Criciúma/SC:\n'
+    let texto = prompts.news[Math.floor(Math.random() * prompts.news.length)] + '\n\n🟢🔴 Destaques em Criciúma/SC:\n'
     response.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
     texto += '\n\n🇧🇷 O que é notícia no resto do país:\n'
     organized.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)

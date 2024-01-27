@@ -9,7 +9,7 @@ const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { falaAlgumaCoisa } = require('../jokes');
 const { golacoAleatorio } = require('../quotes');
-const { postTweet, postMediaTweet, replyTweet } = require('../../utils/twitter');
+const { postTweet, postMediaTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
@@ -18,7 +18,8 @@ const cron = require('node-cron');
 const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
 const canal = async (m) => {
-  if (m.body.startsWith('/add')) return await addToFile(m);
+  if (m.body.startsWith('/add')) return await addToPrompt(m);
+  if (m.body.startsWith('/push')) return await pushToPrompt(m);
   if (m.body.startsWith('/audio')) return await falaAlgumaCoisa();
   if (m.body.startsWith('/help')) {
     return client.sendMessage(
@@ -332,11 +333,11 @@ const timemania = async () => {
   }
 }
 
-const addToFile = async m => {
+const addToPrompt = async m => {
   // Uso: /add errors.teste Isso é apenas um teste.
   const msgArr = m.body.split(' ');
   const mykeys = msgArr[1];
-  if (mykeys === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts)));
+  if (mykeys === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts).slice(0,2)));
   const promptkey = mykeys.split('.')[0]
   const newkey = mykeys.split('.')[1]
   const myprompt = m.body.substring(6 + mykeys.length).trim();
@@ -345,7 +346,20 @@ const addToFile = async m => {
     [newkey]: myprompt
   }
   savePrompts(prompts);
-  return await client.sendMessage(m.from, 'Prompt adicionado.');
+  const newprompt = prompts[promptkey];
+  return await client.sendMessage(m.from, 'Prompt adicionado:\n\n' + newprompt);
+}
+
+const pushToPrompt = async m => {
+  // Uso: /add errors.teste Isso é apenas um teste.
+  const msgArr = m.body.split(' ');
+  const mykey = msgArr[1];
+  if (mykey === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts).slice(3)));
+  const myprompt = m.body.substring(6 + mykey.length).trim();
+  prompts[mykey].push(myprompt)
+  savePrompts(prompts);
+  const newprompt = prompts[mykey];
+  return await client.sendMessage(m.from, 'Prompt adicionado:\n\n' + newprompt);
 }
 
 module.exports = {

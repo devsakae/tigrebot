@@ -209,7 +209,7 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   const adversario = jogo.homeTeam.startsWith('CRICI') ? jogo.awayTeam : jogo.homeTeam;
   const adversarioScore = jogo.homeTeam.startsWith('CRICI') ? jogo.awayScore : jogo.homeScore;
   const resultado = tigre.score > adversarioScore ? 'venceu o(a)' : tigre.score < adversarioScore ? 'foi derrotado pelo(a)' : 'empatou com o(a)'
-  let texto = prompts.bomdia.jogododia[Math.floor(Math.random() * prompts.bomdia.jogododia.length)] + '\n\n'
+  let texto = prompts.jogododia[Math.floor(Math.random() * prompts.jogododia.length)] + '\n\n'
   let tweet = 'Grandes jogos do nosso @CriciumaEC: '
   texto += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
   tweet += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
