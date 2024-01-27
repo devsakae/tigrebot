@@ -13,13 +13,13 @@ const { postTweet, postMediaTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
-const cron = require('node-cron');
 
 const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
 const canal = async (m) => {
   if (m.body.startsWith('/add')) return await addToPrompt(m);
   if (m.body.startsWith('/push')) return await pushToPrompt(m);
+  if (m.body.startsWith('/promptdelete')) return await deletePrompt(m);
   if (m.body.startsWith('/audio')) return await falaAlgumaCoisa();
   if (m.body.startsWith('/help')) {
     return client.sendMessage(
@@ -337,10 +337,10 @@ const addToPrompt = async m => {
   // Uso: /add errors.teste Isso é apenas um teste.
   const msgArr = m.body.split(' ');
   const mykeys = msgArr[1];
-  if (mykeys === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts).slice(0,2)));
+  if (mykeys === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts).slice(0,3)));
   const promptkey = mykeys.split('.')[0]
   const newkey = mykeys.split('.')[1]
-  const myprompt = m.body.substring(6 + mykeys.length).trim();
+  const myprompt = m.body.substring(5 + mykeys.length).trim();
   prompts[promptkey] = {
     ...prompts[promptkey],
     [newkey]: myprompt
@@ -358,8 +358,17 @@ const pushToPrompt = async m => {
   const myprompt = m.body.substring(6 + mykey.length).trim();
   prompts[mykey].push(myprompt)
   savePrompts(prompts);
-  const newprompt = prompts[mykey];
+  const newprompt = prompts[mykey].map((p, i) => i + " - " + p + "\n");
   return await client.sendMessage(m.from, 'Prompt adicionado:\n\n' + newprompt);
+}
+
+const deletePrompt = async m => {
+  const raw = m.body.split(' ')[1].trim();
+  const cmd = raw.split('.');
+  prompts[cmd[0]] = prompts[cmd[0]].splice(cmd[1], 1);
+  savePrompts(prompts);
+  const newprompt = prompts[cmd[0]].map((p, i) => i + " - " + p + "\n");
+  return await client.sendMessage(m.from, 'Novo prompt:\n\n' + newprompt);
 }
 
 module.exports = {
