@@ -118,70 +118,70 @@ const formataJogo = data => {
   return texto;
 }
 
-const jogoDeHoje = ({ jogo, time }) => {
-  const gols = time.jogos.reduce((acc, curr) => {
-    const check = curr.homeTeam.startsWith('CRICI')
-    check
-      ? acc.gm += curr.homeScore
-      : acc.gm += curr.awayScore;
-    check
-      ? acc.gs += curr.awayScore
-      : acc.gs += curr.homeScore
-    return acc;
-  }, { gm: 0, gs: 0 });
-  const today = new Date()
-  console.log(jogo.date);
-  const sp = jogo.date.split('/')
-  const matchDate = new Date(sp[2], sp[1], sp[0])
-  const diff = today.getTime() - matchDate.getTime()
-  const years = Math.ceil(diff / (1000 * 3600 * 24 * 365));
-  const adversario = jogo.homeTeam.startsWith('CRICI') ? jogo.awayTeam : jogo.homeTeam;
-  const adversarioScore = jogo.homeTeam.startsWith('CRICI') ? jogo.awayScore : jogo.homeScore;
-  const tigreScore = jogo.homeTeam.startsWith('CRICI') ? jogo.homeScore : jogo.awayScore;
-  const resultado = tigreScore > adversarioScore ? 'venceu' : tigreScore < adversarioScore ? 'perdeu' : 'empatou'
-  let texto = '🟡⚫️⚪️ Hoje, na história do Tigre...\n'
-  texto += `\nHá ${years} anos, mais precisamente em ${jogo.date}, o nosso tricolor enfrentava o ${adversario} (${time.uf}) pelo torneio ${jogo.campeonato} (${jogo.rodada}ª rodada da ${jogo.fase}ª fase).`
-  texto += `\n\nCom público de ${jogo.publico} pessoas para uma renda de R$ ${jogo.renda}, o Tigre ${resultado} com o ${adversario} no jogo que terminou em ${jogo.homeScore} x ${jogo.awayScore}.`;
-  texto += '\n\nNosso histórico contra os caras:';
-  texto += `\n🎫 ${time.resumo.j} jogos`
-  texto += `\n👍 ${time.resumo.v} vitórias`
-  texto += `\n🫳 ${time.resumo.e} empates`
-  texto += `\n👎 ${time.resumo.d} derrotas`
-  texto += `\n⚽️ ${gols.gm} gols neles`
-  texto += `\n🥅 ${gols.gs} gols deles`
-  if (jogo.homeScore > 0) {
-    texto += `\n\n⚽️ O(s) gol(s) de ${jogo.homeTeam} foi(ram) marcado(s) por:`;
-    jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === jogo.home_goals.length - 1 ? '.' : ''}`);
-  }
-  if (jogo.awayScore > 0) {
-    texto += `\n⚽️ O(s) gol(s) de ${jogo.awayTeam} foi(ram) marcado(s) por:`;
-    jogo.away_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === jogo.home_goals.length - 1 ? '.' : ''}`);
-  }
-  texto += `\n\nTreinados por ${jogo.home_treinador}, o time da casa tinha a seguinte escalação: `;
-  jogo.home_escalacao.forEach((p, i) => {
-    ycp = jogo.home_cards.find(c => c.nome === p.nome);
-    texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.home_escalacao.length ? '.' : ''}`
-  })
-  texto += `\n\nCom ${jogo.away_treinador} no comando, os visitantes foram escalados assim: `;
-  jogo.away_players.forEach((p, i) => {
-    ycp = jogo.away_cards.find(c => c.nome === p.nome);
-    texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.away_players.length ? '.' : ''}`
-  })
-  if ((jogo.home_subs.length + jogo.away_subs.length) > 0) {
-    texto += `\n\n🙏 Substituições na partida:`
-    if (jogo.home_subs.length > 0) {
-      for (let idx = 0; idx < jogo.home_subs.length; idx += 2) {
-        texto += `\n[${jogo.home_subs[idx].minuto}'/${jogo.home_subs[idx].tempo}T - ${jogo.homeTeam}] ${jogo.home_subs[idx].nome} (${jogo.home_subs[idx].pos}) <> ${jogo.home_subs[idx + 1].nome} (${jogo.home_subs[idx + 1].pos})`
-      }
-    }
-    if (jogo.away_subs.length > 0) {
-      for (let idx = 0; idx < jogo.away_subs.length; idx += 2) {
-        texto += `\n[${jogo.away_subs[idx].minuto}'/${jogo.away_subs[idx].tempo}T - ${jogo.awayTeam}] ${jogo.away_subs[idx].nome} (${jogo.away_subs[idx].pos}) <> ${jogo.away_subs[idx + 1].nome} (${jogo.away_subs[idx + 1].pos})`
-      }
-    }
-  }
-  return texto;
-}
+// const jogoDeHoje = ({ jogo, time }) => {
+//   const gols = time.jogos.reduce((acc, curr) => {
+//     const check = curr.homeTeam.startsWith('CRICI')
+//     check
+//       ? acc.gm += curr.homeScore
+//       : acc.gm += curr.awayScore;
+//     check
+//       ? acc.gs += curr.awayScore
+//       : acc.gs += curr.homeScore
+//     return acc;
+//   }, { gm: 0, gs: 0 });
+//   const today = new Date()
+//   console.log(jogo.date);
+//   const sp = jogo.date.split('/')
+//   const matchDate = new Date(sp[2], sp[1], sp[0])
+//   const diff = today.getTime() - matchDate.getTime()
+//   const years = Math.ceil(diff / (1000 * 3600 * 24 * 365));
+//   const adversario = jogo.homeTeam.startsWith('CRICI') ? jogo.awayTeam : jogo.homeTeam;
+//   const adversarioScore = jogo.homeTeam.startsWith('CRICI') ? jogo.awayScore : jogo.homeScore;
+//   const tigreScore = jogo.homeTeam.startsWith('CRICI') ? jogo.homeScore : jogo.awayScore;
+//   const resultado = tigreScore > adversarioScore ? 'venceu' : tigreScore < adversarioScore ? 'perdeu' : 'empatou'
+//   let texto = '🟡⚫️⚪️ Hoje, na história do Tigre...\n'
+//   texto += `\nHá ${years} anos, mais precisamente em ${jogo.date}, o nosso tricolor enfrentava o ${adversario} (${time.uf}) pelo torneio ${jogo.campeonato} (${jogo.rodada}ª rodada da ${jogo.fase}ª fase).`
+//   texto += `\n\nCom público de ${jogo.publico} pessoas para uma renda de R$ ${jogo.renda}, o Tigre ${resultado} com o ${adversario} no jogo que terminou em ${jogo.homeScore} x ${jogo.awayScore}.`;
+//   texto += '\n\nNosso histórico contra os caras:';
+//   texto += `\n🎫 ${time.resumo.j} jogos`
+//   texto += `\n👍 ${time.resumo.v} vitórias`
+//   texto += `\n🫳 ${time.resumo.e} empates`
+//   texto += `\n👎 ${time.resumo.d} derrotas`
+//   texto += `\n⚽️ ${gols.gm} gols neles`
+//   texto += `\n🥅 ${gols.gs} gols deles`
+//   if (jogo.homeScore > 0) {
+//     texto += `\n\n⚽️ O(s) gol(s) de ${jogo.homeTeam} foi(ram) marcado(s) por:`;
+//     jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === jogo.home_goals.length - 1 ? '.' : ''}`);
+//   }
+//   if (jogo.awayScore > 0) {
+//     texto += `\n⚽️ O(s) gol(s) de ${jogo.awayTeam} foi(ram) marcado(s) por:`;
+//     jogo.away_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.minuto}'/${m.tempo}T ${m.autor} (${m.pos})${i === jogo.home_goals.length - 1 ? '.' : ''}`);
+//   }
+//   texto += `\n\nTreinados por ${jogo.home_treinador}, o time da casa tinha a seguinte escalação: `;
+//   jogo.home_escalacao.forEach((p, i) => {
+//     ycp = jogo.home_cards.find(c => c.nome === p.nome);
+//     texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.home_escalacao.length ? '.' : ''}`
+//   })
+//   texto += `\n\nCom ${jogo.away_treinador} no comando, os visitantes foram escalados assim: `;
+//   jogo.away_players.forEach((p, i) => {
+//     ycp = jogo.away_cards.find(c => c.nome === p.nome);
+//     texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${i === jogo.away_players.length ? '.' : ''}`
+//   })
+//   if ((jogo.home_subs.length + jogo.away_subs.length) > 0) {
+//     texto += `\n\n🙏 Substituições na partida:`
+//     if (jogo.home_subs.length > 0) {
+//       for (let idx = 0; idx < jogo.home_subs.length; idx += 2) {
+//         texto += `\n[${jogo.home_subs[idx].minuto}'/${jogo.home_subs[idx].tempo}T - ${jogo.homeTeam}] ${jogo.home_subs[idx].nome} (${jogo.home_subs[idx].pos}) <> ${jogo.home_subs[idx + 1].nome} (${jogo.home_subs[idx + 1].pos})`
+//       }
+//     }
+//     if (jogo.away_subs.length > 0) {
+//       for (let idx = 0; idx < jogo.away_subs.length; idx += 2) {
+//         texto += `\n[${jogo.away_subs[idx].minuto}'/${jogo.away_subs[idx].tempo}T - ${jogo.awayTeam}] ${jogo.away_subs[idx].nome} (${jogo.away_subs[idx].pos}) <> ${jogo.away_subs[idx + 1].nome} (${jogo.away_subs[idx + 1].pos})`
+//       }
+//     }
+//   }
+//   return texto;
+// }
 
 const golsDoTigre = score => score === 1 ? 'Nosso único gol foi marcado por' : 'Nossos gols foram anotados por';
 const golsDosCara = score => score === 1 ? 'O gol deles foi marcado por' : 'Os gols deles foram marcados por';
@@ -229,13 +229,13 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
     texto += `\n\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? golsDoTigre(jogo.awayScore) : golsDosCara(jogo.awayScore)}`;
     jogo.away_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.away_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.away_goals.length - 1 ? '.' : ''}`);
   }
-  texto += `\n\nTreinados por ${jogo.home_treinador}, o time da casa tinha a seguinte escalação: `;
+  texto += `\n\nTreinados por ${jogo.home_treinador}, o anfitrião ${jogo.homeTeam} tinha a seguinte escalação: `;
   jogo.home_escalacao.forEach((p, i) => {
     ycp = jogo?.home_cards.find(c => c.nome === p.nome);
     sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
     texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
   })
-  texto += `\n\nCom ${jogo.away_treinador} no comando, os visitantes foram escalados assim: `;
+  texto += `\n\nCom ${jogo.away_treinador} no comando, o visitante ${jogo.awayTeam} jogou com: `;
   jogo.away_players.forEach((p, i) => {
     ycp = jogo?.away_cards.find(c => c.nome === p.nome);
     sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
@@ -251,6 +251,5 @@ module.exports = {
   organizaFestinha,
   headToHead,
   formataJogo,
-  jogoDeHoje,
   jogoDestaqueDoDia,
 };

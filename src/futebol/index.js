@@ -210,6 +210,7 @@ const partida = async (m) => {
     .find({ _id: teamId }, { $projection: { "jogos": 1 } })
     .toArray();
   const texto = formataJogo(response[0].jogos[matchIdx]);
+  // const texto = jogoDestaqueDoDia({ jogo: response[0].jogos[matchIdx], time: response[0] })
   return await client.sendMessage(m.from, texto);
 }
 
@@ -241,16 +242,6 @@ const publicaJogoAleatorio = async () => {
     return await sendTextToGroups(texto);
   }
   console.info('Nenhum jogo hoje!');
-}
-
-const jogoDeHojeNaHistoria = async () => {
-  const today = new Date();
-  const response = await fetchJogosDe(today);
-  if (response) {
-    const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
-    return texto
-  }
-  return '';
 }
 
 const fetchProximasPartidas = async () => {
@@ -339,6 +330,5 @@ module.exports = {
   adversarios,
   partida,
   publicaJogoAleatorio,
-  jogoDeHojeNaHistoria,
   proximaPartida,
 };

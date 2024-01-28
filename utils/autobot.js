@@ -59,16 +59,16 @@ const jogosHistoricos = (time) => {
   })
 }
 
-const bolaoSystem = (time) => {
-  cron.schedule(time, async () => {
-    const today = new Date();
-    console.info('Preparando o bolão - ', today.toLocaleString('pt-br'));
-    await publicaJogoAleatorio();
-  }, {
-    scheduled: true,
-    timezone: "America/Sao_Paulo"
-  })
-}
+// const bolaoSystem = (time) => {
+//   cron.schedule(time, async () => {
+//     const today = new Date();
+//     console.info('Preparando o bolão - ', today.toLocaleString('pt-br'));
+//     await publicaJogoAleatorio();
+//   }, {
+//     scheduled: true,
+//     timezone: "America/Sao_Paulo"
+//   })
+// }
 
 module.exports = {
   bomDia,
