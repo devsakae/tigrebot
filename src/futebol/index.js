@@ -128,7 +128,7 @@ const jogadorDoTigreAleatorio = async () => {
     if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube}`
   });
   response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - tigrebot.devsakae.tech'
-  
+
   await postTweet(tweet);
   await sendMediaUrlToChannels({ url: atl[0].image, caption: response });
   return await sendMediaUrlToGroups({ url: atl[0].image, caption: response });
@@ -169,26 +169,34 @@ const adversarios = async (m) => {
   }
   const t = response[0];
   const aproveitamento = headToHead(t.resumo);
+  const logo = await MessageMedia.fromUrl(t.logo);
   let texto = `Histórico completo de Criciúma 🐯 _vs_ ${t.adversario} (${t.uf})\n`;
   texto += `\n⚽️ Jogos: ${t.resumo.j}`;
   texto += `\n✅ Vencemos: ${t.resumo.v}`;
   texto += `\n⏺ Empatamos: ${t.resumo.e}`;
   texto += `\n❌ Perdemos: ${t.resumo.d}`;
   texto += `\n👉 Aproveitamento: ${aproveitamento}%`;
-  texto += `\n\nEu tenho ${t.jogos.length} jogos cadastrados (divididos em lotes de 20):\n`
-  const logo = await MessageMedia.fromUrl(t.logo);
-  if (t.jogos.length < 20) {
+  if (t.jogos.length < 11) {
+    texto += `\n\nEu tenho ${t.jogos.length} jogo(s) cadastrado(s) no meu banco de dados. Segue a lista!\n`
     t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
     return await client.sendMessage(m.from, logo, { caption: texto });
   }
+  texto += `\n\nEu tenho ${t.jogos.length} jogo, mas só o admin pode pedir para listá-los (eu sou muito caro e chique).\n`
   await client.sendMessage(m.from, logo, { caption: texto });
-  const partes = Math.floor(t.jogos.length / 20) + 1
-  let auxi = 0;
-  for (let i = 0; i < t.jogos.length; i + 20) {
-    let textofull = `Parte ${(auxi / 20) + 1}/${partes}\n`;
-    t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${id + auxi + 1}\n`)
-    auxi += 20;
-    await client.sendMessage(m.from, textofull);
+  if (m.from === process.env.BOT_OWNER) {
+    if (t.jogos.length < 20) {
+      t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
+      return await client.sendMessage(m.from, logo, { caption: texto });
+    }
+    await client.sendMessage(m.from, logo, { caption: texto });
+    const partes = Math.floor(t.jogos.length / 20) + 1
+    let auxi = 0;
+    for (let i = 0; i < t.jogos.length; i + 20) {
+      let textofull = `Parte ${(auxi / 20) + 1}/${partes}\n`;
+      t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${id + auxi + 1}\n`)
+      auxi += 20;
+      await client.sendMessage(m.from, textofull);
+    }
   }
   return;
 }
@@ -290,7 +298,7 @@ const proximaPartida = async () => {
     const dataehora = new Date(res[0].startTimestamp * 1000)
     const horadojogo = dataehora.toLocaleString('pt-br', {
       month: "long",
-      day: "numeric",  
+      day: "numeric",
       weekday: "long",
       hour: "numeric",
       minute: "numeric"

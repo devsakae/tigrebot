@@ -8,6 +8,7 @@ const { saveLocal } = require('./utils/index');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida } = require('./src/futebol');
 const { canal, publicaQuotedMessage, publicaMessage, bomDiaComDestaque } = require('./src/canal');
 const { echoToGroups } = require('./utils/sender');
+const { bolao } = require('./src/bolao');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
@@ -92,9 +93,8 @@ client.on('message', async (m) => {
     return await replyUser(m);
   }
 
-  // Módulo Bolão
-  // bolao(m) // (API-FOOTBALL - https://rapidapi.com/api-sports/api/api-football/)
-  // bolao_mongodb(m);
+  // Módulo Bolão refeito 2024
+  return await bolao(m);
 });
 
 client.on('message_reaction', async (m) => {

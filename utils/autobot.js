@@ -37,21 +37,32 @@ const atletaDestaque = time => {
   })
 }
 
-const googleNewsCriciuma = (time) => {
+// const googleNewsCriciuma = (time) => {
+//   cron.schedule(time, async () => {
+//     const today = new Date();
+//     console.info('Rodando Google News Criciúma - ', today.toLocaleString('pt-br'));
+//     await atualizaSobreCriciuma();
+//   }, {
+//     scheduled: true,
+//     timezone: "America/Sao_Paulo"
+//   })
+// }
+
+const jogosHistoricos = (time) => {
   cron.schedule(time, async () => {
     const today = new Date();
-    console.info('Rodando Google News Criciúma - ', today.toLocaleString('pt-br'));
-    await atualizaSobreCriciuma();
+    console.info('Rodando Jogo de Hoje na História - ', today.toLocaleString('pt-br'));
+    await publicaJogoAleatorio();
   }, {
     scheduled: true,
     timezone: "America/Sao_Paulo"
   })
 }
 
-const jogosHistoricos = (time) => {
+const bolaoSystem = (time) => {
   cron.schedule(time, async () => {
     const today = new Date();
-    console.info('Rodando Jogo de Hoje na História - ', today.toLocaleString('pt-br'));
+    console.info('Preparando o bolão - ', today.toLocaleString('pt-br'));
     await publicaJogoAleatorio();
   }, {
     scheduled: true,

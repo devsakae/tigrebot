@@ -351,7 +351,7 @@ const addToPrompt = async m => {
 }
 
 const pushToPrompt = async m => {
-  // Uso: /add errors.teste Isso é apenas um teste.
+  // Uso: /push saudacoes.teste Isso é apenas um teste.
   const msgArr = m.body.split(' ');
   const mykey = msgArr[1];
   if (mykey === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts).slice(3)));
