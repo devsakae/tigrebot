@@ -37,17 +37,6 @@ const atletaDestaque = time => {
   })
 }
 
-// const googleNewsCriciuma = (time) => {
-//   cron.schedule(time, async () => {
-//     const today = new Date();
-//     console.info('Rodando Google News Criciúma - ', today.toLocaleString('pt-br'));
-//     await atualizaSobreCriciuma();
-//   }, {
-//     scheduled: true,
-//     timezone: "America/Sao_Paulo"
-//   })
-// }
-
 const jogosHistoricos = (time) => {
   cron.schedule(time, async () => {
     const today = new Date();
@@ -74,6 +63,5 @@ module.exports = {
   bomDia,
   audio,
   atletaDestaque,
-  googleNewsCriciuma,
   jogosHistoricos,
 }
