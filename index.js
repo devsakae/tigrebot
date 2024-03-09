@@ -119,12 +119,12 @@ client.on('message_reaction', async (m) => {
   //   }
   //   return;
   // }
-  // if (m && m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
-  //   console.info('Republicando mensagem');
-  //   const message = await client.getMessageById(m.msgId._serialized);
-  //   if (message) return await publicaMessage(message);
-  //   return;
-  // }
+  if (m && m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
+    console.info('Republicando mensagem');
+    const message = await client.getMessageById(m.msgId._serialized);
+    if (message) return await publicaMessage(message);
+    return;
+  }
 })
 
 client.on('group_join', async (e) => {

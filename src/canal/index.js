@@ -126,7 +126,7 @@ const bomDiaComDestaque = async () => {
     response += legenda_aniversariantes
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
-  await sendTextToChannels(response);
+  // await sendTextToChannels(response);
   await sendTextToGroups(response);
   // return await replyTweet({ id: firstTweet, text: tweet });
   return await postTweet(tweet);
@@ -273,7 +273,7 @@ const publicaQuotedMessage = async (m) => {
     }
   }
   await sendTextToGroups(raw.body);
-  await sendTextToChannels(raw.body);
+  // await sendTextToChannels(raw.body);
   return await postTweet(raw.body)
 }
 
@@ -292,8 +292,8 @@ const publicaMessage = async (m) => {
     }
     return;
   }
-  await sendTextToGroups(m.body);
-  return await sendTextToChannels(m.body);
+  return await sendTextToGroups(m.body);
+  // return await sendTextToChannels(m.body);
 }
 
 const diasEspeciais = () => {

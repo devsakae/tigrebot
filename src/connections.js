@@ -28,32 +28,48 @@ const executablePath =
 const client = new Client({
   authStrategy: new LocalAuth(),
   puppeteer: {
+    headless: true,
     executablePath: executablePath,
+    args: [
+      "--no-sandbox",
+      "--no-first-run",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-accelerated-2d-canvas",
+      "--disable-gpu",
+      "--single-process",
+      "--no-zygote",
+    ],
   },
+  webVersion: "2.2410.1",
+  webVersionCache: {
+    type: 'remote',
+    remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2410.1.html',
+  }
 });
 client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
 
 client.on('ready', async () => {
   console.info('Conectado!')
+
   console.info('\nConfigurando grupos e canais...');
-  const allChans = await client.getChannels();
-  allChans
-    .filter((chan) => !chan.isReadOnly)
-    .forEach((mine) => {
-      config.canais = { [mine.id._serialized]: mine.name };
-      console.info('✔️ ', mine.name, '[canal]');
-    });
+  // const allChans = await client.getChannels();
+  // allChans
+  //   .filter((chan) => !chan.isReadOnly)
+  //   .forEach((mine) => {
+  //     config.canais = { [mine.id._serialized]: mine.name };
+  //     console.info('✔️ ', mine.name, '[canal]');
+  //   });
   const allChats = await client.getChats();
   await Promise.all(allChats.filter(c => !c.isGroup).map(async c => await c.delete()));
   await Promise.all(allChats
     .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {
+      if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
+      if (group.id._serialized.endsWith('-1401890927@g.us')) return '';
       config.grupos[group.id._serialized] = { palpiteiros: [] };
-      await group.clearMessages();
-      // if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
-      // if (group.id._serialized.endsWith('-1401890927@g.us')) return '';
-      // const totalMessages = await group.fetchMessages({ limit: 10 });
-      // await Promise.all(totalMessages.filter(m => m.ack === 1).map(async m => await group.sendSeen(m.id._serialized)))
+      const totalMessages = await group.fetchMessages({ limit: 10 });
+      await Promise.all(totalMessages.filter(m => m.ack === 1).map(async m => await group.sendSeen(m.id._serialized)))
       console.log('✔️ ', group.name, '[grupo]');
     }));
   fs.writeFileSync(
