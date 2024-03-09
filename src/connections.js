@@ -67,9 +67,11 @@ client.on('ready', async () => {
     .map(async (group) => {
       if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
       if (group.id._serialized.endsWith('-1401890927@g.us')) return '';
+      if (group.id._serialized.includes('newsletter')) return '';
+      await group.clearMessages();
       config.grupos[group.id._serialized] = { palpiteiros: [] };
-      const totalMessages = await group.fetchMessages({ limit: 10 });
-      await Promise.all(totalMessages.filter(m => m.ack === 1).map(async m => await group.sendSeen(m.id._serialized)))
+      // const totalMessages = await group.fetchMessages({ limit: 10 });
+      // await Promise.all(totalMessages.filter(m => m.ack === 1).map(async m => await group.sendSeen(m.id._serialized)))
       console.log('✔️ ', group.name, '[grupo]');
     }));
   fs.writeFileSync(
