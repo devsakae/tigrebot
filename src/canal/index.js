@@ -54,7 +54,7 @@ const bomDiaComDestaque = async () => {
   // Hoje tem feriado no país? Magina!
   const legenda_feriados = diasEspeciais();
   if (legenda_feriados) {
-    response += '\n'
+    response += '\n\n'
     response += legenda_feriados;
   }
 
@@ -116,7 +116,7 @@ const bomDiaComDestaque = async () => {
       }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
       response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas (${totalJogos.v}V/${totalJogos.e}E/${totalJogos.d}D), marcou ${totalJogos.gols} gols e jogou a última partida com a camisa do Tigre por ${jogosPeloTigre[0].torneio} em ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${legenda_aniversariantes}`;
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s) e venceu ${totalJogos.v} jogos.`;
-      await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
+      //await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
       // return await replyTweet({ id: firstTweet, text: tweet });
       return await postTweet(tweet);
@@ -126,9 +126,7 @@ const bomDiaComDestaque = async () => {
     response += legenda_aniversariantes
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
-  // await sendTextToChannels(response);
   await sendTextToGroups(response);
-  // return await replyTweet({ id: firstTweet, text: tweet });
   return await postTweet(tweet);
 }
 
@@ -152,8 +150,8 @@ const instagramThis = async (user = 'criciumaoficial') => {
       ? await instaApi30(user)
       : await instaApi243(user);
     instaApiOption += 1;
-    await sendInstagramToGroups(post);
-    return await sendInstagramToChannels(post);
+    return await sendInstagramToGroups(post);
+    //return await sendInstagramToChannels(post);
   } catch (err) {
     return sendAdmin(err);
   }
@@ -250,8 +248,8 @@ const fetchInstaId = async (m) => {
     owner: data.owner.username,
   }
   saveLocalInstagram(update)
-  await sendInstagramToGroups(update);
-  return await sendInstagramToChannels(update);
+  return await sendInstagramToGroups(update);
+  //return await sendInstagramToChannels(update);
 }
 
 const publicaQuotedMessage = async (m) => {
