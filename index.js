@@ -7,8 +7,9 @@ const { replyUser, falaPraEle } = require('./src/jokes');
 const { saveLocal } = require('./utils/index');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida } = require('./src/futebol');
 const { canal, publicaQuotedMessage, publicaMessage, bomDiaComDestaque } = require('./src/canal');
-const { echoToGroups } = require('./utils/sender');
+const { echoToGroups, echoToChannel } = require('./utils/sender');
 const { bolao } = require('./src/bolao');
+const { postTweet } = require('./utils/twitter');
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
@@ -70,7 +71,9 @@ client.on('message', async (m) => {
 
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
     const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
-    console.log('Echoing:', echomsg)
+    console.log('Echoing:\n', echomsg);
+    await echoToChannel(echomsg);
+    await postTweet(echomsg);
     return await echoToGroups(echomsg)
   }
 

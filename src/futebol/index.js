@@ -238,7 +238,7 @@ const publicaJogoAleatorio = async () => {
   const response = await fetchJogosDe(today);
   if (response) {
     const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
-    await sendTextToChannels(texto);
+    // await sendTextToChannels(texto);
     return await sendTextToGroups(texto);
   }
   console.info('Nenhum jogo hoje!');
