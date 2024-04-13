@@ -1,6 +1,6 @@
 {
   "name": "tigrebot",
-  "version": "2.1.0",
+  "version": "2.4.0",
   "description": "Um bot exclusivo pra quem é apaixonado pelo Tigre",
   "main": "index.js",
   "scripts": {
