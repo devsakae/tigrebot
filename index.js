@@ -10,6 +10,8 @@ const { canal, publicaQuotedMessage, publicaMessage, bomDiaComDestaque } = requi
 const { echoToGroups, echoToChannel } = require('./utils/sender');
 const { bolao } = require('./src/bolao');
 const { postTweet } = require('./utils/twitter');
+const { log_this } = require('./utils/admin');
+const { log_info } = require('./utils/admin')
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
@@ -132,10 +134,8 @@ client.on('message_reaction', async (m) => {
 
 client.on('group_join', async (e) => {
   const newGroup = await e.getChat();
-  console.info('Colocando grupo', newGroup.name, 'na lista de envios')
-  config.grupos[newGroup.id._serialized] = { palpiteiros: [] }
-  saveLocal(config);
-  return await client.sendMessage(process.env.BOT_OWNER, `Configurações do grupo ${newGroup.name} realizadas com sucesso!`)
+  log_this("Boas vindas a usuário no grupo " + newGroup.name);
+  return await client.sendMessage(newGroup.id,_serialized, 'Olha, ele entrou no grupo mesmo')
 })
 
 client.on('group_update', async (e) => {
