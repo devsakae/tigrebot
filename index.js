@@ -99,7 +99,7 @@ client.on('message', async (m) => {
   }
 
   // Módulo Bolão refeito 2024
-  // return await bolao(m);
+  return await bolao(m);
 });
 
 client.on('message_reaction', async (m) => {
@@ -135,28 +135,11 @@ client.on('message_reaction', async (m) => {
 client.on('group_join', async (e) => {
   const newGroup = await e.getChat();
   log_this("Boas vindas a usuário no grupo " + newGroup.name);
-  return await client.sendMessage(newGroup.id,_serialized, 'Olha, ele entrou no grupo mesmo')
-})
-
-client.on('group_update', async (e) => {
-  const newGroup = await e.getChat();
-  if (newGroup.isMuted || newGroup.isReadOnly) {
-    console.info('Retirando grupo', newGroup.name, 'temporariamente dos envios')
-    config.grupos = {
-      ...Object.entries(config.grupos.filter(([key]) => key !== newGroup.id._serialized))
-    }
-    return saveLocal(config);
-  }
-  console.info('Colocando grupo', newGroup.name, 'na lista de envios')
-  config.grupos[newGroup.id._serialized] = { palpiteiros: [] }
-  return saveLocal(config);
+  return await client.sendMessage(newGroup.id,_serialized, 'Olha, ele entrou no grupo mesmo');
 })
 
 client.on('group_leave', async (e) => {
   const newGroup = await e.getChat();
-  console.info('Retirando grupo', newGroup.name, 'do cadastro')
-  config.grupos = {
-    ...Object.entries(config.grupos.filter(([key]) => key !== newGroup.id._serialized))
-  }
-  return saveLocal(config);
+  log_this("Adeus a usuário no grupo " + newGroup.name);
+  return await client.sendMessage(newGroup.id._serialized, 'Saiu porque viu o tamanho da minha pica');
 })

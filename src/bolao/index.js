@@ -3,6 +3,7 @@ const cron = require('node-cron');
 const { client, mongoclient } = require('../connections');
 const { saveLocal, fetchWithParams } = require('../../utils');
 const { forMatch } = require('./utils/functions');
+const { log_info } = require('../../utils/admin');
 
 const bolao = async (m) => {
   if (m.from === process.env.BOT_OWNER && m.body.startsWith('!bolao start')) return startBolao(m);
@@ -28,6 +29,7 @@ const startBolao = async m => {
     config.bolao.grupos.push(m.from);
     saveLocal(config);
     const grupo = await m.getChat();
+    log_info('Ativando bolão no grupo ' + grupo.name);
     return m.reply('Bolão ativado para o grupo *' + grupo.name + '*.')
   }
   return m.reply('Este grupo já está como ativo no sistema de bolão!');
