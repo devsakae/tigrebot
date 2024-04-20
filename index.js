@@ -11,7 +11,6 @@ const { echoToGroups, echoToChannel } = require('./utils/sender');
 const { bolao } = require('./src/bolao');
 const { postTweet } = require('./utils/twitter');
 const { log_this } = require('./utils/admin');
-const { log_info } = require('./utils/admin')
 // const { bolao_mongodb } = require('./src/bolao_mongodb');
 // const { getMongoPalpites } = require('./src/bolao_mongodb/user');
 
