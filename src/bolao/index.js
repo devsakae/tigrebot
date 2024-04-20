@@ -25,7 +25,7 @@ const bolao = async (m) => {
 }
 
 const startBolao = async m => {
-  if (!config.bolao.grupos.some(m.from)) {
+  if (!config.bolao.grupos.some((item) => item === m.from)) {
     config.bolao.grupos.push(m.from);
     saveLocal(config);
     const grupo = await m.getChat();
