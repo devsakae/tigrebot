@@ -6,7 +6,7 @@ const { forMatch } = require('./utils/functions');
 const { log_info } = require('../../utils/admin');
 
 const bolao = async (m) => {
-  if (m.from === process.env.BOT_OWNER && m.body.startsWith('!bolao start')) return startBolao(m);
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!bolao start')) return startBolao(m);
   if (config.bolao.grupos.includes(m.from) && config.bolao.listening && m.hasQuotedMsg) {
     const isTopic = await m.getQuotedMessage();
     const matchingRegex = isTopic.body.match(/\d+$/)[0];
