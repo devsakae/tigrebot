@@ -2,8 +2,8 @@ const config = require('../../data/tigrebot.json');
 const cron = require('node-cron');
 const { client, mongoclient } = require('../connections');
 const { saveLocal, fetchWithParams } = require('../../utils');
-const { forMatch } = require('./utils/functions');
-const { log_info } = require('../../utils/admin');
+const { forMatch, sendAdmin } = require('./utils/functions');
+const { log_info, log_erro } = require('../../utils/admin');
 
 const bolao = async (m) => {
   if (m.author === process.env.BOT_OWNER) {
@@ -57,8 +57,8 @@ const abreRodada = async () => {
     saveLocal(config);
     return await preparaProximaRodada();
   } catch (err) {
-    console.error(err);
-    return client.sendMessage(process.env.BOT_OWNER, 'Erro: ' + err)
+    log_erro(err);
+    return sendAdmin(err);
   }
 }
 

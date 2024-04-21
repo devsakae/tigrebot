@@ -1,16 +1,24 @@
+const { sendAdmin } = require("../src/bolao/utils/functions");
+
 const log_info = (msg) => {
   const timestamp = new Date();
-  return console.info("INFO [" + timestamp.toLocaleString("pt-br") + "] " + msg);
+  const fullmsg = "INFO [" + timestamp.toLocaleString("pt-br") + "] " + msg;
+  sendAdmin(fullmsg);
+  return console.info(fullmsg);
 }
 
 const log_erro = (msg) => {
   const timestamp = new Date();
-  return console.error("ERRO [" + timestamp.toLocaleString("pt-br") + "] " + msg);
+  const fullmsg = "ERRO [" + timestamp.toLocaleString("pt-br") + "] " + msg;
+  sendAdmin(fullmsg);
+  return console.error(fullmsg);
 }
 
 const log_this = (msg) => {
   const timestamp = new Date();
-  return console.log("LOG [" + timestamp.toLocaleString("pt-br") + "] " + msg);
+  const fullmsg = "LOG [" + timestamp.toLocaleString("pt-br") + "] " + msg;
+  sendAdmin(fullmsg);
+  return console.log(fullmsg);
 }
 
 module.exports = {
