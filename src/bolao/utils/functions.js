@@ -8,7 +8,7 @@ const getCommand = (raw) => {
 
 const forMatch = (match) => {
   const data = new Date(fixture.timestamp * 1000);
-  return `🚨🚨 BOLÃO ABERTO! 🚨🚨
+  return `BOLÃO ABERTO! 🚨🚨
 
 ⚽️ ${match.teams.home.name} x ${match.teams.away.name} 🏆 ${match.league.name} 🗓 ${data.toLocaleString('pt-br')}
 

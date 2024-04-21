@@ -98,7 +98,7 @@ client.on('message', async (m) => {
   }
 
   // Módulo Bolão refeito 2024
-  // return await bolao(m);
+  return await bolao(m);
 });
 
 client.on('message_reaction', async (m) => {

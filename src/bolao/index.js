@@ -6,9 +6,12 @@ const { forMatch } = require('./utils/functions');
 const { log_info } = require('../../utils/admin');
 
 const bolao = async (m) => {
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!bolao start')) return startBolao(m);
+  if (m.author === process.env.BOT_OWNER) {
+    if (m.body.startsWith('!bolao start')) return startBolao(m);
+  }
   if (config.bolao.grupos.includes(m.from) && config.bolao.listening && m.hasQuotedMsg) {
     const isTopic = await m.getQuotedMessage();
+    if (!isTopic.body.startsWith('BOLÃO ABERTO!')) return;
     const matchingRegex = isTopic.body.match(/\d+$/)[0];
     if (config.grupos[m.from].palpiteiros.includes(m.author)) return m.reply('Já palpitou pô, que que tá incomodando?');
     if (isTopic && isTopic.fromMe) {
@@ -25,6 +28,7 @@ const bolao = async (m) => {
 }
 
 const startBolao = async m => {
+  log_info('Entrou em startBolao');
   if (!config.bolao.grupos.some((item) => item === m.from)) {
     config.bolao.grupos.push(m.from);
     saveLocal(config);
@@ -113,7 +117,6 @@ const habilitaPalpite = async (info) => {
     return { error: false };
   }
 };
-
 
 module.exports = {
   bolao,
