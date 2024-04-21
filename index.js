@@ -4,15 +4,12 @@ const { client, mongoclient } = require('./src/connections');
 const publicacoes = require('./utils/autobot');
 const { quotes, addQuote } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
-const { saveLocal } = require('./utils/index');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida } = require('./src/futebol');
 const { canal, publicaQuotedMessage, publicaMessage, bomDiaComDestaque } = require('./src/canal');
 const { echoToGroups, echoToChannel } = require('./utils/sender');
 const { bolao } = require('./src/bolao');
 const { postTweet } = require('./utils/twitter');
-const { log_this } = require('./utils/admin');
-// const { bolao_mongodb } = require('./src/bolao_mongodb');
-// const { getMongoPalpites } = require('./src/bolao_mongodb/user');
+const { log_this, log_info } = require('./utils/admin');
 
 (async () => {
   try {
@@ -33,11 +30,12 @@ const { log_this } = require('./utils/admin');
   } finally {
     console.info('\n' + prompts.admin.welcome);
     // Programações automáticas
-    publicacoes.bomDia("30 6 * * *") // Todos os dias às 6h30min
-    publicacoes.audio('20 9 * * 3,6'); // Quartas e sábados às 9h20min
-    publicacoes.atletaDestaque('20 9 * * 2,5') // Terças e sextas às 9h20min
-    publicacoes.jogosHistoricos('45 13 * * *') // Todos os dias às 13h45min
-    proximaPartida() // Publica sobre a partida do Tigre no dia do jogo às 8h00min
+    publicacoes.bomDia("30 6 * * *");             // Todos os dias às 6h30min
+    publicacoes.audio('20 9 * * 3,6');            // Quartas e sábados às 9h20min
+    publicacoes.atletaDestaque('20 9 * * 2,5');   // Terças e sextas às 9h20min
+    publicacoes.jogosHistoricos('45 13 * * *');   // Todos os dias às 13h45min
+    publicacoes.bolaoSystem('30 9 * * *');        // Todos os dias às 9h30min
+    proximaPartida()                              // Publica sobre a partida do Tigre no dia do jogo às 8h00min
   }
 })();
 
@@ -107,24 +105,24 @@ client.on('message_reaction', async (m) => {
   //   console.log('Adding quote by heart')
   //   return await addQuote(msg);
   // }
-  // if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
-  //   const message = await client.getMessageById(m.msgId._serialized);
-  //   if (message) {
-  //     const reactions = await message.getReactions();
-  //     console.log('reactions:', reactions);
-  //     console.log('reactions find.senders:', reactions.find((rct) => rct.id === '\u26BD').senders)
-  //     if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
-  //       console.log('3 ou mais gols!')
-  //       if (message.fromMe) return;
-  //       await message.react('🏆')
-  //       return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum!\n\nAh sim, também salvei ele no banco de dados de quotes... Dá um !quote aí (mentira, o Sakae ainda não codou essa parte');
-  //     }
-  //     return;
-  //   }
-  //   return;
-  // }
+  if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
+    const message = await client.getMessageById(m.msgId._serialized);
+    if (message) {
+      const reactions = await message.getReactions();
+      console.log('reactions:', reactions);
+      console.log('reactions find.senders:', reactions.find((rct) => rct.id === '\u26BD').senders)
+      if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
+        console.log('3 ou mais gols!')
+        if (message.fromMe) return;
+        await message.react('🏆')
+        return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum!\n\nAh sim, também salvei ele no banco de dados de quotes... Dá um !quote aí (mentira, o Sakae ainda não codou essa parte');
+      }
+      return;
+    }
+    return;
+  }
   if (m && m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
-    console.info('Republicando mensagem');
+    log_info('Republicando mensagem via reaction');
     const message = await client.getMessageById(m.msgId._serialized);
     if (message) return await publicaMessage(message);
     return;
