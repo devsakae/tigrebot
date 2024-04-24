@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const { client, mongoclient } = require('../connections');
 const { saveLocal, fetchWithParams } = require('../../utils');
 const { forMatch, sendAdmin } = require('./utils/functions');
-const { log_info, log_erro } = require('../../utils/admin');
+const { log_info, log_erro, log_this } = require('../../utils/admin');
 
 const bolao = async (m) => {
   if (m.author === process.env.BOT_OWNER) {
@@ -50,11 +50,13 @@ const abreRodada = async () => {
       params: {
         season: today.getFullYear(),
         team: config.bolao.id,
+        next: '2'
       },
     });
     if (response.length === 0) throw new Error('Nenhuma rodada encontrada');
     config.bolao.nextMatch = response[0];
     saveLocal(config);
+    log_this('Rodada preparada!')
     return await preparaProximaRodada();
   } catch (err) {
     log_erro(err);
