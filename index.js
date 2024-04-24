@@ -122,20 +122,6 @@ client.on('message_reaction', async (m) => {
       await originalMsg.reply('Caralho que golaço que tu meteu hein loco\n\nEntrou nos anais, NOS ANAIS da história do grupo');
       return await originalMsg.react('📝')
     }
-  }
-})
-    // if (message) {
-    //   const reactions = await message.getReactions();
-    //   console.log('reactions:', reactions);
-    //   console.log('reactions find.senders:', reactions.find((rct) => rct.id === '\u26BD').senders)
-    //   if (reactions && reactions.find((rct) => rct.id === '\u26BD').senders.length > 2) {
-    //     console.log('3 ou mais gols!')
-    //     if (message.fromMe) return;
-    //     await message.react('🏆')
-    //     return await message.reply('⚽️ Essa mensagem é um golaço!\n\nVocê ganhou o 🏆 prêmio MOTEL CLINIMAGEM oferecido por Tigrelino corporeixoum!\n\nAh sim, também salvei ele no banco de dados de quotes... Dá um !quote aí (mentira, o Sakae ainda não codou essa parte');
-    //   }
-    //   return;
-    // }
     return;
   }
 })
