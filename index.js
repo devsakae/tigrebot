@@ -113,8 +113,11 @@ client.on('message_reaction', async (m) => {
   }
   if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
     log_info('Meteram um golaço.');
-    const message = await client.getMessageById(m.msgId._serialized);
-    console.log(message);
+    await client.getMessageById(m.msgId._serialized)
+      .then((msg) => {
+        const reactions = msg.getReactions();
+        console.log(reactions);
+      })
     // if (message) {
     //   const reactions = await message.getReactions();
     //   console.log('reactions:', reactions);
