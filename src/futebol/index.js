@@ -181,9 +181,7 @@ const adversarios = async (m) => {
     t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
     return await client.sendMessage(m.from, logo, { caption: texto });
   }
-  texto += `\n\nEu tenho ${t.jogos.length} jogo, mas só o admin pode pedir para listá-los (eu sou muito caro e chique).\n`
-  await client.sendMessage(m.from, logo, { caption: texto });
-  if (m.from === process.env.BOT_OWNER) {
+  if (m.author === process.env.BOT_OWNER) {
     if (t.jogos.length < 20) {
       t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
       return await client.sendMessage(m.from, logo, { caption: texto });
@@ -197,8 +195,10 @@ const adversarios = async (m) => {
       auxi += 20;
       await client.sendMessage(m.from, textofull);
     }
+    return;
   }
-  return;
+  texto += `\n\nEu tenho ${t.jogos.length} jogos cadastrados, mas só o admin pode pedir para listá-los (eu sou muito caro e chique).\n`
+  return await client.sendMessage(m.from, logo, { caption: texto });
 }
 
 const partida = async (m) => {

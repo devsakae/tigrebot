@@ -145,13 +145,13 @@ const instaApiList = ['insta30', 'insta243'];
 
 const instagramThis = async (user = 'criciumaoficial') => {
   instaApiOption = instaApiOption === instaApiList.length ? 0 : instaApiOption;
-  client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch no instagram de @' + user + ' com ' + instaApiList[instaApiOption]);
+  sendAdmin('Aguarde! Iniciando fetch no instagram de @' + user + ' com ' + instaApiList[instaApiOption])
   try {
     const post = instaApiList[instaApiOption] === 'insta30'
       ? await instaApi30(user)
       : await instaApi243(user);
     instaApiOption += 1;
-    await sendInstagramToChannels(post);
+    // await sendInstagramToChannels(post);
     return await sendInstagramToGroups(post);
   } catch (err) {
     return sendAdmin(err);
@@ -271,8 +271,8 @@ const publicaQuotedMessage = async (m) => {
       return await postMediaTweet({ media: media, text: raw.body });
     }
   }
+  // await sendTextToChannels(raw.body);
   await sendTextToGroups(raw.body);
-  await sendTextToChannels(raw.body);
   return await postTweet(raw.body)
 }
 
@@ -291,7 +291,7 @@ const publicaMessage = async (m) => {
     }
     return;
   }
-  await sendTextToChannels(m.body);
+  // await sendTextToChannels(m.body);
   return await sendTextToGroups(m.body);
 }
 
