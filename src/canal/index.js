@@ -2,7 +2,7 @@ const { client, criciuma } = require('../connections');
 const { MessageMedia } = require('whatsapp-web.js');
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
-const { fetchWithParams, fetchApi } = require('../../utils');
+const { fetchWithParams, fetchApi, site_publish } = require('../../utils');
 const { saveLocal, savePrompts } = require('../../utils/handleFile');
 const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels, sendTextToGroups, sendTextToChannels } = require('../../utils/sender');
 const { getForecast } = require('../weather');
@@ -13,6 +13,7 @@ const { postTweet, postMediaTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
+const { log_erro, log_info, log_this } = require('../../utils/admin');
 
 const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
@@ -117,9 +118,8 @@ const bomDiaComDestaque = async () => {
       }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
       response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas (${totalJogos.v}V/${totalJogos.e}E/${totalJogos.d}D), marcou ${totalJogos.gols} gols e jogou a última partida com a camisa do Tigre por ${jogosPeloTigre[0].torneio} em ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${legenda_aniversariantes}`;
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s) e venceu ${totalJogos.v} jogos.`;
-      await sendMediaUrlToChannels({ url: chosenOne.image, caption: response });
       await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
-      // return await replyTweet({ id: firstTweet, text: tweet });
+      await site_publish(response);
       return await postTweet(tweet);
     }
     // Adiciona a lista de aniversariantes SEM atletas do Tigre
@@ -127,8 +127,8 @@ const bomDiaComDestaque = async () => {
     response += legenda_aniversariantes
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
-  await sendTextToChannels(response);
   await sendTextToGroups(response);
+  await site_publish(response);
   return await postTweet(tweet);
 }
 
@@ -146,22 +146,21 @@ const instaApiList = ['insta30', 'insta243'];
 
 const instagramThis = async (user = 'criciumaoficial') => {
   instaApiOption = instaApiOption === instaApiList.length ? 0 : instaApiOption;
-  sendAdmin('Aguarde! Iniciando fetch no instagram de @' + user + ' com ' + instaApiList[instaApiOption])
+  log_info('Aguarde! Iniciando fetch no instagram de @' + user + ' com ' + instaApiList[instaApiOption])
   try {
     const post = instaApiList[instaApiOption] === 'insta30'
       ? await instaApi30(user)
       : await instaApi243(user);
     instaApiOption += 1;
-    // await sendInstagramToChannels(post);
     return await sendInstagramToGroups(post);
   } catch (err) {
-    return sendAdmin(err);
+    return log_erro(err);
   }
 };
 
 // Publicação no whatsapp de conta do instagram
 const instaApi30 = async (user) => {
-  console.info('Fetching INSTAAPI30')
+  log_this('Buscando com INSTAAPI30');
   return await fetchWithParams({
     url: process.env.INSTAGRAM130_API_URL + '/account-feed',
     host: process.env.INSTAGRAM130_API_HOST,
@@ -170,7 +169,6 @@ const instaApi30 = async (user) => {
     },
   })
     .then(async (res) => {
-      console.info('Fetched!')
       if (!res || res.length === 0) throw Error('Não foi possível buscar nenhum post');
       let response = res[0];
       if (config.instagram.published.includes(response.node.id)) response = res.find((item) => !config.instagram.published.includes(item.node.id));
@@ -189,20 +187,16 @@ const instaApi30 = async (user) => {
       saveLocalInstagram(update);
       return update;
     })
-    .catch((err) => {
-      console.error(err)
-      return sendAdmin(err)
-    });
+    .catch((err) => log_erro(err) );
 }
 
 const instaApi243 = async () => {
-  console.info('Fetching INSTAAPI243')
+  log_info('Buscando com INSTAAPI243...')
   return await fetchApi({
     url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/10/%7Bend_cursor%7D', // @criciumaoficial
     host: 'instagram243.p.rapidapi.com'
   })
     .then(({ data }) => {
-      console.info('Fetched!')
       let response = data.edges;
       if (config.instagram.published.includes(response[0].node.id)) response = data.edges.find((item) => !config.instagram.published.includes(item.node.id));
       const update = {

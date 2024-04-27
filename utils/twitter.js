@@ -1,4 +1,5 @@
 const { TwitterApi } = require('twitter-api-v2');
+const { log_info, log_this, log_erro } = require('./admin');
 
 const client = new TwitterApi({
   appKey: process.env.TWITTER_CONSUMER_KEY,
@@ -7,12 +8,12 @@ const client = new TwitterApi({
   accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-const cutToFit = text => text.length < 281 ? text : text.substring(0, ).substring(0, 235) + '(...)\n\nLeia em devsakae.tech/tigrebot'
+const cutToFit = text => text.length < 281 ? text : text.substring(0, ).substring(0, 235) + '(...)\n\nLeia em portfolio-devsakae.vercel.app/tigrebot'
 
 const postTweet = async text => {
   try {
     const tweet = await client.v2.tweet(cutToFit(text));
-    console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
+    log_this('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
     return tweet.data.id;
   } catch (error) {
     return console.error(`Failed to post tweet: ${error}`);
@@ -23,7 +24,7 @@ const replyTweet = async ({ id, text }) => {
   try {
     //const tweet = await client.v1.reply(text, id);
     const tweet = await client.v2.reply({ status: text, toTweetId: id });
-    console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
+    log_this('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
     return tweet.data.id;
   } catch (err) {
     return console.error('Erro ao responder ao tweet');
@@ -35,9 +36,9 @@ const postMediaTweet = async ({ media, text }) => {
     const source = Buffer.from(media.data, 'base64');
     const mediaId = await client.v1.uploadMedia(source, { mimeType: media.mimetype });
     const tweet = await client.v2.tweet({ text: cutToFit(text), media: { media_ids: [mediaId] } });
-    return console.info('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
+    return log_this('Tweet postado! Veja em https://twitter.com/Tigrelog/status/' + tweet.data.id)
   } catch (error) {
-    return console.error(`Failed to post tweet: ${error}`);
+    return log_erro(`Failed to post tweet: ${error}`);
   }
 }
 

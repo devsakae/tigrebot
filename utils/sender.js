@@ -1,56 +1,70 @@
 const { client } = require('../src/connections');
 const config = require('../data/tigrebot.json');
 const { MessageMedia } = require('whatsapp-web.js');
+const { site_publish } = require('./mongo');
 
 const sendTextToGroups = async text => {
   for (dest of Object.keys(config.grupos)) {
     await client.sendMessage(dest, text)
   }
+  await site_publish(text);
 }
 
 const sendTextToChannels = async text => {
   for (dest of Object.keys(config.canais)) {
     await client.sendMessage(dest, text)
   }
+  await site_publish(text);
 }
 
-const echoToGroups = async text => await Promise.all(Object.keys(config.grupos).map(async g => await client.sendMessage(g, text)));
-const echoToChannel = async text => await Promise.all(Object.keys(config.canais).map(async c => await client.sendMessage(c, text)));
+const echoToGroups = async text => {
+  await Promise.all(Object.keys(config.grupos).map(async g => await client.sendMessage(g, text)));
+  await site_publish(text);
+}
+const echoToChannel = async text => {
+  await Promise.all(Object.keys(config.canais).map(async c => await client.sendMessage(c, text)));
+  await site_publish(text);
+}
 
 const sendBolaoGroups = async text => {
   for (grupo of Object.keys(config.bolao.grupos)) {
     await client.sendMessage(grupo, text);
   }
+  await site_publish(text);
 };
 
 const sendMediaUrlToGroups = async media => {
+  const mediaFile = await MessageMedia.fromUrl(media.url);
   for (grupo of Object.keys(config.grupos)) {
-    const mediaFile = await MessageMedia.fromUrl(media.url);
     await client.sendMessage(grupo, mediaFile, { caption: media.caption })
   }
+  await site_publish(media.caption);
 }
 
 const sendMediaUrlToChannels = async media => {
+  const mediaFile = await MessageMedia.fromUrl(media.url);
   for (grupo of Object.keys(config.canais)) {
-    const mediaFile = await MessageMedia.fromUrl(media.url);
     await client.sendMessage(grupo, mediaFile, { caption: media.caption })
   }
+  await site_publish(media.caption)
 }
 
 const sendInstagramToGroups = async media => {
+  const mediaFile = await MessageMedia.fromUrl(media.url);
+  const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link + '\nCapturado e enviado até você por TigreBot (https://portfolio-devsakae.vercel.app/tigrebot)';
   for (grupo of Object.keys(config.grupos)) {
-    const mediaFile = await MessageMedia.fromUrl(media.url);
-    const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link + '\nCapturado e enviado até você por TigreBot (devsakae.tech/tigrebot)';
     await client.sendMessage(grupo, mediaFile, { caption: newCaption });
   }
+  await site_publish(newCaption);
 }
 
 const sendInstagramToChannels = async media => {
+  const mediaFile = await MessageMedia.fromUrl(media.url);
+  const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link;
   for (canal of Object.keys(config.canais)) {
-    const mediaFile = await MessageMedia.fromUrl(media.url);
-    const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link;
     await client.sendMessage(canal, mediaFile, { caption: newCaption });
   }
+  await site_publish(newCaption);
 }
 
 module.exports = {

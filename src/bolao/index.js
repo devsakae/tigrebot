@@ -41,7 +41,10 @@ const startBolao = async m => {
 const abreRodada = async () => {
   if (config.bolao.grupos.length < 1) return;
   const today = new Date()
-  if (Object.keys(config.bolao.nextMatch) > 0 && (new Date(config.bolao.nextMatch.fixture.timestamp * 1000) < today)) return log_info("Já existe partida pronta para ser anunciada.");
+  if (Object.keys(config.bolao.nextMatch) > 0 && (new Date(config.bolao.nextMatch.fixture.timestamp * 1000) < today)) {
+    log_info("Republicando rodada.");
+    return publicaRodada();
+  }
   try {
     const { response } = await fetchWithParams({
       url: config.bolao.url + '/fixtures',
@@ -54,8 +57,7 @@ const abreRodada = async () => {
     if (response.length === 0) throw new Error('Nenhuma rodada encontrada');
     config.bolao.nextMatch = response[0];
     saveLocal(config);
-    log_this('Rodada preparada!')
-    return await preparaProximaRodada();
+    return setTimeout(() => preparaProximaRodada(), 5000);
   } catch (err) {
     return log_erro(err);
   }
