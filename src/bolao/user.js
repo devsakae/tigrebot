@@ -1,42 +1,41 @@
 // const data = require('./data/data.json');
 const config = require('../../data/tigrebot.json');
-const { saveLocal } = require('../../utils')
 const { mongoclient } = require('../connections');
 
-const habilitaPalpite = async (info) => {
-  const today = new Date();
-  const regex = /\d+\s*[x]\s*\d+/i;
-  if (!info.m.body.match(regex)) return { error: 'Palpite inválido' };
-  const homeScore = info.m.body.match(regex)[0].match(/^\d+/i);
-  const awayScore = info.m.body.match(regex)[0].match(/\d+$/i);
-  const palpiPack = {
-    torneioId: config.bolao.nextMatch.torneioId,
-    torneioSeason: config.bolao.nextMatch.torneioSeason,
-    date: today.toLocaleString('pt-br'),
-    userId: info.m.author,
-    userName: info.user,
-    homeScore: Number(homeScore),
-    awayScore: Number(awayScore),
-    resultado:
-      Number(homeScore) > Number(awayScore)
-        ? 'V'
-        : Number(homeScore) < Number(awayScore)
-          ? 'D'
-          : 'E',
-    goal_diff: Number(homeScore) - Number(awayScore),
-    goal_total: Number(homeScore) + Number(awayScore),
-    pontos: 0,
-  };
-  config.grupos[info.m.from].palpiteiros.push(info.m.author);
-  saveLocal(config);
-  try {
-    mongoclient.db(info.group).collection(info.matchId).insertOne(palpiPack);
-  } catch (err) {
-    return { error: 'Erro na conexão com o MongoDB' };
-  } finally {
-    return { error: false };
-  }
-};
+// const habilitaPalpite = async (info) => {
+//   const today = new Date();
+//   const regex = /\d+\s*[x]\s*\d+/i;
+//   if (!info.m.body.match(regex)) return { error: 'Palpite inválido' };
+//   const homeScore = info.m.body.match(regex)[0].match(/^\d+/i);
+//   const awayScore = info.m.body.match(regex)[0].match(/\d+$/i);
+//   const palpiPack = {
+//     torneioId: config.bolao.nextMatch.torneioId,
+//     torneioSeason: config.bolao.nextMatch.torneioSeason,
+//     date: today.toLocaleString('pt-br'),
+//     userId: info.m.author,
+//     userName: info.user,
+//     homeScore: Number(homeScore),
+//     awayScore: Number(awayScore),
+//     resultado:
+//       Number(homeScore) > Number(awayScore)
+//         ? 'V'
+//         : Number(homeScore) < Number(awayScore)
+//           ? 'D'
+//           : 'E',
+//     goal_diff: Number(homeScore) - Number(awayScore),
+//     goal_total: Number(homeScore) + Number(awayScore),
+//     pontos: 0,
+//   };
+//   config.grupos[info.m.from].palpiteiros.push(info.m.author);
+//   saveLocal(config);
+//   try {
+//     mongoclient.db(info.group).collection(info.matchId).insertOne(palpiPack);
+//   } catch (err) {
+//     return { error: 'Erro na conexão com o MongoDB' };
+//   } finally {
+//     return { error: false };
+//   }
+// };
 
 const getMongoPalpites = async () => {
   const matchId = JSON.stringify(config.bolao.nextMatch.id);
@@ -124,8 +123,6 @@ const calculaRankingDaPartida = async (matchId = config.bolao.nextMatch.id) => {
 // };
 
 module.exports = {
-  habilitaPalpite,
   listaPalpites,
-  // getRanking,
   getMongoPalpites,
 };

@@ -1,7 +1,7 @@
 const config = require('../../data/tigrebot.json');
 const cron = require('node-cron');
 const { client, mongoclient } = require('../connections');
-const { saveLocal, fetchWithParams } = require('../../utils');
+const { saveLocal, fetchWithParams, site_publish } = require('../../utils');
 const { forMatch } = require('./utils/functions');
 const { log_info, log_erro, log_this } = require('../../utils/admin');
 
@@ -82,9 +82,11 @@ const preparaProximaRodada = async () => {
 const publicaRodada = async () => {
   config.bolao.listening = true;
   saveLocal(config);
+  const gameday = forMatch(config.bolao.nextMatch);
   await Promise.all(config.bolao.grupos.map(async g => {
-    await client.sendMessage(g, forMatch(config.bolao.nextMatch))
+    await client.sendMessage(g, gameday)
   }))
+  await site_publish(gameday);
 }
 
 const habilitaPalpite = async (info) => {
