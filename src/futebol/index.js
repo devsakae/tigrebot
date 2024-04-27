@@ -3,11 +3,14 @@ const mongodb = require('mongodb');
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { client, criciuma } = require('../connections');
-const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDeHoje, jogoDestaqueDoDia } = require('./utils/functions');
+const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDestaqueDoDia } = require('./utils/functions');
 const { sendTextToGroups, sendTextToChannels, sendMediaUrlToChannels, sendMediaUrlToGroups } = require('../../utils/sender');
 const { postTweet } = require('../../utils/twitter');
 const { default: axios } = require('axios');
 const cron = require('node-cron');
+const { site_publish } = require('../../utils');
+const { log_erro, log_info } = require('../../utils/admin');
+
 // const predictions = async (m) => {
 //   const thisBolao = data[m.from];
 //   if (!thisBolao) return { message: 'Nenhum bolão ativo no momento.' };
@@ -179,6 +182,7 @@ const adversarios = async (m) => {
   if (t.jogos.length < 11) {
     texto += `\n\nEu tenho ${t.jogos.length} jogo(s) cadastrado(s) no meu banco de dados. Segue a lista!\n`
     t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
+    await site_publish(texto);
     return await client.sendMessage(m.from, logo, { caption: texto });
   }
   if (m.author === process.env.BOT_OWNER) {
@@ -198,6 +202,7 @@ const adversarios = async (m) => {
     return;
   }
   texto += `\n\nEu tenho ${t.jogos.length} jogos cadastrados, mas só o admin pode pedir para listá-los (eu sou muito caro e chique).\n`
+  await site_publish(texto);
   return await client.sendMessage(m.from, logo, { caption: texto });
 }
 
@@ -210,7 +215,7 @@ const partida = async (m) => {
     .find({ _id: teamId }, { $projection: { "jogos": 1 } })
     .toArray();
   const texto = formataJogo(response[0].jogos[matchIdx]);
-  // const texto = jogoDestaqueDoDia({ jogo: response[0].jogos[matchIdx], time: response[0] })
+  await site_publish(texto);
   return await client.sendMessage(m.from, texto);
 }
 
@@ -228,8 +233,7 @@ const fetchJogosDe = async (data) => {
     match = match.length > 1 ? match[Math.floor(Math.random() * match.length)] : match[0];
     return { match, team };
   } catch (err) {
-    console.error(err);
-    return;
+    return log_erro(err);
   }
 }
 
@@ -238,10 +242,9 @@ const publicaJogoAleatorio = async () => {
   const response = await fetchJogosDe(today);
   if (response) {
     const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
-    // await sendTextToChannels(texto);
     return await sendTextToGroups(texto);
   }
-  console.info('Nenhum jogo hoje!');
+  log_info('Nenhum jogo hoje!');
 }
 
 const fetchProximasPartidas = async () => {
@@ -258,7 +261,7 @@ const fetchProximasPartidas = async () => {
     return data.events;
   }
   catch (err) {
-    console.error(err);
+    log_erro(err);
     return '';
   }
 }
@@ -277,7 +280,7 @@ const fetchMatchById = async id => {
     throw new Error('Nenhuma partida programada');
   }
   catch (err) {
-    console.error(err);
+    log_erro(err);
     return '';
   }
 }
@@ -304,7 +307,6 @@ const proximaPartida = async () => {
     const schedstop = '15 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     if (cron.validate(schedstart)) {
       const task = cron.schedule(schedstart, async () => {
-        await sendTextToChannels(response);
         await sendTextToGroups(response);
         await postTweet(response + '\n\n@CriciumaEC #DaleTigre #VamosTigre');
       }, {
