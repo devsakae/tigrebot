@@ -17,7 +17,7 @@
     "start": "✔️ Bolão de jogos do Tigre iniciado! 🟡⚫️⚪️",
     "no_team": "Nenhum time encontrado! Veja a lista de times:\n",
     "no_matches": "Nenhuma partida encontrada! Verifique com o administrador.",
-    "start_header": "🚨🚨 Bolão aberto para",
+    "start_header": "BOLÃO ABERTO para",
     "active_bolao": "Já existe um bolão ativo para este time.",
     "encerra_bolao": "E essa foi a última rodada!\n\nVeja como ficou o ranking escrevendo !ranking no canal"
   },

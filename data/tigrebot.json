@@ -9,7 +9,74 @@
         "official": "Criciúma Esporte Clube",
         "url": "https://api-football-v1.p.rapidapi.com/v3",
         "host": "api-football-v1.p.rapidapi.com",
-        "nextMatch": {},
+        "nextMatch": {
+            "fixture": {
+                "id": 1180389,
+                "referee": null,
+                "timezone": "UTC",
+                "date": "2024-04-27T19:00:00+00:00",
+                "timestamp": 1714244400,
+                "periods": {
+                    "first": null,
+                    "second": null
+                },
+                "venue": {
+                    "id": 19377,
+                    "name": "Estádio São Januário",
+                    "city": "Rio de Janeiro, Rio de Janeiro"
+                },
+                "status": {
+                    "long": "Not Started",
+                    "short": "NS",
+                    "elapsed": null
+                }
+            },
+            "league": {
+                "id": 71,
+                "name": "Serie A",
+                "country": "Brazil",
+                "logo": "https://media.api-sports.io/football/leagues/71.png",
+                "flag": "https://media.api-sports.io/flags/br.svg",
+                "season": 2024,
+                "round": "Regular Season - 4"
+            },
+            "teams": {
+                "home": {
+                    "id": 133,
+                    "name": "Vasco DA Gama",
+                    "logo": "https://media.api-sports.io/football/teams/133.png",
+                    "winner": null
+                },
+                "away": {
+                    "id": 140,
+                    "name": "Criciuma",
+                    "logo": "https://media.api-sports.io/football/teams/140.png",
+                    "winner": null
+                }
+            },
+            "goals": {
+                "home": null,
+                "away": null
+            },
+            "score": {
+                "halftime": {
+                    "home": null,
+                    "away": null
+                },
+                "fulltime": {
+                    "home": null,
+                    "away": null
+                },
+                "extratime": {
+                    "home": null,
+                    "away": null
+                },
+                "penalty": {
+                    "home": null,
+                    "away": null
+                }
+            }
+        },
         "listening": false
     },
     "grupos": {

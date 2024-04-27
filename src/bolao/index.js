@@ -2,7 +2,7 @@ const config = require('../../data/tigrebot.json');
 const cron = require('node-cron');
 const { client, mongoclient } = require('../connections');
 const { saveLocal, fetchWithParams } = require('../../utils');
-const { forMatch, sendAdmin } = require('./utils/functions');
+const { forMatch } = require('./utils/functions');
 const { log_info, log_erro, log_this } = require('../../utils/admin');
 
 const bolao = async (m) => {
@@ -22,7 +22,6 @@ const bolao = async (m) => {
       }
       return await m.reply('Essa rodada não está ativa!');
     }
-    return;
   }
   return;
 }
@@ -36,19 +35,18 @@ const startBolao = async m => {
     log_info('Ativando bolão no grupo ' + grupo.name);
     return m.reply('Bolão ativado para o grupo *' + grupo.name + '*.')
   }
-  return m.reply('Este grupo já está como ativo no sistema de bolão!');
+  return abreRodada();
 }
 
 const abreRodada = async () => {
   if (config.bolao.grupos.length < 1) return;
   const today = new Date()
-  if (config.bolao.nextMatch && (new Date(config.bolao.nextMatch.fixture.timestamp * 1000) < today)) return console.info("Já existe partida pronta para ser anunciada.");
+  if (config.bolao.nextMatch && (new Date(config.bolao.nextMatch.fixture.timestamp * 1000) < today)) return log_info("Já existe partida pronta para ser anunciada.");
   try {
     const { response } = await fetchWithParams({
       url: config.bolao.url + '/fixtures',
       host: config.bolao.host,
       params: {
-        season: today.getFullYear(),
         team: config.bolao.id,
         next: '2'
       },
@@ -59,13 +57,14 @@ const abreRodada = async () => {
     log_this('Rodada preparada!')
     return await preparaProximaRodada();
   } catch (err) {
-    log_erro(err);
-    return sendAdmin(err);
+    return log_erro(err);
   }
 }
 
 const preparaProximaRodada = async () => {
-  if (!config.bolao.nextMatch) return client.sendMessage(process.env.BOT_OWNER, 'Houve um erro ao prepara a próxima rodada (no config.bolao.nextMatch)');
+  log_this('Preparando próxima rodada');
+  if (!config.bolao.nextMatch) return log_erro('Não existe nextMatch no config');
+  if ((config.bolao.nextMatch.fixture.timestamp - 111800000) <= new Date()) return publicaRodada();
   const matchDate = new Date(config.bolao.nextMatch.fixture.timestamp * 1000);
   const publishDate = '0 19 ' + (matchDate.getDate() - 1) + ' ' + (matchDate.getMonth() + 1) + ' *';
   if (cron.validate(publishDate)) {
