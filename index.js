@@ -112,17 +112,14 @@ client.on('message_reaction', async (m) => {
     return;
   }
   if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
-    log_info('Meteram um golaço.');
     const originalMsg = await client.getMessageById(m.msgId._serialized);
     if (originalMsg.hasReaction) {
-      log_info('Has reaction');
+      log_info('Meteram um golaço, vou meter também');
       const reactions = await originalMsg.getReactions();
-      console.log('reactions:', reactions)
-      const assistentes = reactions.filter((r) => r.id === '\u268D').senders.length;
-      console.log(assistentes, ' usuários disseram que foi golaço');
-      if (assistentes > 2) {
+      if (reactions[0].hasReactionByMe) return;
+      if (reactions[0].aggregateEmoji === '\u26BD') {
         await originalMsg.reply('Caralho que golaço que tu meteu hein loco\n\nEntrou nos anais, NOS ANAIS da história do grupo');
-        return await originalMsg.react('📝')
+        return await originalMsg.react('⚽️');
       }
     }
     return;

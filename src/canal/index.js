@@ -17,6 +17,7 @@ const { default: axios } = require('axios');
 const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
 const canal = async (m) => {
+  // Uso: /add errors.teste Isso é apenas um teste.
   if (m.body.startsWith('/add')) return await addToPrompt(m);
   if (m.body.startsWith('/push')) return await pushToPrompt(m);
   if (m.body.startsWith('/promptdelete')) return await deletePrompt(m);
@@ -333,7 +334,8 @@ const timemania = async () => {
 }
 
 const addToPrompt = async m => {
-  // Uso: /add errors.teste Isso é apenas um teste.
+  // "/add keys" para ver as chaves cadastradas
+  // "/add errors.teste Um teste" para adicionar a chave teste na chave errors.
   const msgArr = m.body.split(' ');
   const mykeys = msgArr[1];
   if (mykeys === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts).slice(0,3)));
