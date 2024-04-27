@@ -41,7 +41,7 @@ const startBolao = async m => {
 const abreRodada = async () => {
   if (config.bolao.grupos.length < 1) return;
   const today = new Date()
-  if (config.bolao.nextMatch && (new Date(config.bolao.nextMatch.fixture.timestamp * 1000) < today)) return log_info("Já existe partida pronta para ser anunciada.");
+  if (Object.keys(config.bolao.nextMatch) > 0 && (new Date(config.bolao.nextMatch.fixture.timestamp * 1000) < today)) return log_info("Já existe partida pronta para ser anunciada.");
   try {
     const { response } = await fetchWithParams({
       url: config.bolao.url + '/fixtures',
