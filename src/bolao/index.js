@@ -23,6 +23,9 @@ const bolao = async (m) => {
       return await m.reply('Essa rodada não está ativa!');
     }
   }
+  if (m.body.startsWith('!palpites')) {
+    return await m.reply('Eu juro que o Sakae instala isso hoje ainda')
+  }
   return;
 }
 

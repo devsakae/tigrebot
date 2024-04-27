@@ -100,11 +100,6 @@ client.on('message', async (m) => {
 });
 
 client.on('message_reaction', async (m) => {
-  // if (m && m.reaction === '❤️' && m.senderId === process.env.BOT_OWNER) {
-  //   const msg = await client.getMessageById(m.msgId._serialized);
-  //   console.log('Adding quote by heart')
-  //   return await addQuote(msg);
-  // }
   if (m && m.reaction === '🤖' && m.senderId === process.env.BOT_OWNER) {
     log_info('Republicando mensagem via reaction');
     const message = await client.getMessageById(m.msgId._serialized);
