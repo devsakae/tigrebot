@@ -219,6 +219,9 @@ const buscaResultado = async (tentativa = 1) => {
 
 const calculaRankingDaPartida = async (matchId = config.bolao.nextMatch.fixture.id) => {
   if (!matchId) return log_erro('Não foi possível calcular o ranking da partida. Verifique com o admin.\n\nERROR: NO_MATCHID');
+  Object.keys(config.grupos).forEach((g) => g.palpiteiros = []);
+  saveLocal(config);
+  return await sendBolaoGroups("Calculando ranking - Etapa em desenvolvimento");
 
   const listaDePalpites = await getMongoPalpites();
   listaDePalpites.forEach((item) => {
