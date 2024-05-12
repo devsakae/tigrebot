@@ -252,4 +252,5 @@ module.exports = {
   headToHead,
   formataJogo,
   jogoDestaqueDoDia,
+  calculaIdade,
 };
