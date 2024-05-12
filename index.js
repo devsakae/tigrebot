@@ -11,6 +11,8 @@ const { bolao } = require('./src/bolao');
 const { postTweet } = require('./utils/twitter');
 const { log_this, log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
+let modoQuiz = false;
+let grupoQuiz = '';
 
 (async () => {
   try {
@@ -51,9 +53,24 @@ client.on('message', async (m) => {
     return await canal(m);
   }
 
+  // if (m.author === process.env.BOT_OWNER && m.body.startsWith('!poll')) {
+  //   const enquete = new Poll("Pergunta?", ["Sim", "Não", "Talvez"]);
+  //   return await client.sendMessage(m.from, enquete);
+  // }
+  if (m.body.startsWith('!quiz')) {
+    console.info('Alguém pediu !quiz');
+    if (grupoQuiz === m.from && modoQuiz) return m.reply("Um quiz por hora, sossega o bumbum guloso aí");
+    grupoQuiz = m.from;
+    modoQuiz = true;
+    setTimeout(() => grupoQuiz = '', (15 * 60 * 1000));
+    setTimeout(() => modoQuiz = false, (60 * 60 * 1000));
+    return await quiz(m);
+  }
+  
   // Módulo Futebol (usa: Api-Football e FootApi7)
   if (m.body.startsWith('!jogounotigre')) {
     console.info('Alguém pediu !jogounotigre');
+    if (grupoQuiz === m.from) return m.reply("Durante o quiz é sacanagem né")
     return await jogounotigre(m);
   }
   if (m.body.startsWith('!jogos')) {
@@ -95,12 +112,6 @@ client.on('message', async (m) => {
     chat.sendStateTyping();
     return await replyUser(m);
   }
-
-  // if (m.author === process.env.BOT_OWNER && m.body.startsWith('!poll')) {
-  //   const enquete = new Poll("Pergunta?", ["Sim", "Não", "Talvez"]);
-  //   return await client.sendMessage(m.from, enquete);
-  // }
-  if (m.body.startsWith('!quiz')) return await quiz(m);
 
   // Módulo Bolão refeito 2024
   return await bolao(m);

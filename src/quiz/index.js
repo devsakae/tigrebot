@@ -1,27 +1,24 @@
 const { Poll, MessageMedia } = require('whatsapp-web.js');
 const { criciuma, client } = require('../connections');
 const { log_info, log_erro, log_this } = require('../../utils/admin');
-const { umAtleta } = require('../futebol/utils/functions');
+const { umAtleta, formataAdversario } = require('../futebol/utils/functions');
 const sorteio = ['idolos', 'acerteoidolo'];
 const subsorteio = ['totaljogos', 'idade'];
 const tempoQuiz = 15;
-let modoQuiz = false;
 
 const quiz = async (m) => {
-  if (modoQuiz) return m.reply("Um quiz por hora po");
-  const voltaAoNormal = setTimeout(() => modoQuiz = false, (60 * 60 * 1000));
-  modoQuiz = true;
   const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
   const meuQuiz = await buscaOpcoes(tipo);
   if (meuQuiz.correta === "ERRO") return m.reply("Erro ao iniciar o quiz");
+  if (tipo === 'adversario') return quizAdversarios(m, meuQuiz);
   const subtipo = subsorteio[Math.floor(Math.random() * subsorteio.length)];
   log_this("Mandando um quiz de " + tipo + " com subtipo " + subtipo);
-  if (tipo === 'idolos') return quizTipoIdolos(m, meuQuiz, subtipo);
+  if (tipo === 'idolos') return quizIdolos(m, meuQuiz, subtipo);
   if (tipo === 'acerteoidolo') return quizAcerteOIdolo(m, meuQuiz);
   else return log_erro("Quiz com erro");
 }
 
-const quizTipoIdolos = async (m, meuQuiz, subtipo) => {
+const quizIdolos = async (m, meuQuiz, subtipo) => {
   if (subtipo === 'totaljogos') {
     log_this("Enviando quiz de ÍDOLOS");
     let totalDeJogos = 0;
@@ -33,28 +30,28 @@ const quizTipoIdolos = async (m, meuQuiz, subtipo) => {
     falta(m, 5);
     const tempoEsgotado = setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
     // const tempoEsgotado = setTimeout(() => client.sendMessage(m.from, pollAnswer), (tempoQuiz * 60 * 1000));
-    return await client.sendMessage(m.from, minhaPoll);
+    const messageId = await client.sendMessage(m.from, minhaPoll);
+    console.log("POLL MESSAGEID");
+    console.log(messageId);
+    setTimeout(() => messageId.reply("Quote"), 5000)
+    return;
   }
   if (subtipo === 'idade') {
     log_this("Enviando quiz de IDADE DE ÍDOLOS");
-    const sp = meuQuiz.correta.birthday.split("/");
-    const today = new Date();
-    const matchDate = new Date(sp[2], sp[1], sp[0])
-    const diff = today.getTime() - matchDate.getTime()
-    const totalIdade = Math.ceil(diff / (1000 * 3600 * 24 * 365));
+    const totalIdade = calculateAge(meuQuiz.correta.birthday);
     let pollQuestion = "QUIZ: Quantos anos tem/teria o atleta *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ") na data de hoje?";
     let pollOptions = baguncinha(totalIdade).sort((a, b) => a - b);
-    // let pollAnswer = "QUIZ: Tempo esgotado!\n\n*" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.position + ") tem/teria a idade de " + totalIdade + " anos hoje.";
+    let pollAnswer = "QUIZ: Tempo esgotado!\n\n*" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.position + ") nasceu em " + meuQuiz.correta.birthday + ", e por isso tem/teria a idade de " + totalIdade + " anos hoje.";
     const minhaPoll = new Poll(pollQuestion, pollOptions);
     falta(m, 5);
-    const tempoEsgotado = setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
-    // const tempoEsgotado = setTimeout(() => client.sendMessage(m.from, pollAnswer), (tempoQuiz * 60 * 1000));
-    return await client.sendMessage(m.from, minhaPoll);
+    // const tempoEsgotado = setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
+    const tempoEsgotado = setTimeout(() => client.sendMessage(m.from, pollAnswer), (tempoQuiz * 60 * 1000));
+    const messageId = await client.sendMessage(m.from, minhaPoll);
+    console.log("POLL MESSAGEID");
+    console.log(messageId);
+    setTimeout(() => messageId.reply("Quote"), 5000)
+    return;
   }
-}
-
-const falta = (m, exp, tempo = tempoQuiz) => {
-  setTimeout(() => client.sendMessage(m.from, "Alô grupo de tartarugas! Faltam *" + JSON.stringify(exp) + " minutos* pra escolher uma opção!\n\nUse a porra do mouse"), (Number(tempo - exp) * 60 * 1000))
 }
 
 const quizAcerteOIdolo = async (m, meuQuiz) => {
@@ -72,14 +69,54 @@ const quizAcerteOIdolo = async (m, meuQuiz) => {
       d += Number(j.d);
     } else jogosContra += Number(j.jogos)
   })
-  let pollQuestion = "QUIZ: Quem é o atleta que disputou *" + JSON.stringify(totalDeJogos) + "* partidas pelo Tigre " + (estreia === final ? "em " + estreia + "?" : "entre os anos de " + estreia + " a " + final + "?");
+  let pollQuestion = "QUIZ: Que atleta disputou *" + JSON.stringify(totalDeJogos) + "* partidas pelo Tigre " + (estreia === final ? "em " + estreia + "?" : "entre os anos de " + estreia + " a " + final + "?");
   let pollOptions = [meuQuiz.correta.nickname, meuQuiz.opcoes[0].nickname, meuQuiz.opcoes[1].nickname, meuQuiz.opcoes[2].nickname, meuQuiz.opcoes[3].nickname].sort();
-  let pollAnswer = "QUIZ ENCERRADO!!\n\nO atleta em questão era ninguém mais ninguém menos que *" + meuQuiz.correta.name + "*, mais conhecido como " + meuQuiz.correta.nickname + " (" + meuQuiz.correta.position + "), com um impressionante histórico de " + JSON.stringify(v) + " vitórias, " + JSON.stringify(e) + " empates, " + JSON.stringify(d) + " derrotas e " + JSON.stringify(gols) + " gols marcados.";
+  // let pollAnswer = "QUIZ ENCERRADO!!\n\nO atleta em questão era ninguém mais ninguém menos que *" + meuQuiz.correta.name + "*, mais conhecido como " + meuQuiz.correta.nickname + " (" + meuQuiz.correta.position + "), com um impressionante histórico de " + JSON.stringify(v) + " vitórias, " + JSON.stringify(e) + " empates, " + JSON.stringify(d) + " derrotas e " + JSON.stringify(gols) + " gols marcados.";
   const minhaPoll = new Poll(pollQuestion, pollOptions);
   if (jogosContra > 0) setTimeout(() => client.sendMessage(m.from, "Tempo acabando, vai aqui uma dica pra quem ainda tá em dúvida: Esse atleta chegou a disputar " + jogosContra + " partidas contra o Tigre."), (20 * 60 * 1000));
   else falta(m, 5);
   const tempoEsgotado = setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
-  return await client.sendMessage(m.from, minhaPoll);
+  const messageId = await client.sendMessage(m.from, minhaPoll);
+  console.log("POLL MESSAGEID");
+  console.log(messageId);
+  setTimeout(() => messageId.reply("Quote"), 5000)
+  return;
+}
+
+const quizAdversarios = async (m, meuQuiz, subtipo) => {
+  if (subtipo === 'totaljogos') {
+    const escore = meuQuiz.correta.resumo.j + " jogos (" + meuQuiz.correta.resumo.v + "V/" + meuQuiz.correta.resumo.e + "E/" + meuQuiz.correta.resumo.d + "D)";
+    const pollQuestion = "QUIZ: Qual time tem o histórico de " + escore + " contra o Criciúma Esporte Clube?";
+    const pollOptions = opcoesAdversarios(meuQuiz);
+    const minhaPoll = new Poll(pollQuestion, pollOptions);
+    const messageId = await client.sendMessage(m.from, minhaPoll);
+    const foto = await MessageMedia.fromUrl(meuQuiz.correta.logo);
+    const caption = formataAdversario(meuQuiz.correta);
+    falta(m, 2);
+    const tempoEsgotado = setTimeout(() => client.sendMessage(m.from, foto, { caption: caption }), (tempoQuiz * 60 * 1000));
+  }
+  // if (subtipo === 'idade') {
+  else {
+    log_info("Quiz acerte o ADVERSÁRIO com subtipo: " + subtipo);
+    const umJogo = meuQuiz.correta.jogos[Math.floor(Math.random() * meuQuiz.correta.jogos.length)];
+    const tigreAnfitriao = umJogo.homeTeam.startsWith('CRICI')
+    const pontuacao = umJogo.homeScore === umJogo.awayScore
+                      ? "empatou conosco"
+                      : umJogo.homeScore > umJogo.awayScore && tigreAnfitriao
+                      ? "sofreu uma derrota pro 🐯 Tigrão"
+                      : "nos derrotou 🤬";
+    const placar = umJogo.homeScore === umJogo.awayScore
+                    ? "em " + JSON.stringify(umJogo.homeScore) + " a " + JSON.stringify(umJogo.awayScore)
+                    : umJogo.homeScore > umJogo.awayScore
+                      ? "por " + JSON.stringify(umJogo.homeScore) + " a " + JSON.stringify(umJogo.awayScore)
+                      : "por " + JSON.stringify(umJogo.awayScore) + " a " + JSON.stringify(umJogo.homeScore);
+    const pollQuestion = "QUIZ: Este adversário " + pontuacao + placar + " em " + umJogo.date + ".";
+    const pollOptions = opcoesAdversarios(meuQuiz);
+    const minhaPoll = new Poll(pollQuestion, pollOptions);
+    const messageId = await client.sendMessage(m.from, minhaPoll);
+    setTimeout(() => messageId.reply("⏳ Faltam 2 minutos pra encerrar o quiz, que é um dos mais fáceis que eu já fiz po\n\nO treinador deles nesse dia era o " + (tigreAnfitriao ? umJogo.away_treinador : umJogo.home_treinador)), ((tempoQuiz - 2) * 60 * 1000))
+    const tempoEsgotado = setTimeout(() => formataJogo(umJogo), (tempoQuiz * 60 * 1000));
+  }
 }
 
 const buscaOpcoes = async (tipo) => {
@@ -93,7 +130,16 @@ const buscaOpcoes = async (tipo) => {
     const opcoes = atleta.toSpliced(escolhidoIdx, 1);
     return { correta: escolhido, opcoes: opcoes }
   }
-  else return { correta: "ERRO", opcoes: [] }
+  if (tipo === 'adversarios') {
+    const adversario = await criciuma
+      .collection('jogos')
+      .aggregate([ { $sample: { size: 5 } } ])
+      .toArray();
+    const escolhidoIdx = Math.floor(Math.random() * adversario.length);
+    const escolhido = adversario[escolhidoIdx];
+    const opcoes = adversario.toSpliced(escolhidoIdx, 1);
+    return { correta: escolhido, opcoes: opcoes }
+  }
   // if (tipo === 'atletas') {
   //   const atleta = await criciuma
   //     .collection('atletas')
@@ -106,6 +152,7 @@ const buscaOpcoes = async (tipo) => {
   //     .aggregate([{ $sample: { size: 1 } }])
   //     .toArray();
   // }
+  else return { correta: "ERRO", opcoes: [] }
 }
 
 const baguncinha = (resposta) => {
@@ -153,11 +200,25 @@ const baguncinha = (resposta) => {
 const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 const randomOpr = (val, mol) => randomNum(0,1) === 0 ? (val + mol) : (val - mol) < 0 ? (val + mol) : (val - mol);
 
+const falta = (m, exp, tempo = tempoQuiz) => {
+  setTimeout(() => client.sendMessage(m.from, "Alô grupo de tartarugas! Faltam *" + JSON.stringify(exp) + " minutos* pra escolher uma opção!\n\nUse a porra do ~mouse~ dedo"), (Number(tempo - exp) * 60 * 1000))
+}
+
 const mostraAtletaEscolhido = async (m, escolhido) => {
   const foto = await MessageMedia.fromUrl(escolhido.image);
   const caption = umAtleta([escolhido]);
   return await client.sendMessage(m.from, foto, { caption: caption });
 }
+
+function calculateAge(raw_birthday) {
+  const rb = raw_birthday.split("/");
+  const birthday = new Date(rb[2], Number(rb[1]) - 1, rb[0]);
+  var ageDifMs = Date.now() - birthday;
+  var ageDate = new Date(ageDifMs); // miliseconds from epoch
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
+const opcoesAdversarios = (meuQuiz) => [meuQuiz.correta.adversario + " (" + meuQuiz.correta.uf + ")", ...meuQuiz.opcoes.map((adv) => adv.adversario + " (" + adv.uf + ")")].sort();
 
 module.exports = {
   quiz
