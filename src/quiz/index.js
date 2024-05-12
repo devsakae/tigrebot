@@ -20,42 +20,36 @@ const quiz = async (m) => {
 
 const quizIdolos = async (m, meuQuiz, subtipo) => {
   if (subtipo === 'totaljogos') {
-    log_this("Enviando quiz de ÍDOLOS");
-    let totalDeJogos = 0;
-    meuQuiz.correta.jogos.forEach((j) => { if (j.jogounotigre) totalDeJogos += Number(j.jogos) });
-    let pollQuestion = "QUIZ: Quantas partidas pelo Tigre jogou o ÍDOLO *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ")?";
-    let pollOptions = baguncinha(totalDeJogos);
-    // let pollAnswer = "QUIZ: Tempo esgotado!\n\nNosso ídolo *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.position + ") jogou o total de " + JSON.stringify(totalDeJogos) + " partidas pelo nosso tricolor, sendo a(s) última(s) " + meuQuiz.correta.jogos[0].jogos + " partida(s) no ano de " + meuQuiz.correta.jogos[0].ano + " pelo torneio " + meuQuiz.correta.jogos[0].torneio + ".";
+    const jogosDoTigre = meuQuiz.correta.filter((j) => j.jogounotigre);
+    const totalDeJogos = jogosDoTigre.reduce((acc, curr) => acc += Number(curr.jogos), 0);
+    const pollQuestion = "QUIZ: Quantas partidas pelo Tigre jogou o ÍDOLO *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ")?";
+    const pollOptions = baguncinha(totalDeJogos).sort((a, b) => a - b);
+    const campeonatoPeloTigre = jogosDoTigre[Math.floor(Math.random() * jogosDoTigre.length)];
+    const pollTip = "⏳ Faltando 5 minutos, e eu só consigo lembrar daquele(a) " + campeonatoPeloTigre.torneio + " que ele esteve em ";
+    const chutaUmNumero = randomNum(1,3);
+    if (chutaUmNumero === 1) pollTip += campeonatoPeloTigre.v + " vitórias.";
+    if (chutaUmNumero === 2) pollTip += campeonatoPeloTigre.e + " empates.";
+    if (chutaUmNumero === 3) pollTip += campeonatoPeloTigre.d + " derrotas.";
     const minhaPoll = new Poll(pollQuestion, pollOptions);
-    falta(m, 5);
-    const tempoEsgotado = setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
-    // const tempoEsgotado = setTimeout(() => client.sendMessage(m.from, pollAnswer), (tempoQuiz * 60 * 1000));
     const messageId = await client.sendMessage(m.from, minhaPoll);
-    console.log("POLL MESSAGEID");
-    console.log(messageId);
-    setTimeout(() => messageId.reply("Quote"), 5000)
-    return;
+    setTimeout(() => messageId.reply(pollTip), ((tempoQuiz - 5) * 60 * 1000))
+    return setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
   }
   if (subtipo === 'idade') {
-    log_this("Enviando quiz de IDADE DE ÍDOLOS");
     const totalIdade = calculateAge(meuQuiz.correta.birthday);
-    let pollQuestion = "QUIZ: Quantos anos tem/teria o atleta *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ") na data de hoje?";
-    let pollOptions = baguncinha(totalIdade).sort((a, b) => a - b);
-    let pollAnswer = "QUIZ: Tempo esgotado!\n\n*" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.position + ") nasceu em " + meuQuiz.correta.birthday + ", e por isso tem/teria a idade de " + totalIdade + " anos hoje.";
+    const pollQuestion = "QUIZ: Quantos anos tem/teria o atleta *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ") na data de hoje?";
+    const pollOptions = baguncinha(totalIdade).sort((a, b) => a - b);
+    const pollAnswer = "QUIZ: Tempo esgotado!\n\n*" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.position + ") nasceu em " + meuQuiz.correta.birthday + ", e por isso tem/teria a idade de " + totalIdade + " anos hoje.";
+    const pollTip = "⏳ Faltam 5 minutos!\n\nO cidadão aí faz aniversário no dia " + meuQuiz.correta.birthday.split('/')[0]
     const minhaPoll = new Poll(pollQuestion, pollOptions);
     falta(m, 5);
-    // const tempoEsgotado = setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
-    const tempoEsgotado = setTimeout(() => client.sendMessage(m.from, pollAnswer), (tempoQuiz * 60 * 1000));
     const messageId = await client.sendMessage(m.from, minhaPoll);
-    console.log("POLL MESSAGEID");
-    console.log(messageId);
-    setTimeout(() => messageId.reply("Quote"), 5000)
-    return;
+    setTimeout(() => messageId.reply(pollTip), ((tempoQuiz - 5) * 60 * 1000))
+    return setTimeout(() => client.sendMessage(m.from, pollAnswer), (tempoQuiz * 60 * 1000));
   }
 }
 
 const quizAcerteOIdolo = async (m, meuQuiz) => {
-  log_info("Quiz acerte o ÍDOLO!");
   let totalDeJogos = 0;
   let estreia, final, jogosContra, gols, v, e, d;
   meuQuiz.correta.jogos.forEach((j) => {

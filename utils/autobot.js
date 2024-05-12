@@ -5,6 +5,7 @@ const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../src/futebo
 const { atualizaSobreCriciuma } = require('../src/news');
 const { log_info } = require('./admin');
 const { abreRodada } = require('../src/bolao');
+const { quiz } = require('../src/quiz');
 
 const bomDia = time => {
   cron.schedule(time, async () => {
