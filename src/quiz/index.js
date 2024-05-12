@@ -140,7 +140,7 @@ const baguncinha = (resposta) => {
   if (optB === optA || optB === optC || optB === optD) return [resposta, optA, optC, optD];
   if (optC === optA || optC === optB || optC === optD) return [resposta, optA, optB, optD];
   if (optD === optA || optD === optB || optD === optC) return [resposta, optA, optB, optC];
-  return [resposta, optA, optB, optC, optD];
+  return [JSON.stringify(resposta), JSON.stringify(optA), JSON.stringify(optB), JSON.stringify(optC), JSON.stringify(optD)];
 }
 
 const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
