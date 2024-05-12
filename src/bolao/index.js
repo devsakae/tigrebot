@@ -39,7 +39,7 @@ const bolao = async (m) => {
     log_this('Enviando lista de palpites para ' + m.from);
     const listaCompleta = await listaPalpites();
     const listaDoGrupo = listaCompleta.find((g) => m.from.startsWith(g));
-    return listaDoGrupo.length() > 0 ? await m.reply(listaDoGrupo.message) : log_erro('Não encontrou grupo');
+    return listaDoGrupo.length > 0 ? await m.reply(listaDoGrupo.message) : log_erro('Não encontrou grupo');
   }
   return;
 }

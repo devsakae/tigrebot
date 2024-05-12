@@ -10,6 +10,8 @@ const { echoToGroups, echoToChannel } = require('./utils/sender');
 const { bolao } = require('./src/bolao');
 const { postTweet } = require('./utils/twitter');
 const { log_this, log_info } = require('./utils/admin');
+const { quiz } = require('./src/quiz');
+const { Poll } = require('whatsapp-web.js');
 
 (async () => {
   try {
@@ -94,6 +96,12 @@ client.on('message', async (m) => {
     chat.sendStateTyping();
     return await replyUser(m);
   }
+
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!poll')) {
+    const enquete = new Poll("Pergunta?", ["Sim", "Não", "Talvez"]);
+    return await client.sendMessage(m.from, enquete);
+  }
+  if (m.body.startsWith('!quiz')) return await quiz(m);
 
   // Módulo Bolão refeito 2024
   return await bolao(m);
