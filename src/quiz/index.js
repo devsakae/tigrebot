@@ -1,22 +1,28 @@
 const { Poll } = require('whatsapp-web.js');
 const { criciuma } = require('../connections');
+const { log_info, log_erro, log_this } = require('../../utils/admin');
 const sorteio = ['idolos', 'acerteoidolo'];
 const subsorteio = ['totaljogos', 'idade'];
 let modoQuiz = false;
 
 const quiz = async (m) => {
-  if (modoQuiz) return m.reply("Um quiz por hora po")
+  log_this("Mandando um quiz...");
+  if (modoQuiz) return m.reply("Um quiz por hora po");
   const voltaAoNormal = setTimeout(() => modoQuiz = false, (60 * 60 * 1000));
   modoQuiz = true;
   const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
   const meuQuiz = await buscaOpcoes(tipo);
+  if (meuQuiz.correta === "ERRO") return m.reply("Erro ao iniciar o quiz");
   const subtipo = subsorteio[Math.floor(Math.random) * subsorteio.length];
+  log_info("Iniciando quiz de " + tipo + " com subtipo " + subtipo);
   if (tipo === 'idolos') return quizTipoIdolos(m, meuQuiz, subtipo);
   if (tipo === 'acerteoidolo') return quizAcerteOIdolo(m, meuQuiz);
+  else return log_erro("Quiz com erro");
 }
 
 const quizTipoIdolos = async (m, meuQuiz, subtipo) => {
-  if (subtipo === 'totalJogos') {
+  if (subtipo === 'totaljogos') {
+    log_this("Iniciando quiz ")
     let totalDeJogos = 0;
     meuQuiz.correta.jogos.forEach((j) => { if (j.jogounotigre) totalDeJogos += Number(j.jogos) });
     let pollQuestion = "QUIZ: Quantas partidas pelo Tigre jogou o ÍDOLO *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ")?";
@@ -70,9 +76,11 @@ const buscaOpcoes = async (tipo) => {
       .toArray();
     const escolhidoIdx = Math.floor(Math.random() * atleta.length);
     const escolhido = atleta[escolhidoIdx];
+    log_this("Fetch realizado");
     const opcoes = atleta.toSpliced(escolhidoIdx, 1);
     return { correta: escolhido, opcoes: opcoes }
   }
+  else return { correta: "ERRO", opcoes: [] }
   // if (tipo === 'atletas') {
   //   const atleta = await criciuma
   //     .collection('atletas')
