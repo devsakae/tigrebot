@@ -1,5 +1,5 @@
 const { Poll } = require('whatsapp-web.js');
-const { criciuma } = require('../connections');
+const { criciuma, client } = require('../connections');
 const { log_info, log_erro, log_this } = require('../../utils/admin');
 const sorteio = ['idolos', 'acerteoidolo'];
 const subsorteio = ['totaljogos', 'idade'];
@@ -22,6 +22,7 @@ const quiz = async (m) => {
 
 const quizTipoIdolos = async (m, meuQuiz, subtipo) => {
   if (subtipo === 'totaljogos') {
+    log_this("Enviando quiz de ÍDOLOS");
     let totalDeJogos = 0;
     meuQuiz.correta.jogos.forEach((j) => { if (j.jogounotigre) totalDeJogos += Number(j.jogos) });
     let pollQuestion = "QUIZ: Quantas partidas pelo Tigre jogou o ÍDOLO *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ")?";
@@ -33,6 +34,7 @@ const quizTipoIdolos = async (m, meuQuiz, subtipo) => {
     return await client.sendMessage(m.from, minhaPoll);
   }
   if (subtipo === 'idade') {
+    log_this("Enviando quiz de IDADE DE ÍDOLOS");
     const totalIdade = calculaIdade(meuQuiz.correta.birthday);
     let pollQuestion = "QUIZ: Quantos anos tem/teria o atleta *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ") na data de hoje?";
     let pollOptions = baguncinha(totalIdade).sort((a, b) => a - b);
