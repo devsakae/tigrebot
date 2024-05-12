@@ -13,7 +13,7 @@ const quiz = async (m) => {
   const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
   const meuQuiz = await buscaOpcoes(tipo);
   if (meuQuiz.correta === "ERRO") return m.reply("Erro ao iniciar o quiz");
-  const subtipo = subsorteio[Math.floor(Math.random) * subsorteio.length];
+  const subtipo = subsorteio[Math.floor(Math.random() * subsorteio.length)];
   log_info("Iniciando quiz de " + tipo + " com subtipo " + subtipo);
   if (tipo === 'idolos') return quizTipoIdolos(m, meuQuiz, subtipo);
   if (tipo === 'acerteoidolo') return quizAcerteOIdolo(m, meuQuiz);
@@ -22,7 +22,6 @@ const quiz = async (m) => {
 
 const quizTipoIdolos = async (m, meuQuiz, subtipo) => {
   if (subtipo === 'totaljogos') {
-    log_this("Iniciando quiz ")
     let totalDeJogos = 0;
     meuQuiz.correta.jogos.forEach((j) => { if (j.jogounotigre) totalDeJogos += Number(j.jogos) });
     let pollQuestion = "QUIZ: Quantas partidas pelo Tigre jogou o ÍDOLO *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ")?";
