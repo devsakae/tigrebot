@@ -45,7 +45,7 @@ const umAtleta = (array) => {
     response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'jogos' : 'jogo'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ${+(jogo.gols) > 1 ? `⚽️ ${jogo.gols} gols` : +(jogo.gols) === 0 ? '' : '⚽️ 1 gol'}`
     if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube}`
   });
-  response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - devsakae.tech/tigrebot'
+  response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - http://portfolio-devsakae.vercel.app/tigrebot'
   return response;
 }
 
