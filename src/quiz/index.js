@@ -57,9 +57,11 @@ const falta = (m, exp, tempo = tempoQuiz) => {
 
 const quizAcerteOIdolo = async (m, meuQuiz) => {
   log_info("Quiz acerte o ÍDOLO!");
-  let totalDeJogos, estreia, final, jogosContra, gols, v, e, d;
+  let totalDeJogos = 0;
+  let estreia, final, jogosContra, gols, v, e, d;
   meuQuiz.correta.jogos.forEach((j) => {
     if (j.jogounotigre) {
+      console.log("Contabilizando + " + j.jogos + " jogos por " + j.torneio + " de " + j.ano)
       estreia = estreia < Number(j.ano) ? estreia : Number(j.ano);
       final = final > Number(j.ano) ? final : Number(j.ano);
       totalDeJogos += Number(j.jogos);
@@ -69,6 +71,7 @@ const quizAcerteOIdolo = async (m, meuQuiz) => {
       d += Number(j.d);
     } else jogosContra += Number(j.jogos)
   })
+  log_this("Total de jogos: " + totalDeJogos);
   let pollQuestion = "QUIZ: Quem é o atleta que disputou *" + JSON.stringify(totalDeJogos) + "* partidas pelo Tigre entre os anos de " + estreia + " a " + final + "?";
   let pollOptions = [meuQuiz.correta.nickname, meuQuiz.opcoes[0].nickname, meuQuiz.opcoes[1].nickname, meuQuiz.opcoes[2].nickname, meuQuiz.opcoes[3].nickname].sort();
   let pollAnswer = "QUIZ ENCERRADO!!\n\nO atleta em questão era ninguém mais ninguém menos que *" + meuQuiz.correta.name + "*, mais conhecido como " + meuQuiz.correta.nickname + " (" + meuQuiz.correta.position + "), com um impressionante histórico de " + JSON.stringify(v) + " vitórias, " + JSON.stringify(e) + " empates, " + JSON.stringify(d) + " derrotas e " + JSON.stringify(gols) + " gols marcados.";
