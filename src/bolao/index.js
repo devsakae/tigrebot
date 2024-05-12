@@ -29,14 +29,17 @@ const bolao = async (m) => {
     if (isTopic && isTopic.fromMe) {
       const sender = await m.getContact(m.author);
       if (Number(matchingRegex) === Number(config.bolao.nextMatch.fixture.id)) {
-        const checkPalpite = habilitaPalpite({ group: m.from.split('@')[0], m: m, user: sender.pushname || sender.name || sender.shortname, matchId: matchingRegex });
+        const checkPalpite = await habilitaPalpite({ group: m.from.split('@')[0], m: m, user: sender.pushname || sender.name || sender.shortname, matchId: matchingRegex });
         return checkPalpite.error ? await m.reply(checkPalpite.error) : await m.react('🎟');
       }
       return await m.reply('Essa rodada não está ativa!');
     }
   }
   if (m.body.startsWith('!palpites')) {
-    return await m.reply('Eu juro que o Sakae instala isso hoje ainda')
+    log_this('Enviando lista de palpites para ' + m.from);
+    const listaCompleta = await listaPalpites();
+    const listaDoGrupo = listaCompleta.find((g) => m.from.startsWith(g));
+    return listaDoGrupo.length() > 0 ? await m.reply(listaDoGrupo.message) : log_erro('Não encontrou grupo');
   }
   return;
 }
