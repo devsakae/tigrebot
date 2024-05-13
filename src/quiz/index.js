@@ -65,16 +65,14 @@ const quizAcerteOIdolo = async (m, meuQuiz) => {
   })
   let pollQuestion = "QUIZ: Que atleta disputou *" + JSON.stringify(totalDeJogos) + "* partidas pelo Tigre " + (estreia === final ? "em " + estreia + "?" : "entre os anos de " + estreia + " a " + final + "?");
   let pollOptions = [meuQuiz.correta.nickname, meuQuiz.opcoes[0].nickname, meuQuiz.opcoes[1].nickname, meuQuiz.opcoes[2].nickname, meuQuiz.opcoes[3].nickname].sort();
+  const pollTip = "⏳ Faltando 5 minutos pra encerrar, segue a dica:\n\nEste atleta nasceu em " + meuQuiz.correta.birthday;
   // let pollAnswer = "QUIZ ENCERRADO!!\n\nO atleta em questão era ninguém mais ninguém menos que *" + meuQuiz.correta.name + "*, mais conhecido como " + meuQuiz.correta.nickname + " (" + meuQuiz.correta.position + "), com um impressionante histórico de " + JSON.stringify(v) + " vitórias, " + JSON.stringify(e) + " empates, " + JSON.stringify(d) + " derrotas e " + JSON.stringify(gols) + " gols marcados.";
   const minhaPoll = new Poll(pollQuestion, pollOptions);
   if (jogosContra > 0) setTimeout(() => client.sendMessage(m.from, "Tempo acabando, vai aqui uma dica pra quem ainda tá em dúvida: Esse atleta chegou a disputar " + jogosContra + " partidas contra o Tigre."), (20 * 60 * 1000));
   else falta(m, 5);
-  const tempoEsgotado = setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
   const messageId = await client.sendMessage(m.from, minhaPoll);
-  console.log("POLL MESSAGEID");
-  console.log(messageId);
-  setTimeout(() => messageId.reply("Quote"), 5000)
-  return;
+  setTimeout(() => messageId.reply(pollTip), (tempoQuiz - 5) * 60 * 1000)
+  return setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
 }
 
 const quizAdversarios = async (m, meuQuiz, subtipo) => {
