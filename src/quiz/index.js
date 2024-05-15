@@ -2,7 +2,7 @@ const { Poll, MessageMedia } = require('whatsapp-web.js');
 const { criciuma, client } = require('../connections');
 const { log_info, log_erro, log_this } = require('../../utils/admin');
 const { umAtleta, formataAdversario } = require('../futebol/utils/functions');
-const sorteio = ['idolos', 'acerteoidolo'];
+const sorteio = ['idolos', 'acerteoidolo', 'adversarios'];
 const subsorteio = ['totaljogos', 'idade'];
 const tempoQuiz = 15;
 
