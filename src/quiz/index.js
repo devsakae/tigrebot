@@ -1,7 +1,7 @@
 const { Poll, MessageMedia } = require('whatsapp-web.js');
 const { criciuma, client } = require('../connections');
 const { log_info, log_erro, log_this } = require('../../utils/admin');
-const { umAtleta, formataAdversario } = require('../futebol/utils/functions');
+const { umAtleta, formataAdversario, formataJogo } = require('../futebol/utils/functions');
 const sorteio = ['idolos', 'acerteoidolo', 'adversarios'];
 const subsorteio = ['totaljogos', 'idade'];
 const tempoQuiz = 15;
@@ -109,7 +109,7 @@ const quizAdversarios = async (m, meuQuiz, subtipo) => {
     const minhaPoll = new Poll(pollQuestion, pollOptions);
     const messageId = await client.sendMessage(m.from, minhaPoll);
     setTimeout(() => messageId.reply("⏳ Faltam 2 minutos pra encerrar o quiz, que é um dos mais fáceis que eu já fiz po\n\nO treinador deles nesse dia era o " + (tigreAnfitriao ? umJogo.away_treinador : umJogo.home_treinador)), ((tempoQuiz - 2) * 60 * 1000))
-    return setTimeout(() => formataJogo(umJogo), (tempoQuiz * 60 * 1000));
+    return setTimeout(() => messageId.reply(formataJogo(umJogo)), (tempoQuiz * 60 * 1000));
   }
 }
 
