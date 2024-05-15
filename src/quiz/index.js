@@ -10,11 +10,11 @@ const quiz = async (m) => {
   const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
   const meuQuiz = await buscaOpcoes(tipo);
   if (meuQuiz.correta === "ERRO") return m.reply("Erro ao iniciar o quiz");
-  if (tipo === 'adversario') return quizAdversarios(m, meuQuiz);
   const subtipo = subsorteio[Math.floor(Math.random() * subsorteio.length)];
   log_this("Mandando um quiz de " + tipo + " com subtipo " + subtipo);
   if (tipo === 'idolos') return quizIdolos(m, meuQuiz, subtipo);
   if (tipo === 'acerteoidolo') return quizAcerteOIdolo(m, meuQuiz);
+  if (tipo === 'adversario') return quizAdversarios(m, meuQuiz, subtipo);
   else return log_erro("Quiz com erro");
 }
 
