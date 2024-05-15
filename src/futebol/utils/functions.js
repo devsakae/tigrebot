@@ -120,10 +120,11 @@ const formataJogo = data => {
 }
 
 const formataAdversario = (adversario) => {
-  let response = 'O ~querido~' + adversario.adversario + " (" + adversario.uf + ") nos enfrentou o total de " + adversario.resumo.j + " vezes, sendo que a última partida registrada no meu banco de dados foi em " + adversario.jogos[0].date + " pelo(a) " + adversario.jogos[0].campeonato + ".\n";
+  let response = "O ~querido~ " + adversario.adversario + " (" + adversario.uf + ") nos enfrentou o total de " + adversario.resumo.j + " vezes, sendo que a última partida registrada no meu banco de dados foi em " + adversario.jogos[0].date + " pelo(a) " + adversario.jogos[0].campeonato + ".\n";
   response += "\n✅ Vencemos: *" + adversario.resumo.v + "*";
   response += "\n🫳 Empates: *" + adversario.resumo.e + "*";
-  response += "\n🤬 Perdemos: *" + adversario.resumo.d + "*";
+  response += "\n🤬 Perdemos: *" + adversario.resumo.d + "*\n\n";
+  response += "De todos os confrontos, eu nunca vou esquecer ";
   response += formataJogo(adversario.jogos[Math.floor(Math.random() * adversario.jogos.length)]);
   return response;
 }
