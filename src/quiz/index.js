@@ -16,7 +16,7 @@ const quiz = async (m) => {
   log_this("Mandando um quiz de " + tipo + " com subtipo " + subtipo);
   if (tipo === 'idolos') return quizIdolos(m, meuQuiz, subtipo);
   if (tipo === 'acerteoidolo') return quizAcerteOIdolo(m, meuQuiz);
-  if (tipo === 'adversario') return quizAdversarios(m, meuQuiz, subtipo);
+  if (tipo === 'adversarios') return quizAdversarios(m, meuQuiz, subtipo);
   else return log_erro("Quiz com erro");
 }
 
@@ -84,10 +84,12 @@ const quizAdversarios = async (m, meuQuiz, subtipo) => {
     const pollOptions = opcoesAdversarios(meuQuiz);
     const minhaPoll = new Poll(pollQuestion, pollOptions);
     const messageId = await client.sendMessage(m.from, minhaPoll);
-    const foto = await MessageMedia.fromUrl(meuQuiz.correta.logo);
     const caption = formataAdversario(meuQuiz.correta);
     falta(m, 2);
-    const tempoEsgotado = setTimeout(() => client.sendMessage(m.from, foto, { caption: caption }), (tempoQuiz * 60 * 1000));
+    setTimeout(() => messageId.reply(caption), (tempoQuiz * 60 * 1000));
+    // Dando erro no meutimenarede
+    // const foto = await MessageMedia.fromUrl(meuQuiz.correta.logo);
+    // if (foto) setTimeout(() => client.sendMessage(m.from, foto, { caption: caption }), (tempoQuiz * 60 * 1000));
   }
   // if (subtipo === 'idade') {
   else {
