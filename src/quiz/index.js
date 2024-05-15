@@ -10,7 +10,7 @@ const quiz = async (m) => {
   // const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
   const tipo = 'adversarios';
   // const subtipo = subsorteio[Math.floor(Math.random() * subsorteio.length)];
-  const subtipo = 'totaljogos';
+  const subtipo = 'idade';
   const meuQuiz = await buscaOpcoes(tipo);
   if (meuQuiz.correta === "ERRO") return m.reply("Erro ao iniciar o quiz");
   log_this("Mandando um quiz de " + tipo + " com subtipo " + subtipo);
@@ -80,7 +80,7 @@ const quizAcerteOIdolo = async (m, meuQuiz) => {
 const quizAdversarios = async (m, meuQuiz, subtipo) => {
   if (subtipo === 'totaljogos') {
     const escore = meuQuiz.correta.resumo.j + " jogos (" + meuQuiz.correta.resumo.v + "V/" + meuQuiz.correta.resumo.e + "E/" + meuQuiz.correta.resumo.d + "D)";
-    const pollQuestion = "QUIZ: Qual time tem o histórico de " + escore + " contra o Criciúma Esporte Clube?";
+    const pollQuestion = "QUIZ: Nós temos um histórico de " + escore + " contra esse time. De quem estou falando?";
     const pollOptions = opcoesAdversarios(meuQuiz);
     const minhaPoll = new Poll(pollQuestion, pollOptions);
     const messageId = await client.sendMessage(m.from, minhaPoll);
