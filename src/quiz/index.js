@@ -20,7 +20,7 @@ const quiz = async (m) => {
 
 const quizIdolos = async (m, meuQuiz, subtipo) => {
   if (subtipo === 'totaljogos') {
-    const jogosDoTigre = meuQuiz.correta.filter((j) => j.jogounotigre);
+    const jogosDoTigre = meuQuiz.correta.jogos.filter((j) => j.jogounotigre);
     const totalDeJogos = jogosDoTigre.reduce((acc, curr) => acc += Number(curr.jogos), 0);
     const pollQuestion = "QUIZ: Quantas partidas pelo Tigre jogou o ÍDOLO *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ")?";
     const pollOptions = baguncinha(totalDeJogos).sort((a, b) => a - b);
