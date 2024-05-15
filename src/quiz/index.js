@@ -7,10 +7,8 @@ const subsorteio = ['totaljogos', 'idade'];
 const tempoQuiz = 15;
 
 const quiz = async (m) => {
-  // const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
-  const tipo = 'adversarios';
-  // const subtipo = subsorteio[Math.floor(Math.random() * subsorteio.length)];
-  const subtipo = 'idade';
+  const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
+  const subtipo = subsorteio[Math.floor(Math.random() * subsorteio.length)];
   const meuQuiz = await buscaOpcoes(tipo);
   if (meuQuiz.correta === "ERRO") return m.reply("Erro ao iniciar o quiz");
   log_this("Mandando um quiz de " + tipo + " com subtipo " + subtipo);
@@ -86,7 +84,7 @@ const quizAdversarios = async (m, meuQuiz, subtipo) => {
     const messageId = await client.sendMessage(m.from, minhaPoll);
     const caption = formataAdversario(meuQuiz.correta);
     falta(m, 2);
-    setTimeout(() => messageId.reply(caption), (tempoQuiz * 60 * 1000));
+    return setTimeout(() => messageId.reply(caption), (tempoQuiz * 60 * 1000));
     // Dando erro no meutimenarede
     // const foto = await MessageMedia.fromUrl(meuQuiz.correta.logo);
     // if (foto) setTimeout(() => client.sendMessage(m.from, foto, { caption: caption }), (tempoQuiz * 60 * 1000));
@@ -102,16 +100,16 @@ const quizAdversarios = async (m, meuQuiz, subtipo) => {
                       ? "sofreu uma derrota pro 🐯 Tigrão"
                       : "nos derrotou 🤬";
     const placar = umJogo.homeScore === umJogo.awayScore
-                    ? "em " + JSON.stringify(umJogo.homeScore) + " a " + JSON.stringify(umJogo.awayScore)
+                    ? " em " + JSON.stringify(umJogo.homeScore) + " a " + JSON.stringify(umJogo.awayScore)
                     : umJogo.homeScore > umJogo.awayScore
-                      ? "por " + JSON.stringify(umJogo.homeScore) + " a " + JSON.stringify(umJogo.awayScore)
-                      : "por " + JSON.stringify(umJogo.awayScore) + " a " + JSON.stringify(umJogo.homeScore);
-    const pollQuestion = "QUIZ: Este adversário " + pontuacao + placar + " em " + umJogo.date + ".";
+                      ? " por " + JSON.stringify(umJogo.homeScore) + " a " + JSON.stringify(umJogo.awayScore)
+                      : " por " + JSON.stringify(umJogo.awayScore) + " a " + JSON.stringify(umJogo.homeScore);
+    const pollQuestion = "QUIZ: Este adversário " + pontuacao + placar + " na data de " + umJogo.date + ".";
     const pollOptions = opcoesAdversarios(meuQuiz);
     const minhaPoll = new Poll(pollQuestion, pollOptions);
     const messageId = await client.sendMessage(m.from, minhaPoll);
     setTimeout(() => messageId.reply("⏳ Faltam 2 minutos pra encerrar o quiz, que é um dos mais fáceis que eu já fiz po\n\nO treinador deles nesse dia era o " + (tigreAnfitriao ? umJogo.away_treinador : umJogo.home_treinador)), ((tempoQuiz - 2) * 60 * 1000))
-    const tempoEsgotado = setTimeout(() => formataJogo(umJogo), (tempoQuiz * 60 * 1000));
+    return setTimeout(() => formataJogo(umJogo), (tempoQuiz * 60 * 1000));
   }
 }
 
