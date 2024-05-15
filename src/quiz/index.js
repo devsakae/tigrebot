@@ -25,11 +25,11 @@ const quizIdolos = async (m, meuQuiz, subtipo) => {
     const pollQuestion = "QUIZ: Quantas partidas pelo Tigre jogou o ÍDOLO *" + meuQuiz.correta.nickname + "* (" + meuQuiz.correta.name + " - " + meuQuiz.correta.position + ")?";
     const pollOptions = baguncinha(totalDeJogos).sort((a, b) => a - b);
     const campeonatoPeloTigre = jogosDoTigre[Math.floor(Math.random() * jogosDoTigre.length)];
-    const pollTip = "⏳ Faltando 5 minutos, e eu só consigo lembrar daquele(a) " + campeonatoPeloTigre.torneio + " que ele esteve em ";
+    let pollTip = "⏳ Faltando 5 minutos, e eu só consigo lembrar daquele(a) " + campeonatoPeloTigre.torneio + " que ele esteve em ";
     const chutaUmNumero = randomNum(1,3);
-    if (chutaUmNumero === 1) pollTip += campeonatoPeloTigre.v + " vitórias.";
-    if (chutaUmNumero === 2) pollTip += campeonatoPeloTigre.e + " empates.";
-    if (chutaUmNumero === 3) pollTip += campeonatoPeloTigre.d + " derrotas.";
+    if (chutaUmNumero === 1) pollTip += (campeonatoPeloTigre.v + " vitórias.");
+    if (chutaUmNumero === 2) pollTip += (campeonatoPeloTigre.e + " empates.");
+    if (chutaUmNumero === 3) pollTip += (campeonatoPeloTigre.d + " derrotas.");
     const minhaPoll = new Poll(pollQuestion, pollOptions);
     const messageId = await client.sendMessage(m.from, minhaPoll);
     setTimeout(() => messageId.reply(pollTip), ((tempoQuiz - 5) * 60 * 1000))
