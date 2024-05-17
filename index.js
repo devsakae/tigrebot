@@ -37,7 +37,7 @@ let grupoQuiz = '';
     publicacoes.audio('20 9 * * 3,6');            // Quartas e sábados às 9h20min
     publicacoes.atletaDestaque('20 9 * * 2,5');   // Terças e sextas às 9h20min
     publicacoes.jogosHistoricos('45 13 * * *');   // Todos os dias às 13h45min
-    publicacoes.bolaoSystem('30 9 * * *');        // Todos os dias às 9h30min
+    // publicacoes.bolaoSystem('30 9 * * *');        // Todos os dias às 9h30min
     proximaPartida()                              // Publica sobre a partida do Tigre no dia do jogo às 8h00min
   }
 })();

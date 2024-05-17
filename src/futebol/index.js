@@ -181,13 +181,14 @@ const adversarios = async (m) => {
   texto += `\n👉 Aproveitamento: ${aproveitamento}%`;
   if (t.jogos.length < 11) {
     texto += `\n\nEu tenho ${t.jogos.length} jogo(s) cadastrado(s) no meu banco de dados. Segue a lista!\n`
-    t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
+    t.jogos.map((j, i) => texto += `\n[${i + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
     await site_publish(texto);
-    return await client.sendMessage(m.from, logo, { caption: texto });
+    await client.sendMessage(m.from, logo, { caption: texto });
+    return await m.reply('!matchid ' + t._id + '-x');
   }
   if (m.author === process.env.BOT_OWNER) {
     if (t.jogos.length < 20) {
-      t.jogos.map((j, i) => texto += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
+      t.jogos.map((j, i) => texto += `\n[${i + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
       return await client.sendMessage(m.from, logo, { caption: texto });
     }
     await client.sendMessage(m.from, logo, { caption: texto });
@@ -195,11 +196,11 @@ const adversarios = async (m) => {
     let auxi = 0;
     for (let i = 0; i < t.jogos.length; i + 20) {
       let textofull = `Parte ${(auxi / 20) + 1}/${partes}\n`;
-      t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n∙ ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${id + auxi + 1}\n`)
+      t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n[${id + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
       auxi += 20;
       await client.sendMessage(m.from, textofull);
     }
-    return;
+    return await m.reply('!matchid ' + t._id + '-x');
   }
   texto += `\n\nEu tenho ${t.jogos.length} jogos cadastrados, mas só o admin pode pedir para listá-los (eu sou muito caro e chique).\n`
   await site_publish(texto);
@@ -297,7 +298,9 @@ const proximaPartida = async () => {
       hour: "numeric",
       minute: "numeric"
     });
-    let response = prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
+    let response;
+    if (data.events[0].status === 60) response += "Jogo adiado! Hoje seria o dia de ver o Tigre em campo!"
+    else response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
     response += '\n';
     response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
     response += `\n🏆 ${res[0].season.name}`;
