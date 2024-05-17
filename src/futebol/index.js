@@ -218,6 +218,7 @@ const partida = async (m) => {
     .collection("jogos")
     .find({ _id: teamId }, { $projection: { "jogos": 1 } })
     .toArray();
+  if (response.length === 0) return m.reply('Nenhuma partida encontrada com este ID. Digitou certo?');
   const texto = formataJogo(response[0].jogos[matchIdx]);
   await site_publish(texto);
   return await client.sendMessage(m.from, texto);
