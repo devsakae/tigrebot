@@ -180,6 +180,7 @@ const adversarios = async (m) => {
   texto += `\n❌ Perdemos: ${t.resumo.d}`;
   texto += `\n👉 Aproveitamento: ${aproveitamento}%`;
   if (t.jogos.length < 11) {
+    texto += '\n\nListinha de jogos abaixo! Use *!matchid (id)-(jogo)* para ver mais sobre o jogo...';
     texto += `\n\nEu tenho ${t.jogos.length} jogo(s) cadastrado(s) no meu banco de dados. Segue a lista!\n`
     t.jogos.map((j, i) => texto += `\n[${i + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
     await site_publish(texto);
@@ -187,9 +188,11 @@ const adversarios = async (m) => {
     return await m.reply('!matchid ' + t._id + '-x');
   }
   if (m.author === process.env.BOT_OWNER) {
+    texto += '\n\nEsse admin é foda! Ele deixou todo mundo pesquisar sobre o jogo usando !matchid (mas tem que saber usar). Segue a lista de jogos:';
     if (t.jogos.length < 20) {
-      t.jogos.map((j, i) => texto += `\n[${i + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n ${t._id}-${i}\n`)
-      return await client.sendMessage(m.from, logo, { caption: texto });
+      t.jogos.map((j, i) => texto += `\n[${i + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
+      await client.sendMessage(m.from, logo, { caption: texto });
+      return await m.reply("!matchid " + t._id + "-x");
     }
     await client.sendMessage(m.from, logo, { caption: texto });
     const partes = Math.floor(t.jogos.length / 20) + 1
