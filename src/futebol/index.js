@@ -299,7 +299,7 @@ const proximaPartida = async () => {
       minute: "numeric"
     });
     let response;
-    if (data.events[0].status === 60) response += "Jogo adiado! Hoje seria o dia de ver o Tigre em campo!"
+    if (match.status === 60) response += "Jogo adiado! Hoje seria o dia de ver o Tigre em campo!"
     else response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
     response += '\n';
     response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
