@@ -45,14 +45,14 @@ const umAtleta = (array) => {
     response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'jogos' : 'jogo'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ${+(jogo.gols) > 1 ? `⚽️ ${jogo.gols} gols` : +(jogo.gols) === 0 ? '' : '⚽️ 1 gol'}`
     if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube}`
   });
-  response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - http://portfolio-devsakae.vercel.app/tigrebot'
+  response += `\n\nDados: meutimenarede.com.br\nScraped by @devsakae - ${config.devsakae}`
   return response;
 }
 
 const variosAtletas = (str, array) => {
   let response = `Pesquisando por "${str.toUpperCase()}" encontrei um monte de atletas!:\n`;
   array.forEach((obj) => response += `\n■ ${obj.name} (${obj.nickname}), ${obj.position}`);
-  response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - devsakae.tech/tigrebot'
+  response += `\n\nDados: meutimenarede.com.br\nScraped by @devsakae - ${config.devsakae}`
   return response;
 }
 
