@@ -4,18 +4,16 @@ const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { fetchWithParams, fetchApi, site_publish } = require('../../utils');
 const { saveLocal, savePrompts } = require('../../utils/handleFile');
-const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendMediaUrlToChannels, sendTextToGroups, sendTextToChannels } = require('../../utils/sender');
+const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendTextToGroups } = require('../../utils/sender');
 const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { falaAlgumaCoisa } = require('../jokes');
 const { golacoAleatorio } = require('../quotes');
-const { postTweet, postMediaTweet } = require('../../utils/twitter');
+const { postTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
 const { log_erro, log_info, log_this } = require('../../utils/admin');
-
-const sendAdmin = async (msg) => await client.sendMessage(process.env.BOT_OWNER, msg);
 
 const canal = async (m) => {
   // Uso: /add errors.teste Isso é apenas um teste.
@@ -366,7 +364,6 @@ module.exports = {
   canal,
   instagramThis,
   bomDiaComDestaque,
-  publicaQuotedMessage,
   fetchInstaId,
   publicaMessage,
   timemania,
