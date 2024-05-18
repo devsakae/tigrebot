@@ -247,28 +247,28 @@ const fetchInstaId = async (m) => {
   return await sendInstagramToGroups(update);
 }
 
-const publicaQuotedMessage = async (m) => {
-  const raw = await m.getQuotedMessage();
-  if (raw.hasMedia) {
-    const media = await raw.downloadMedia();
-    if (media) {
-      const contentComMedia = new MessageMedia(
-        media.mimetype,
-        media.data.toString('base64')
-      );
-      for (grupo of Object.keys(config.grupos)) {
-        await client.sendMessage(grupo, contentComMedia, { caption: raw.body });
-      }
-      for (chan of Object.keys(config.canais)) {
-        await client.sendMessage(chan, contentComMedia, { caption: raw.body })
-      }
-      return await postMediaTweet({ media: media, text: raw.body });
-    }
-  }
-  // await sendTextToChannels(raw.body);
-  await sendTextToGroups(raw.body);
-  return await postTweet(raw.body)
-}
+// const publicaQuotedMessage = async (m) => {
+//   const raw = await m.getQuotedMessage();
+//   if (raw.hasMedia) {
+//     const media = await raw.downloadMedia();
+//     if (media) {
+//       const contentComMedia = new MessageMedia(
+//         media.mimetype,
+//         media.data.toString('base64')
+//       );
+//       for (grupo of Object.keys(config.grupos)) {
+//         await client.sendMessage(grupo, contentComMedia, { caption: raw.body });
+//       }
+//       for (chan of Object.keys(config.canais)) {
+//         await client.sendMessage(chan, contentComMedia, { caption: raw.body })
+//       }
+//       return await postMediaTweet({ media: media, text: raw.body });
+//     }
+//   }
+//   // await sendTextToChannels(raw.body);
+//   await sendTextToGroups(raw.body);
+//   return await postTweet(raw.body)
+// }
 
 const publicaMessage = async (m) => {
   if (m.hasMedia) {
@@ -280,12 +280,9 @@ const publicaMessage = async (m) => {
     for (grupo of Object.keys(config.grupos)) {
       await client.sendMessage(grupo, message, { caption: m.body })
     }
-    for (chan of Object.keys(config.canais)) {
-      await client.sendMessage(chan, message, { caption: m.body })
-    }
-    return;
+    return await site_publish(m.body);
   }
-  // await sendTextToChannels(m.body);
+  await site_publish(m.body);
   return await sendTextToGroups(m.body);
 }
 

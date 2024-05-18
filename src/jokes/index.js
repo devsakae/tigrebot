@@ -5,35 +5,40 @@ const { client } = require('../connections');
 const { fetchApi } = require('../../utils/fetchApi');
 const { MessageMedia } = require('whatsapp-web.js');
 const { respondeEAtualiza } = require('../news');
-const { site_publish } = require('../../utils');
 const { site_publish_reply } = require('../../utils/mongo');
+const { log_erro } = require('../../utils/admin');
 const encodedParams = new URLSearchParams();
 
 let jokeLimit = false;
 
 const replyUser = async (m) => {
+  const autor = await client.getContactById(m.author);
   if (m.body.endsWith('?')) {
     const wantNews = m.body.match(/novidades d[eao].*/gi);
     if (wantNews) {
       const query = wantNews[0].split('?')[0].substring(12).trim();
       const response = await respondeEAtualiza(query);
-      // const user = await client.getContactById
-      await site_publish_reply(response, m.author)
+      await site_publish_reply(response, autor.pushname)
       return await m.reply(response);
     }
     const random = Math.floor(Math.random() * prompts.oraculo.length);
+    await site_publish_reply(response, autor.pushname)
     return await m.reply(prompts.oraculo[random]);
   }
   if (m.body.match(/piada/gi) && !jokeLimit) {
     jokeLimit = true;
     const joke = await getJokes();
-    m.reply(joke.setup);
-    const punchline = setTimeout(() => client.sendMessage(m.from, joke.punchline), 6000);
-    const liberaNovaJoke = setTimeout(() => jokeLimit = false, 5400000);
-    return;
+    await site_publish_reply(joke.setup, autor);
+    await m.reply(joke.setup);
+    const punchline = setTimeout(() => {
+      site_publish_reply(joke.punchline, autor);
+      m.reply(joke.punchline);
+    }, 6000);
+    return setTimeout(() => jokeLimit = false, 5400000);
   };
   const uselessFact = await getUselessFact();
-  return m.reply(uselessFact);
+  await site_publish_reply(uselessFact, autor)
+  return await m.reply(uselessFact);
 }
 
 const getUselessFact = async () => {
@@ -44,8 +49,7 @@ const getUselessFact = async () => {
     });
     return uselessFact.data.text;
   } catch (err) {
-    console.error(err)
-    return client.sendMessage(process.env.BOT_OWNER, err);
+    return log_erro(err);
   }
 };
 
@@ -57,8 +61,7 @@ const getJokes = async () => {
     });
     return joke.body[0];
   } catch (err) {
-    console.error(err)
-    return client.sendMessage(process.env.BOT_OWNER, err);
+    return log_erro(err)
   }
 }
 
