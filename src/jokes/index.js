@@ -18,8 +18,7 @@ const replyUser = async (m) => {
     if (wantNews) {
       const query = wantNews[0].split('?')[0].substring(12).trim();
       const response = await respondeEAtualiza(query);
-      console.log(autor.pushname)
-      await site_publish_reply(response, autor.pushname, m.body)
+      await site_publish_reply(response, autor.pushname, wantNews)
       return await m.reply(response);
     }
     const random = Math.floor(Math.random() * prompts.oraculo.length);
