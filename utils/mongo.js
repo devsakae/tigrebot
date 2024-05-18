@@ -15,13 +15,15 @@ const site_publish = async (msg) => {
   }
 }
 
-const site_publish_reply = async (msg, user = 'Desconhecido', msgOrig = '(Mensagem original)') => {
+const site_publish_reply = async (msg, user = '[Suprimido]', msgOrig = '[Mensagem original suprimida]') => {
   try {
-    const text = '@' + user.trim().split(' ')[0] + ' ' + msg
     const document = {
       'data': new Date(),
-      'mensagem': text,
-      'quote': msgOrig,
+      'mensagem': msg,
+      'quote': {
+        author: user,
+        text: msgOrig,
+      }
     }
     await tigrebot.collection('mensagens').insertOne(document)
     log_this('Salvei no DB: ' + text.substring(0, 320) + ' (...)');
