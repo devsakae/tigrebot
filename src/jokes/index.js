@@ -13,12 +13,12 @@ let jokeLimit = false;
 
 const replyUser = async (m) => {
   const autor = await client.getContactById(m.author);
-  console.log('Autor: ', autor.pushname);
   if (m.body.endsWith('?')) {
     const wantNews = m.body.match(/novidades d[eao].*/gi);
     if (wantNews) {
       const query = wantNews[0].split('?')[0].substring(12).trim();
       const response = await respondeEAtualiza(query);
+      console.log(autor.pushname)
       await site_publish_reply(response, autor.pushname)
       return await m.reply(response);
     }
@@ -29,16 +29,16 @@ const replyUser = async (m) => {
   if (m.body.match(/piada/gi) && !jokeLimit) {
     jokeLimit = true;
     const joke = await getJokes();
-    await site_publish_reply(joke.setup, autor);
+    await site_publish_reply(joke.setup, autor.pushname);
     await m.reply(joke.setup);
-    const punchline = setTimeout(() => {
-      site_publish_reply(joke.punchline, autor);
-      m.reply(joke.punchline);
+    setTimeout(async () => {
+      await site_publish_reply(joke.punchline, autor.pushname);
+      await m.reply(joke.punchline);
     }, 6000);
     return setTimeout(() => jokeLimit = false, 5400000);
   };
   const uselessFact = await getUselessFact();
-  await site_publish_reply(uselessFact, autor)
+  await site_publish_reply(uselessFact, autor.pushname)
   return await m.reply(uselessFact);
 }
 
