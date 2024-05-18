@@ -13,6 +13,7 @@ let jokeLimit = false;
 
 const replyUser = async (m) => {
   const autor = await client.getContactById(m.author);
+  console.log('Autor: ', autor.pushname);
   if (m.body.endsWith('?')) {
     const wantNews = m.body.match(/novidades d[eao].*/gi);
     if (wantNews) {
