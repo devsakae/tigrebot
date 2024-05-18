@@ -133,7 +133,8 @@ const jogadorDoTigreAleatorio = async () => {
   response += '\n\nDados: meutimenarede.com.br\nScraped by @devsakae - tigrebot.devsakae.tech'
 
   await postTweet(tweet);
-  await sendMediaUrlToChannels({ url: atl[0].image, caption: response });
+  await site_publish(response);
+  // await sendMediaUrlToChannels({ url: atl[0].image, caption: response });
   return await sendMediaUrlToGroups({ url: atl[0].image, caption: response });
 }
 
@@ -146,7 +147,8 @@ const aniversariantesDoDia = async (date) => {
     .toArray();
   if (aniversariantes.length === 0) return;
   const texto = organizaFestinha(aniversariantes);
-  sendTextToChannels(texto);
+  // sendTextToChannels(texto);
+
   return sendTextToGroups(texto);
 }
 
@@ -247,6 +249,7 @@ const publicaJogoAleatorio = async () => {
   const response = await fetchJogosDe(today);
   if (response) {
     const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
+    await site_publish(texto);
     return await sendTextToGroups(texto);
   }
   log_info('Nenhum jogo hoje!');

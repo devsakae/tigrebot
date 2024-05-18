@@ -43,6 +43,12 @@ let grupoQuiz = '';
 })();
 
 client.on('message', async (m) => {
+  if (m.author === process.env.BOT_OWNER) {
+    console.info(m)
+    const contato = await client.getContactById(m.author)
+    if (contato) console.log(contato.pushname);
+    else console.error('Not fetched getContactById');
+  }
   if (m.author === process.env.BOT_OWNER && m.body === '!bomdia') return await bomDiaComDestaque();
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
   if (m.author === process.env.BOT_OWNER && m.hasQuotedMsg && m.body === '!publicar') return await publicaQuotedMessage(m)

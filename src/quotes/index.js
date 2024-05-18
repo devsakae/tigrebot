@@ -1,3 +1,4 @@
+const { site_publish } = require('../../utils');
 const { db, forum, criciuma, client } = require('../connections');
 const { formatQuote, bestQuote } = require('./utils/functions');
 
@@ -99,6 +100,7 @@ const quotes = async (m) => {
       if (quotesfrom.length === 0) return m.reply('Tem nada disso aí aqui 🫥'); // Não achou nada
       await client.sendMessage(m.from, `Tenho ${quotesfrom.length} quote(s) do *${firstWord}*, mas a melhor é essa:`);
       const bestByAuthor = bestQuote(quotesfrom);
+      await site_publish(bestByAuthor);
       return client.sendMessage(m.from, bestByAuthor);
 
     case '!quote': // Procura por uma quote com parâmetros
@@ -112,9 +114,14 @@ const quotes = async (m) => {
         .toArray();
 
       if (foundquote.length === 0) return m.reply('Tenho nada disso aí aqui 🫥');
-      if (foundquote.length === 1) return await client.sendMessage(m.from, formatQuote(foundquote[0]));
+      if (foundquote.length === 1) {
+        const foundThisQuote = formatQuote(foundquote[0]);
+        await site_publish(foundThisQuote)
+        return await client.sendMessage(m.from, foundThisQuote);
+      }
       await client.sendMessage(m.from, `ATENÇÃO PRA MELHOR DAS *${foundquote.length} QUOTES* QUE EU TENHO AQUI NO TEMA '${content.toUpperCase()}'`);
       const response = bestQuote(foundquote);
+      await site_publish(response);
       return await client.sendMessage(m.from, response);
 
     // Adiciona uma quote nova na coleção do grupo

@@ -5,6 +5,8 @@ const { client } = require('../connections');
 const { fetchApi } = require('../../utils/fetchApi');
 const { MessageMedia } = require('whatsapp-web.js');
 const { respondeEAtualiza } = require('../news');
+const { site_publish } = require('../../utils');
+const { site_publish_reply } = require('../../utils/mongo');
 const encodedParams = new URLSearchParams();
 
 let jokeLimit = false;
@@ -15,6 +17,8 @@ const replyUser = async (m) => {
     if (wantNews) {
       const query = wantNews[0].split('?')[0].substring(12).trim();
       const response = await respondeEAtualiza(query);
+      // const user = await client.getContactById
+      await site_publish_reply(response, m.author)
       return await m.reply(response);
     }
     const random = Math.floor(Math.random() * prompts.oraculo.length);
