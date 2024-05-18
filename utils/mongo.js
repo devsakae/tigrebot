@@ -2,11 +2,11 @@ const { tigrebot } = require('../src/connections');
 const { log_erro, log_this } = require('./admin');
 
 const site_publish = async (msg) => {
+  const document = {
+    'data': new Date(),
+    'mensagem': msg.replace(process.env.BOT_NUMBER.split('@')[0], 'Tigrebot')
+  }
   try {
-    const document = {
-      'data': new Date(),
-      'mensagem': msg
-    }
     await tigrebot.collection('mensagens').insertOne(document)
     log_this('Salvei na DB: ' + msg.substring(0, 255) + ' (...)');
   } catch (err) {
@@ -15,15 +15,15 @@ const site_publish = async (msg) => {
 }
 
 const site_publish_reply = async (msg, user = '[Suprimido]', msgOrig = '[Mensagem original suprimida]') => {
-  try {
-    const document = {
-      'data': new Date(),
-      'mensagem': msg,
-      'quote': {
-        author: user,
-        text: msgOrig,
-      }
+  const document = {
+    'data': new Date(),
+    'mensagem': msg,
+    'quote': {
+      author: user,
+      text: msgOrig.replace(process.env.BOT_NUMBER.split('@')[0], 'Tigrebot'),
     }
+  }
+  try {
     await tigrebot.collection('mensagens').insertOne(document)
     log_this('Salvei no DB: ' + msg.substring(0, 255) + ' (...)');
   } catch (err) {
