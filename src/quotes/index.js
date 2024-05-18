@@ -1,4 +1,5 @@
 const { site_publish } = require('../../utils');
+const { site_publish_reply } = require('../../utils/mongo');
 const { db, forum, criciuma, client } = require('../connections');
 const { formatQuote, bestQuote } = require('./utils/functions');
 
@@ -52,12 +53,15 @@ const addQuote = async (m) => {
 const quotes = async (m) => {
   const chat = await m.getChat();
   chat.sendStateTyping();
+  const quemPediu = await client.getContactById(m.author);
   if (m.body === '!quote') {
     const randomQuote = await criciuma
       .collection('golacos_tigrelog')
       .aggregate([{ $sample: { size: 1 } }])
       .toArray();
-    return client.sendMessage(m.from, formatQuote(randomQuote[0]));
+    const thisQuote = formatQuote(randomQuote[0]);
+    await site_publish_reply(thisQuote, quemPediu.pushname, m.body);
+    return await m.reply(thisQuote);
   }
   const quoteType = m.body
     .substring(0, m.body.indexOf(' '))
@@ -83,9 +87,14 @@ const quotes = async (m) => {
         })
         .toArray();
 
-      if (quotesdated.length < 1) return m.reply('Sabe o que eu encontrei?? Sabes???        nada')
+      if (quotesdated.length < 1) {
+        const myReply = 'Sabe o que eu encontrei?? Sabes???        nada';
+        await site_publish_reply(myReply, quemPediu.pushname, m.body)
+        return await m.reply(myReply)
+      }
       const bestByDate = bestQuote(quotesdated);
-      return await client.sendMessage(m.from, bestByDate);
+      await site_publish_reply(bestByDate, quemPediu.pushname, m.body)
+      return await m.reply(bestByDate);
 
     case '!autor':
       const quotesfrom = await db
@@ -116,10 +125,12 @@ const quotes = async (m) => {
       if (foundquote.length === 0) return m.reply('Tenho nada disso aí aqui 🫥');
       if (foundquote.length === 1) {
         const foundThisQuote = formatQuote(foundquote[0]);
-        await site_publish(foundThisQuote)
-        return await client.sendMessage(m.from, foundThisQuote);
+        await site_publish_reply(foundThisQuote, quemPediu.pushname, m.body)
+        return await m.reply(foundThisQuote);
       }
-      await client.sendMessage(m.from, `ATENÇÃO PRA MELHOR DAS *${foundquote.length} QUOTES* QUE EU TENHO AQUI NO TEMA '${content.toUpperCase()}'`);
+      const preparaOShow = `ATENÇÃO PRA MELHOR DAS *${foundquote.length} QUOTES* QUE EU TENHO AQUI NO TEMA '${content.toUpperCase()}'`;
+      await site_publish(preparaOShow);
+      await client.sendMessage(m.from, preparaOShow);
       const response = bestQuote(foundquote);
       await site_publish(response);
       return await client.sendMessage(m.from, response);

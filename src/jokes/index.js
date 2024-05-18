@@ -19,26 +19,26 @@ const replyUser = async (m) => {
       const query = wantNews[0].split('?')[0].substring(12).trim();
       const response = await respondeEAtualiza(query);
       console.log(autor.pushname)
-      await site_publish_reply(response, autor.pushname)
+      await site_publish_reply(response, autor.pushname, m.body)
       return await m.reply(response);
     }
     const random = Math.floor(Math.random() * prompts.oraculo.length);
-    await site_publish_reply(prompts.oraculo[random], autor.pushname)
+    await site_publish_reply(prompts.oraculo[random], autor.pushname, m.body)
     return await m.reply(prompts.oraculo[random]);
   }
   if (m.body.match(/piada/gi) && !jokeLimit) {
     jokeLimit = true;
     const joke = await getJokes();
-    await site_publish_reply(joke.setup, autor.pushname);
+    await site_publish_reply(joke.setup, autor.pushname, m.body);
     await m.reply(joke.setup);
     setTimeout(async () => {
-      await site_publish_reply(joke.punchline, autor.pushname);
+      await site_publish_reply(joke.punchline, autor.pushname, m.body);
       await m.reply(joke.punchline);
     }, 6000);
     return setTimeout(() => jokeLimit = false, 5400000);
   };
   const uselessFact = await getUselessFact();
-  await site_publish_reply(uselessFact, autor.pushname)
+  await site_publish_reply(uselessFact, autor.pushname, m.body)
   return await m.reply(uselessFact);
 }
 
