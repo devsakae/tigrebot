@@ -23,7 +23,7 @@ const replyUser = async (m) => {
       return await m.reply(response);
     }
     const random = Math.floor(Math.random() * prompts.oraculo.length);
-    await site_publish_reply(response, autor.pushname)
+    await site_publish_reply(prompts.oraculo[random], autor.pushname)
     return await m.reply(prompts.oraculo[random]);
   }
   if (m.body.match(/piada/gi) && !jokeLimit) {
