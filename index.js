@@ -1,11 +1,10 @@
-const config = require('./data/tigrebot.json')
 const prompts = require('./data/prompts.json');
 const { client, mongoclient } = require('./src/connections');
 const publicacoes = require('./utils/autobot');
-const { quotes, addQuote } = require('./src/quotes');
+const { quotes } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida } = require('./src/futebol');
-const { canal, publicaQuotedMessage, publicaMessage, bomDiaComDestaque } = require('./src/canal');
+const { canal, publicaMessage } = require('./src/canal');
 const { echoToGroups, echoToChannel } = require('./utils/sender');
 const { bolao } = require('./src/bolao');
 const { postTweet } = require('./utils/twitter');
@@ -37,6 +36,7 @@ let grupoQuiz = '';
     publicacoes.audio('20 9 * * 3,6');            // Quartas e sábados às 9h20min
     publicacoes.atletaDestaque('20 9 * * 2,5');   // Terças e sextas às 9h20min
     publicacoes.jogosHistoricos('45 13 * * *');   // Todos os dias às 13h45min
+    publicacoes.meuQuiz()
     // publicacoes.bolaoSystem('30 9 * * *');        // Todos os dias às 9h30min
     proximaPartida()                              // Publica sobre a partida do Tigre no dia do jogo às 8h00min
   }

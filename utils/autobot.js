@@ -4,7 +4,10 @@ const { falaAlgumaCoisa } = require('../src/jokes');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../src/futebol');
 const { log_info } = require('./admin');
 const { abreRodada } = require('../src/bolao');
-const { quiz } = require('../src/quiz');
+const { autoquiz } = require('../src/quiz');
+
+const randomHour = () => Math.floor(Math.random() * 18 + 6);
+const randomMinute = () => Math.floor(Math.random() * 59);
 
 const bomDia = time => {
   cron.schedule(time, async () => {
@@ -56,10 +59,26 @@ const bolaoSystem = (time) => {
   })
 }
 
+const meuQuiz = () => {
+  const randomTime = randomMinute() + ' ' + randomHour() + ' * * *';
+  if (cron.validate(randomTime)) {
+    const rodaQuiz = cron.schedule(randomTime, async () => {
+      log_info('Rodando meuQuiz()');
+      setTimeout(() => rodaQuiz.stop(), 10000);
+      await autoquiz();
+      meuQuiz();
+    }, {
+      scheduled: true,
+      timezone: 'America/Sao_Paulo'
+    })
+  }
+}
+
 module.exports = {
   bomDia,
   audio,
   atletaDestaque,
   jogosHistoricos,
-  bolaoSystem
+  bolaoSystem,
+  meuQuiz
 }

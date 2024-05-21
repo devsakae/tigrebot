@@ -1,4 +1,5 @@
 const { Poll, MessageMedia } = require('whatsapp-web.js');
+const config = require('../../data/tigrebot.json')
 const { criciuma, client } = require('../connections');
 const { log_info, log_erro, log_this } = require('../../utils/admin');
 const { umAtleta, formataAdversario, formataJogo } = require('../futebol/utils/functions');
@@ -15,6 +16,18 @@ const quiz = async (m) => {
   if (tipo === 'idolos') return quizIdolos(m, meuQuiz, subtipo);
   if (tipo === 'acerteoidolo') return quizAcerteOIdolo(m, meuQuiz);
   if (tipo === 'adversarios') return quizAdversarios(m, meuQuiz, subtipo);
+  else return log_erro("Quiz com erro");
+}
+
+const autoquiz = async () => {
+  const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
+  const subtipo = subsorteio[Math.floor(Math.random() * subsorteio.length)];
+  const meuQuiz = await buscaOpcoes(tipo);
+  if (meuQuiz.correta === "ERRO") return;
+  log_this("Mandando um quiz de " + tipo + " com subtipo " + subtipo);
+  if (tipo === 'idolos') return Promise.all(Object.keys(config.grupos).map(grp => quizIdolos({ from: grp }, meuQuiz, subtipo)))
+  if (tipo === 'acerteoidolo') return Promise.all(Object.keys(config.grupos).map(grp => quizAcerteOIdolo({ from: grp }, meuQuiz)));
+  if (tipo === 'adversarios') return Promise.all(Object.keys(config.grupos).map(grp => quizAdversarios({ from: grp }, meuQuiz, subtipo)))
   else return log_erro("Quiz com erro");
 }
 
@@ -215,5 +228,6 @@ function calculateAge(raw_birthday) {
 const opcoesAdversarios = (meuQuiz) => [meuQuiz.correta.adversario + " (" + meuQuiz.correta.uf + ")", ...meuQuiz.opcoes.map((adv) => adv.adversario + " (" + adv.uf + ")")].sort();
 
 module.exports = {
-  quiz
+  quiz,
+  autoquiz,
 }
