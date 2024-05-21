@@ -61,6 +61,7 @@ const bolaoSystem = (time) => {
 
 const meuQuiz = () => {
   const randomTime = randomMinute() + ' ' + randomHour() + ' * * *';
+  log_info("Publicando quiz em cron-job de " + randomTime);
   if (cron.validate(randomTime)) {
     const rodaQuiz = cron.schedule(randomTime, async () => {
       log_info('Rodando meuQuiz()');
