@@ -125,7 +125,6 @@ const bomDiaComDestaque = async () => {
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
   await sendTextToGroups(response);
-  await site_publish(response);
   return await postTweet(tweet);
 }
 

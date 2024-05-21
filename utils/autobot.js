@@ -2,7 +2,6 @@ const cron = require('node-cron');
 const { bomDiaComDestaque } = require('../src/canal');
 const { falaAlgumaCoisa } = require('../src/jokes');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../src/futebol');
-const { atualizaSobreCriciuma } = require('../src/news');
 const { log_info } = require('./admin');
 const { abreRodada } = require('../src/bolao');
 const { quiz } = require('../src/quiz');
