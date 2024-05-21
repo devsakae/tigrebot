@@ -8,8 +8,9 @@ const { autoquiz } = require('../src/quiz');
 
 const randomHourTomorrow = () => {
   const now = new Date();
-  const randomTimeTomorrow = (Math.floor(Math.random() * 18 + 6)) + ' ' + (Math.floor(Math.random() * 59)) + ' ' + (now.getDate() + 1) + (now.getMonth() + 1) + ' *';
-  return randomTimeTomorrow;
+  const randomTimeTomorrow = (Math.floor(Math.random() * 18 + 6)) + ' ' + (Math.floor(Math.random() * 59)) + ' ' + (now.getDate() + 1) + ' ' + (now.getMonth() + 1) + ' *';
+  if (cron.validate(randomTimeTomorrow)) return randomTimeTomorrow;
+  return randomHourTomorrow();
 }
 
 const bomDia = time => {
