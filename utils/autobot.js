@@ -6,8 +6,11 @@ const { log_info } = require('./admin');
 const { abreRodada } = require('../src/bolao');
 const { autoquiz } = require('../src/quiz');
 
-const randomHour = () => Math.floor(Math.random() * 18 + 6);
-const randomMinute = () => Math.floor(Math.random() * 59);
+const randomHourTomorrow = () => {
+  const now = new Date();
+  const randomTimeTomorrow = (Math.floor(Math.random() * 18 + 6)) + ' ' + (Math.floor(Math.random() * 59)) + ' ' + (now.getDate() + 1) + (now.getMonth() + 1) + ' *';
+  return randomTimeTomorrow;
+}
 
 const bomDia = time => {
   cron.schedule(time, async () => {
@@ -60,7 +63,7 @@ const bolaoSystem = (time) => {
 }
 
 const meuQuiz = () => {
-  const randomTime = randomMinute() + ' ' + randomHour() + ' * * *';
+  const randomTime = randomHourTomorrow();
   console.info("Publicando quiz em cron-job de " + randomTime);
   if (cron.validate(randomTime)) {
     const rodaQuiz = cron.schedule(randomTime, async () => {
