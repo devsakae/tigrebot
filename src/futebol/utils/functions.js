@@ -1,3 +1,4 @@
+const config = require('../../../data/tigrebot.json');
 const prompts = require('../../../data/prompts.json');
 const { postTweet, replyTweet } = require('../../../utils/twitter');
 
