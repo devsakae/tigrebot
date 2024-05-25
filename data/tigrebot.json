@@ -1,4 +1,6 @@
 {
+    "mysite": "http://devsakae.vercel.app/tigrebot",
+    "devsakae": "http://devsakae.vercel.app",
     "bolao": {
         "grupos": [
             "120363178274878131@g.us"
@@ -9,8 +11,6 @@
         "official": "Criciúma Esporte Clube",
         "url": "https://api-football-v1.p.rapidapi.com/v3",
         "host": "api-football-v1.p.rapidapi.com",
-        "mysite": "http://devsakae.vercel.app/tigrebot",
-        "devsakae": "http://devsakae.vercel.app",
         "nextMatch": {
             "fixture": {
                 "id": 1180389,
