@@ -5,6 +5,7 @@ tests/
 tools/
 *.env*
 *.json
+*/*.json
 !.env.example
 !*prompts.json
 !*feriados.json
