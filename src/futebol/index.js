@@ -133,8 +133,6 @@ const jogadorDoTigreAleatorio = async () => {
   response += `\n\nDados: meutimenarede.com.br\nScraped by @devsakae - ${config.devsakae}`
 
   await postTweet(tweet);
-  await site_publish(response);
-  // await sendMediaUrlToChannels({ url: atl[0].image, caption: response });
   return await sendMediaUrlToGroups({ url: atl[0].image, caption: response });
 }
 
@@ -147,8 +145,6 @@ const aniversariantesDoDia = async (date) => {
     .toArray();
   if (aniversariantes.length === 0) return;
   const texto = organizaFestinha(aniversariantes);
-  // sendTextToChannels(texto);
-
   return sendTextToGroups(texto);
 }
 
@@ -200,7 +196,7 @@ const adversarios = async (m) => {
     const partes = Math.floor(t.jogos.length / 20) + 1
     let auxi = 0;
     for (let i = 0; i < t.jogos.length; i + 20) {
-      let textofull = `Parte ${(auxi / 20) + 1}/${partes}\n`;
+      let textofull = `Parte ${auxi + 1}/${partes}\n`;
       t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n[${id + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
       auxi += 20;
       await client.sendMessage(m.from, textofull);
