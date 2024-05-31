@@ -42,7 +42,7 @@
     "prompt-sync": "^4.2.0",
     "qrcode-terminal": "^0.12.0",
     "twitter-api-v2": "^1.15.2",
-    "whatsapp-web.js": "github:alechkos/whatsapp-web.js#channels"
+    "whatsapp-web.js": "github:pedroslopez/whatsapp-web.js#webpack-exodus"
   },
   "devDependencies": {
     "jest": "^29.7.0",
