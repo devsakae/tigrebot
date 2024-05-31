@@ -30,16 +30,16 @@ const client = new Client({
   puppeteer: {
     headless: true,
     executablePath: executablePath,
-    args: [
-      "--no-sandbox",
-      "--no-first-run",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-accelerated-2d-canvas",
-      "--disable-gpu",
-      "--single-process",
-      "--no-zygote",
-    ],
+    // args: [
+    //   "--no-sandbox",
+    //   "--no-first-run",
+    //   "--disable-setuid-sandbox",
+    //   "--disable-dev-shm-usage",
+    //   "--disable-accelerated-2d-canvas",
+    //   "--disable-gpu",
+    //   "--single-process",
+    //   "--no-zygote",
+    // ],
   },
   // webVersion: "2.2409.2",
   // webVersionCache: {
