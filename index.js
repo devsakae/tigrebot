@@ -137,14 +137,14 @@ client.on('message_reaction', async (m) => {
   }
 })
 
-client.on('group_join', async (e) => {
-  const newGroup = await e.getChat();
-  log_this("Boas vindas a usuário no grupo " + newGroup.name);
-  return await client.sendMessage(newGroup.id,_serialized, 'Olha, ele entrou no grupo mesmo');
-})
+// client.on('group_join', async (e) => {
+//   const newGroup = await e.getChat();
+//   log_this("Boas vindas a usuário no grupo " + newGroup.name);
+//   return await client.sendMessage(newGroup.id,_serialized, 'Olha, ele entrou no grupo mesmo');
+// })
 
-client.on('group_leave', async (e) => {
-  const newGroup = await e.getChat();
-  log_this("Adeus a usuário no grupo " + newGroup.name);
-  return await client.sendMessage(newGroup.id._serialized, 'Saiu porque viu o tamanho da minha pica');
-})
+// client.on('group_leave', async (e) => {
+//   const newGroup = await e.getChat();
+//   log_this("Adeus a usuário no grupo " + newGroup.name);
+//   return await client.sendMessage(newGroup.id._serialized, 'Saiu porque viu o tamanho da minha pica');
+// })
