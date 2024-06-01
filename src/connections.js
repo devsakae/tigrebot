@@ -47,6 +47,13 @@ const client = new Client({
   //   remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2409.2.html',
   // }
 });
+
+// client.on('qr', async (qr) => {
+//   console.log('QR RECEIVED', qr);
+//   const pairingCode = await client.requestPairingCode(process.env.BOT_NUMBER); // enter the target phone number
+//   console.log('Pairing code enabled, code: '+ pairingCode);
+// })
+
 client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
 
 client.on('loading_screen', async (percent, message) => {

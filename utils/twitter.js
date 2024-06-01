@@ -1,5 +1,6 @@
 const { TwitterApi } = require('twitter-api-v2');
-const { log_info, log_this, log_erro } = require('./admin');
+const config = require('../data/tigrebot.json');
+const { log_this, log_erro } = require('./admin');
 
 const client = new TwitterApi({
   appKey: process.env.TWITTER_CONSUMER_KEY,
@@ -8,7 +9,7 @@ const client = new TwitterApi({
   accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-const cutToFit = text => text.length < 281 ? text : text.substring(0, ).substring(0, 235) + '(...)\n\nLeia em portfolio-devsakae.vercel.app/tigrebot'
+const cutToFit = text => text.length > 281 ? text : text.substring(0, ).substring(0, 235) + '(...)\n\nLeia em ' + config.mysite
 
 const postTweet = async text => {
   try {
