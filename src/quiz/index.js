@@ -3,19 +3,27 @@ const config = require('../../data/tigrebot.json')
 const { criciuma, client } = require('../connections');
 const { log_info, log_erro, log_this } = require('../../utils/admin');
 const { umAtleta, formataAdversario, formataJogo } = require('../futebol/utils/functions');
-const sorteio = ['idolos', 'acerteoidolo', 'adversarios'];
+const sorteio = ['idolos', 'acerteoidolo', 'adversarios', 'jogadores'];
 const subsorteio = ['totaljogos', 'idade'];
 const tempoQuiz = 15;
 
 const quiz = async (m) => {
   const tipo = sorteio[Math.floor(Math.random() * sorteio.length)];
   const subtipo = subsorteio[Math.floor(Math.random() * subsorteio.length)];
-  const meuQuiz = await buscaOpcoes(tipo);
+  
+  const meuQuiz = await buscaOpcoes('jogadores')
+  // const meuQuiz = await buscaOpcoes(tipo);
+  
   if (meuQuiz.correta === "ERRO") return m.reply("Erro ao iniciar o quiz");
   log_this("Mandando um quiz de " + tipo + " com subtipo " + subtipo);
+  
+  return quizJogadoresAdversarios(m, meuQuiz);
+  
   if (tipo === 'idolos') return quizIdolos(m, meuQuiz, subtipo);
   if (tipo === 'acerteoidolo') return quizAcerteOIdolo(m, meuQuiz);
   if (tipo === 'adversarios') return quizAdversarios(m, meuQuiz, subtipo);
+  if (tipo === 'adversarios') return quizAdversarios(m, meuQuiz, subtipo);
+  
   else return log_erro("Quiz com erro");
 }
 
@@ -79,10 +87,7 @@ const quizAcerteOIdolo = async (m, meuQuiz) => {
   let pollQuestion = "QUIZ: Que atleta disputou *" + JSON.stringify(totalDeJogos) + "* partidas pelo Tigre " + (estreia === final ? "em " + estreia + "?" : "entre os anos de " + estreia + " a " + final + "?");
   let pollOptions = [meuQuiz.correta.nickname, meuQuiz.opcoes[0].nickname, meuQuiz.opcoes[1].nickname, meuQuiz.opcoes[2].nickname, meuQuiz.opcoes[3].nickname].sort();
   const pollTip = "⏳ Faltando 5 minutos pra encerrar, segue a dica:\n\nEste atleta nasceu em " + meuQuiz.correta.birthday;
-  // let pollAnswer = "QUIZ ENCERRADO!!\n\nO atleta em questão era ninguém mais ninguém menos que *" + meuQuiz.correta.name + "*, mais conhecido como " + meuQuiz.correta.nickname + " (" + meuQuiz.correta.position + "), com um impressionante histórico de " + JSON.stringify(v) + " vitórias, " + JSON.stringify(e) + " empates, " + JSON.stringify(d) + " derrotas e " + JSON.stringify(gols) + " gols marcados.";
   const minhaPoll = new Poll(pollQuestion, pollOptions);
-  if (jogosContra > 0) setTimeout(() => client.sendMessage(m.from, "Tempo acabando, vai aqui uma dica pra quem ainda tá em dúvida: Esse atleta chegou a disputar " + jogosContra + " partidas contra o Tigre."), (20 * 60 * 1000));
-  else falta(m, 5);
   const messageId = await client.sendMessage(m.from, minhaPoll);
   setTimeout(() => messageId.reply(pollTip), (tempoQuiz - 5) * 60 * 1000)
   return setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
@@ -126,6 +131,18 @@ const quizAdversarios = async (m, meuQuiz, subtipo) => {
   }
 }
 
+const quizJogadoresAdversarios = async (m, meuQuiz) => {
+  const jogos = meuQuiz.correta.jogos.filter((j) => j.jogounotigre === false);
+  const jogo = jogos[Math.floor(Math.random() * jogos.length)];
+  let pollQuestion = "QUIZ: Qual destes é o ~mala~ atleta que jogou contra o Tigre vestindo a camisa do clube " + jogo.clube + " pelo(a) " + jogo.torneio + "?";
+  let pollOptions = [meuQuiz.correta.nickname, meuQuiz.opcoes[0].nickname, meuQuiz.opcoes[1].nickname, meuQuiz.opcoes[2].nickname, meuQuiz.opcoes[3].nickname].sort();
+  const pollTip = "⏳ Restam só 5 minutos, é hora (minuto) da DICA!\n\nO cidadão aí era " + meuQuiz.correta.position + " naquela partida contra a gente em " + jogo.ano + ".";
+  const minhaPoll = new Poll(pollQuestion, pollOptions);
+  const messageId = await client.sendMessage(m.from, minhaPoll);
+  setTimeout(() => messageId.reply(pollTip), (tempoQuiz - 5) * 60 * 1000)
+  return setTimeout(() => mostraAtletaEscolhido(m, meuQuiz.correta), (tempoQuiz * 60 * 1000));
+}
+
 const buscaOpcoes = async (tipo) => {
   if (tipo === 'idolos' || tipo === 'acerteoidolo') {
     const atleta = await criciuma
@@ -147,18 +164,16 @@ const buscaOpcoes = async (tipo) => {
     const opcoes = adversario.toSpliced(escolhidoIdx, 1);
     return { correta: escolhido, opcoes: opcoes }
   }
-  // if (tipo === 'atletas') {
-  //   const atleta = await criciuma
-  //     .collection('atletas')
-  //     .aggregate([{ $sample: { size: 5 } }])
-  //     .toArray();
-  // }
-  // if (tipo === 'jogos') {
-  //   const jogo = await criciuma
-  //     .collection('jogos')
-  //     .aggregate([{ $sample: { size: 1 } }])
-  //     .toArray();
-  // }
+  if (tipo === 'jogadores') {
+    const atleta = await criciuma
+      .collection('atletas')
+      .aggregate([{ $match: { "jogos.jogounotigre": false } }, { $sample: { size: 5 } }])
+      .toArray();
+    const escolhidoIdx = Math.floor(Math.random() * atleta.length);
+    const escolhido = atleta[escolhidoIdx];
+    const opcoes = atleta.toSpliced(escolhidoIdx, 1);
+    return { correta: escolhido, opcoes: opcoes }
+  }
   else return { correta: "ERRO", opcoes: [] }
 }
 

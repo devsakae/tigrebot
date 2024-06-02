@@ -302,8 +302,8 @@ const proximaPartida = async () => {
       minute: "numeric"
     });
     let response;
-    if (match.status === 60) response += "Jogo adiado! Hoje seria o dia de ver o Tigre em campo!"
-    else response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
+    if (match.status === 60) await sendTextToGroups("Hoje era dia de Tigre, mas a partida foi adiada! (pra quem não sabe, pra quem já sabia quero que se f");
+    response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
     response += '\n';
     response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
     response += `\n🏆 ${res[0].season.name}`;
