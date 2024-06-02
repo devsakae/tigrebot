@@ -51,7 +51,7 @@ const sendMediaUrlToChannels = async media => {
 
 const sendInstagramToGroups = async media => {
   const mediaFile = await MessageMedia.fromUrl(media.url);
-  const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link + '\nCapturado e enviado até você por TigreBot (https://portfolio-devsakae.vercel.app/tigrebot)';
+  const newCaption = media.caption + '\n\n📷 @' + media.owner + '\n🔗 ' + media.link + '\nCapturado e enviado até você por TigreBot ' + config.mysite;
   for (grupo of Object.keys(config.grupos)) {
     await client.sendMessage(grupo, mediaFile, { caption: newCaption });
   }

@@ -1,7 +1,7 @@
 {
   "admin": {
     "welcome": "Conectando com o WhatsApp, aguarde...",
-    "no_owner": "ERRO: Você precisa configurar um administrador antes de iniciar o bot. Leia as instruções em https://https://portfolio-devsakae.vercel.app/bolao",
+    "no_owner": "ERRO: Você precisa configurar um administrador antes de iniciar o bot. Leia as instruções em https://devsakae.vercel.app/tigrebot",
     "cancelled": "Bolão cancelado, mas dados salvos.",
     "verifyIdOrName": "Verifique o ID ou nome do bolão que você está querendo cancelar",
     "not_specified_bolao": "Bolão(ões) ativo(s)\n",
