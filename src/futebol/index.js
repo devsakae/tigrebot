@@ -298,6 +298,7 @@ const fetchMatchById = async id => {
 
 const proximaPartida = async () => {
   const res = await fetchProximasPartidas();
+  let response;
   if (res.length > 0) {
     const match = await fetchMatchById(res[0].id);
     const dataehora = new Date(res[0].startTimestamp * 1000)
@@ -308,8 +309,9 @@ const proximaPartida = async () => {
       hour: "numeric",
       minute: "numeric"
     });
-    let response;
-    if (match.status === 60) await sendTextToGroups("Hoje era dia de Tigre, mas a partida foi adiada! (pra quem não sabe, pra quem já sabia quero que se f");
+    if (match.status === 60) {
+      return await sendTextToGroups("Hoje era dia de Tigre, mas a partida foi adiada! (pra quem não sabe, pra quem já sabia quero que se f");
+    }
     response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
     response += '\n';
     response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
