@@ -3,7 +3,7 @@ const { client, mongoclient } = require('./src/connections');
 const publicacoes = require('./utils/autobot');
 const { quotes } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
-const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida } = require('./src/futebol');
+const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida, jogosAoVivo } = require('./src/futebol');
 const { canal, publicaMessage } = require('./src/canal');
 const { echoToGroups, echoToChannel } = require('./utils/sender');
 const { bolao } = require('./src/bolao');
@@ -45,16 +45,17 @@ let grupoQuiz = '';
 client.on('message', async (m) => {
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
 
+  if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
+    const jogos = await jogosAoVivo();
+    await m.reply(jogos);
+  }
+
   // Módulo de administração de canal
   if ((m.from === process.env.BOT_OWNER || m.author === process.env.BOT_OWNER) && m.body.startsWith('/')) {
     console.info('Admin solicitou', m.body);
     return await canal(m);
   }
 
-  // if (m.author === process.env.BOT_OWNER && m.body.startsWith('!poll')) {
-  //   const enquete = new Poll("Pergunta?", ["Sim", "Não", "Talvez"]);
-  //   return await client.sendMessage(m.from, enquete);
-  // }
   if (m.body.startsWith('!quiz')) {
     console.info('Alguém pediu !quiz');
     if (grupoQuiz === m.from && modoQuiz) return m.reply("Um quiz por hora, sossega o bumbum guloso aí");
@@ -112,7 +113,7 @@ client.on('message', async (m) => {
   }
 
   // Módulo Bolão refeito 2024
-  return await bolao(m);
+  // return await bolao(m);
 });
 
 client.on('message_reaction', async (m) => {

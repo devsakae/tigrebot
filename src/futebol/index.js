@@ -36,32 +36,6 @@ const { log_erro, log_info } = require('../../utils/admin');
 //   }
 // };
 
-// const atualizaRodada = async (m) => {
-//   const rodada = m.body.split(' ')[1].trim();
-//   if (!rodada || rodada.length < 1) return { message: 'Você precisa especificar qual rodada (ex.: !atualiza 24)' }
-//   const changeMe = {
-//     leagueId: 390,
-//     seasonId: 49058
-//   }
-//   try {
-//     const getRodada = await fetchApi({
-//       url: process.env.FOOTAPI7_URL + '/tournament/' + changeMe.leagueId + '/season/' + changeMe.seasonId + '/matches/round/' + Number(rodada),
-//       host: process.env.FOOTAPI7_HOST,
-//     });
-//     if (getRodada.events.length < 1) return { message: 'Nenhuma rodada encontrada na API. Favor verificar com admin' };
-//     let response = `👁 Resultados da ${rodada}ª rodada da Série B 2023\n`;
-//     getRodada.events.forEach((r) => {
-//       if (r.status.code === 100) {
-//         const matchDate = new Date(r.startTimestamp * 1000);
-//         response += `\n[${matchDate.toLocaleDateString('pt-br')}] ${r.homeTeam.name} ${Number(r.homeScore.current)} x ${Number(r.awayScore.current)} ${r.awayTeam.name} 👉 (1ºT) ${Number(r.homeScore.period1)}-${Number(r.awayScore.period1)}, (2ºT) ${Number(r.homeScore.period1)}-${Number(r.awayScore.period1)}`
-//       }
-//     })
-//     return { message: response };
-//   } catch (err) {
-//     console.error(err);
-//     return { error: true, message: err };
-//   }
-// }
 
 const calculaIdade = (date) => {
   const formattedDate = date.split('/');
@@ -318,6 +292,15 @@ const proximaPartida = async () => {
     response += `\n🏆 ${res[0].season.name}`;
     response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
     if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
+    const schedmatch = `${dataehora.getMinutes()} ${dataehora.getHours()} ${dataehora.getDate()} ${(dataehora.getMonth() + 1)} *`;
+    if (cron.validate(schedmatch)) {
+      const matchStart = cron.schedule(schedmatch, () => {
+        jogoTigrelog(res[0]);
+      }, {
+        scheduled: true,
+        timezone: "America/Sao_Paulo"
+      });
+    }
     const schedstart = '0 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     const schedstop = '15 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     if (cron.validate(schedstart)) {
@@ -339,6 +322,41 @@ const proximaPartida = async () => {
   }
 }
 
+const jogoTigrelog = async (jogo) => {
+  const tigrelog = await client.getChatById('120363202676852882@g.us');
+  await tigrelog.setSubject(`[1ºT] ${jogo.homeTeam.name} x ${jogo.awayTeam.name}`);
+  const rodada = await jogosAoVivo();
+  const modoLive = setInterval(() => {
+    client.sendMessage(tigrelog, rodada);
+  }, 25 * 60 * 1000);
+  setTimeout(() => {
+    clearInterval(modoLive);
+  }, 80 * 60 * 1000)
+  return;
+}
+
+const jogosAoVivo = async () => {
+  try {
+    const getRodada = await fetchApi({
+      url: process.env.FOOTAPI7_URL + '/api/matches/live',
+      // url: process.env.FOOTAPI7_URL + '/tournament/' + changeMe.leagueId + '/season/' + changeMe.seasonId + '/matches/round/' + Number(rodada),
+      host: process.env.FOOTAPI7_HOST,
+    });
+    if (getRodada.events.length > 0) {
+      let response = `🎙 Rádio TigreLOG faz pra você agora o GIRO DA RODADA, RODAAAAAAAA\n`;
+      getRodada.events.forEach((r) => {
+        if (r.status.code === 100) response += `\n・ ${r.homeTeam.name} ${Number(r.homeScore.current)} x ${Number(r.awayScore.current)} ${r.awayTeam.name}`
+      })
+      return response;
+    }
+    return 'Nenhum jogo ao vivo no momento :(';
+  } catch (err) {
+    log_erro(err);
+    return err;
+  }
+}
+
+
 module.exports = {
   jogounotigre,
   proximaPartida,
@@ -348,4 +366,5 @@ module.exports = {
   partida,
   publicaJogoAleatorio,
   proximaPartida,
+  jogosAoVivo,
 };
