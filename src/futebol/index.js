@@ -149,6 +149,7 @@ const aniversariantesDoDia = async (date) => {
 }
 
 const adversarios = async (m) => {
+  const autor = await client.getContactById(m.author);
   const search = m.body.substring(m.body.split(" ")[0].length).trim()
   const findCom = search.substring(search.length - 2).match(/[A-Z]{2}/)
     ? {
@@ -162,7 +163,11 @@ const adversarios = async (m) => {
     .collection('jogos')
     .find(findCom)
     .toArray();
-  if (response.length === 0) return m.reply(`Nenhum time encontrado! Digitou certo mesmo? É _${search}_ mesmo que fala?\n\nLembre-se, eu sou um bot e nunca erro, já você... É direto...\n\nps.: Ah sim, pode ser que o Criciúma nunca tenha jogado contra o ${search} também.`);
+  if (response.length === 0) {
+    const noMatchFoundAnswer = `Nenhum time encontrado! Digitou certo mesmo? É _${search}_ mesmo que fala?\n\nLembre-se, eu sou um bot e nunca erro, já você... É direto...\n\nps.: Ah sim, pode ser que o Criciúma nunca tenha jogado contra o ${search} também.`
+    await site_publish(noMatchFoundAnswer, autor, m.body)
+    return await m.reply(noMatchFoundAnswer);
+  }
   if (response.length > 1) {
     let moreThanOne = `Encontrei mais de 1 ${search}. Qual você deseja? Use o comando correto:\n`
     response.map(t => moreThanOne += `\n‣ !jogos ${t.adversario} ${t.uf}`);
@@ -181,7 +186,7 @@ const adversarios = async (m) => {
     texto += '\n\nListinha de jogos abaixo! Use *!matchid (id)-(jogo)* para ver mais sobre o jogo...';
     texto += `\n\nEu tenho ${t.jogos.length} jogo(s) cadastrado(s) no meu banco de dados. Segue a lista!\n`
     t.jogos.map((j, i) => texto += `\n[${i + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
-    await site_publish(texto);
+    await site_publish(texto, autor, m.body);
     await client.sendMessage(m.from, logo, { caption: texto });
     return await m.reply('!matchid ' + t._id + '-x');
   }
@@ -189,9 +194,11 @@ const adversarios = async (m) => {
     texto += '\n\nEsse admin é foda! Ele deixou todo mundo pesquisar sobre o jogo usando !matchid (mas tem que saber usar). Segue a lista de jogos:';
     if (t.jogos.length < 20) {
       t.jogos.map((j, i) => texto += `\n[${i + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
+      await site_publish(texto);
       await client.sendMessage(m.from, logo, { caption: texto });
-      return await m.reply("!matchid " + t._id + "-x");
+      return await m.reply("!matchid " + t._id + "-");
     }
+    await site_publish(texto);
     await client.sendMessage(m.from, logo, { caption: texto });
     const partes = Math.floor(t.jogos.length / 20) + 1
     let auxi = 0;
@@ -199,6 +206,7 @@ const adversarios = async (m) => {
       let textofull = `Parte ${auxi + 1}/${partes}\n`;
       t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n[${id + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
       auxi += 20;
+      await site_publish(textofull);
       await client.sendMessage(m.from, textofull);
     }
     return await m.reply('!matchid ' + t._id + '-x');
@@ -245,7 +253,6 @@ const publicaJogoAleatorio = async () => {
   const response = await fetchJogosDe(today);
   if (response) {
     const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
-    await site_publish(texto);
     return await sendTextToGroups(texto);
   }
   log_info('Nenhum jogo hoje!');

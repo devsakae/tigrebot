@@ -216,7 +216,6 @@ const fetchInstaId = async (m) => {
   const id = m.body.split(' ')[1].includes('instagram.com')
     ? m.body.match(/(\w+)\/?$/)[1]
     : m.body.split(' ')[1];
-  console.info('Fetching by ID', id);
   client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch do post', id);
   const raw = await fetchWithParams({
     url: "https://instagram191.p.rapidapi.com/v2/post/details-by-shortcode/",
@@ -225,7 +224,6 @@ const fetchInstaId = async (m) => {
       "shortcode": id
     }
   })
-  raw && console.info('Fetched!')
   const data = raw.graphql.shortcode_media;
   const update = {
     date: new Date(),
@@ -240,7 +238,7 @@ const fetchInstaId = async (m) => {
     owner: data.owner.username,
   }
   saveLocalInstagram(update)
-  await sendInstagramToChannels(update);
+  // await sendInstagramToChannels(update);
   return await sendInstagramToGroups(update);
 }
 
