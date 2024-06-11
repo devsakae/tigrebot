@@ -9,7 +9,7 @@ const client = new TwitterApi({
   accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-const cutToFit = text => text.length > 281 ? text : text.substring(0, ).substring(0, 235) + '(...)\n\nLeia em ' + config.mysite
+const cutToFit = text => text.length < 280 ? text : text.substring(0, 235) + '\n\nLeia + em ' + config.mysite;
 
 const postTweet = async text => {
   try {
