@@ -1,6 +1,6 @@
 const config = require('../../../data/tigrebot.json');
 const prompts = require('../../../data/prompts.json');
-const { postTweet, replyTweet } = require('../../../utils/twitter');
+const { postTweet } = require('../../../utils/twitter');
 
 const calculaIdade = (date) => {
   const formattedDate = date.split('/');
@@ -256,6 +256,9 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   return texto;
 }
 
+const formataRodadaAoVivo = (jogo) => {
+  return `\n・ [${jogo.tournament.tournament.name}] ${jogo.homeTeam.shortName} ${Number(jogo.homeScore.current)} x ${Number(jogo.awayScore.current)} ${jogo.awayTeam.shortName} (${jogo.status.description})`
+}
 
 module.exports = {
   umAtleta,
@@ -266,4 +269,5 @@ module.exports = {
   jogoDestaqueDoDia,
   calculaIdade,
   formataAdversario,
+  formataRodadaAoVivo,
 };

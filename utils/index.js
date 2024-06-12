@@ -9,6 +9,9 @@ const {
   sendTextToGroups,
 } = require('./sender');
 const { site_publish } = require('./mongo');
+const { publicidade } = require('./marketing');
+const { log_erro, log_info, log_this } = require('./admin');
+const { postTweet, replyTweet } = require('./twitter');
 
 module.exports = {
   fetchApi,
@@ -20,5 +23,11 @@ module.exports = {
   sendMediaUrlToGroups,
   sendTextToChannels,
   sendTextToGroups,
-  site_publish
+  site_publish,
+  publicidade,
+  log_erro,
+  log_info,
+  log_this,
+  postTweet,
+  replyTweet,
 };

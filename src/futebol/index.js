@@ -3,13 +3,10 @@ const mongodb = require('mongodb');
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { client, criciuma } = require('../connections');
-const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDestaqueDoDia } = require('./utils/functions');
-const { sendTextToGroups, sendMediaUrlToGroups } = require('../../utils/sender');
-const { postTweet } = require('../../utils/twitter');
+const { site_publish, fetchApi, log_erro, log_info, publicidade, postTweet, sendTextToGroups, sendMediaUrlToGroups } = require('../../utils');
+const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDestaqueDoDia, formataRodadaAoVivo } = require('./utils/functions');
 const { default: axios } = require('axios');
 const cron = require('node-cron');
-const { site_publish, fetchApi } = require('../../utils');
-const { log_erro, log_info } = require('../../utils/admin');
 
 // const predictions = async (m) => {
 //   const thisBolao = data[m.from];
@@ -345,16 +342,13 @@ const jogosAoVivo = async () => {
     const liveMatches = getRodada.events.filter((e) => e.status.type === 'inprogress');
     if (liveMatches.length == 0) return 'Nenhum jogo ao vivo no momento!';
     let response = `🎙 Rádio TigreLOG faz pra você agora o GIRO DA RODADA, RODAAAAAAAA\n`;
-    liveMatches.forEach((lm) => {
-      response += `\n・ ${lm.homeTeam.name} ${Number(lm.homeScore.current)} x ${Number(lm.awayScore.current)} ${lm.awayTeam.name}`
-    });
-    return response;
+    liveMatches.forEach((lm) => response += formataRodadaAoVivo(lm));
+    return response + "\n" + publicidade();
   } catch (err) {
     log_erro(err);
     return err;
   }
 }
-
 
 module.exports = {
   jogounotigre,
