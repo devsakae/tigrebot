@@ -257,7 +257,7 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
 }
 
 const formataRodadaAoVivo = (jogo) => {
-  return `\n・ [${jogo.tournament.tournament.name}] ${jogo.homeTeam.shortName} ${Number(jogo.homeScore.current)} x ${Number(jogo.awayScore.current)} ${jogo.awayTeam.shortName} (${jogo.status.description})`
+  return `\n・ [${jogo.tournament.name}] ${jogo.homeTeam.shortName} ${Number(jogo.homeScore.current)} x ${Number(jogo.awayScore.current)} ${jogo.awayTeam.shortName} (${jogo.status.description})`
 }
 
 module.exports = {
