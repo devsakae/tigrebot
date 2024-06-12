@@ -342,14 +342,13 @@ const jogosAoVivo = async () => {
       // url: process.env.FOOTAPI7_URL + '/tournament/' + changeMe.leagueId + '/season/' + changeMe.seasonId + '/matches/round/' + Number(rodada),
       host: process.env.FOOTAPI7_HOST,
     });
-    if (getRodada.events.length > 0) {
-      let response = `🎙 Rádio TigreLOG faz pra você agora o GIRO DA RODADA, RODAAAAAAAA\n`;
-      getRodada.events.forEach((r) => {
-        if (r.status.code === 100) response += `\n・ ${r.homeTeam.name} ${Number(r.homeScore.current)} x ${Number(r.awayScore.current)} ${r.awayTeam.name}`
-      })
-      return response;
-    }
-    return 'Nenhum jogo ao vivo no momento :(';
+    const liveMatches = getRodada.events.filter((e) => e.status === 'inprogress');
+    if (liveMatches.length == 0) return 'Nenhum jogo ao vivo no momento!';
+    let response = `🎙 Rádio TigreLOG faz pra você agora o GIRO DA RODADA, RODAAAAAAAA\n`;
+    liveMatches.forEach((lm) => {
+      response += `\n・ ${lm.homeTeam.name} ${Number(lm.homeScore.current)} x ${Number(lm.awayScore.current)} ${lm.awayTeam.name}`
+    });
+    return response;
   } catch (err) {
     log_erro(err);
     return err;
