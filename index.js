@@ -47,7 +47,7 @@ client.on('message', async (m) => {
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
     const jogos = await jogosAoVivo();
-    await m.reply(jogos);
+    return await m.reply(jogos);
   }
 
   // Módulo de administração de canal
