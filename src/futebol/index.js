@@ -338,7 +338,7 @@ const jogoTigrelog = async (jogo) => {
 const jogosAoVivo = async () => {
   try {
     const getRodada = await fetchApi({
-      url: process.env.FOOTAPI7_URL + '/api/matches/live',
+      url: process.env.FOOTAPI7_URL + '/matches/live',
       // url: process.env.FOOTAPI7_URL + '/tournament/' + changeMe.leagueId + '/season/' + changeMe.seasonId + '/matches/round/' + Number(rodada),
       host: process.env.FOOTAPI7_HOST,
     });
