@@ -342,7 +342,7 @@ const jogosAoVivo = async () => {
       // url: process.env.FOOTAPI7_URL + '/tournament/' + changeMe.leagueId + '/season/' + changeMe.seasonId + '/matches/round/' + Number(rodada),
       host: process.env.FOOTAPI7_HOST,
     });
-    const liveMatches = getRodada.events.filter((e) => e.status === 'inprogress');
+    const liveMatches = getRodada.events.filter((e) => e.status.type === 'inprogress');
     if (liveMatches.length == 0) return 'Nenhum jogo ao vivo no momento!';
     let response = `🎙 Rádio TigreLOG faz pra você agora o GIRO DA RODADA, RODAAAAAAAA\n`;
     liveMatches.forEach((lm) => {
