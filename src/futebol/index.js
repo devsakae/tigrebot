@@ -8,7 +8,7 @@ const { sendTextToGroups, sendMediaUrlToGroups } = require('../../utils/sender')
 const { postTweet } = require('../../utils/twitter');
 const { default: axios } = require('axios');
 const cron = require('node-cron');
-const { site_publish } = require('../../utils');
+const { site_publish, fetchApi } = require('../../utils');
 const { log_erro, log_info } = require('../../utils/admin');
 
 // const predictions = async (m) => {
