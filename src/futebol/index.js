@@ -343,7 +343,7 @@ const jogosAoVivo = async () => {
     if (liveMatches.length == 0) return 'Nenhum jogo ao vivo no momento!';
     let response = `🎙 Rádio TigreLOG faz pra você agora o GIRO DA RODADA, RODAAAAAAAA\n`;
     liveMatches.forEach((lm) => response += formataRodadaAoVivo(lm));
-    return response + "\n" + publicidade();
+    return response + "\n\n" + publicidade();
   } catch (err) {
     log_erro(err);
     return err;
