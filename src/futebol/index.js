@@ -280,23 +280,25 @@ const proximaPartida = async () => {
       hour: "numeric",
       minute: "numeric"
     });
-    if (match.status === 60) {
-      return await sendTextToGroups("Hoje era dia de Tigre, mas a partida foi adiada! (pra quem não sabe, pra quem já sabia quero que se f");
+    if (match.status.code === 60) {
+      response += "Hoje era dia de Tigre... :("
     }
-    response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
-    response += '\n';
-    response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
-    response += `\n🏆 ${res[0].season.name}`;
-    response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
-    if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
-    const schedmatch = `${dataehora.getMinutes()} ${dataehora.getHours()} ${dataehora.getDate()} ${(dataehora.getMonth() + 1)} *`;
-    if (cron.validate(schedmatch)) {
-      const matchStart = cron.schedule(schedmatch, () => {
-        jogoTigrelog(res[0]);
-      }, {
-        scheduled: true,
-        timezone: "America/Sao_Paulo"
-      });
+    else {
+      response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
+      response += '\n';
+      response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
+      response += `\n🏆 ${res[0].season.name}`;
+      response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
+      if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
+      const schedmatch = `${dataehora.getMinutes()} ${dataehora.getHours()} ${dataehora.getDate()} ${(dataehora.getMonth() + 1)} *`;
+      if (cron.validate(schedmatch)) {
+        const matchStart = cron.schedule(schedmatch, () => {
+          jogoTigrelog(res[0]);
+        }, {
+          scheduled: true,
+          timezone: "America/Sao_Paulo"
+        });
+      }
     }
     const schedstart = '0 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     const schedstop = '15 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
