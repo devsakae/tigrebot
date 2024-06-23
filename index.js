@@ -4,11 +4,11 @@ const publicacoes = require('./utils/autobot');
 const { quotes } = require('./src/quotes');
 const { replyUser, falaPraEle } = require('./src/jokes');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida, jogosAoVivo } = require('./src/futebol');
-const { canal, publicaMessage } = require('./src/canal');
-const { echoToGroups, echoToChannel } = require('./utils/sender');
-const { bolao } = require('./src/bolao');
+const { canal, publicaMessage, setSubject } = require('./src/canal');
+const { echoToGroups } = require('./utils/sender');
+// const { bolao } = require('./src/bolao');
 const { postTweet } = require('./utils/twitter');
-const { log_this, log_info } = require('./utils/admin');
+const { log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
 let modoQuiz = false;
 let grupoQuiz = '';
@@ -43,6 +43,9 @@ let grupoQuiz = '';
 })();
 
 client.on('message', async (m) => {
+
+  if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!titulo')) return await setSubject(m);
+
   if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
@@ -88,7 +91,7 @@ client.on('message', async (m) => {
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
     const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
     console.log('Echoing:\n', echomsg);
-    await echoToChannel(echomsg);
+    // await echoToChannel(echomsg);
     await postTweet(echomsg);
     return await echoToGroups(echomsg)
   }

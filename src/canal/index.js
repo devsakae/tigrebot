@@ -4,7 +4,7 @@ const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { fetchWithParams, fetchApi, site_publish } = require('../../utils');
 const { saveLocal, savePrompts } = require('../../utils/handleFile');
-const { sendInstagramToGroups, sendInstagramToChannels, sendMediaUrlToGroups, sendTextToGroups } = require('../../utils/sender');
+const { sendInstagramToGroups, sendMediaUrlToGroups, sendTextToGroups } = require('../../utils/sender');
 const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { falaAlgumaCoisa } = require('../jokes');
@@ -16,30 +16,12 @@ const { default: axios } = require('axios');
 const { log_erro, log_info, log_this } = require('../../utils/admin');
 
 const canal = async (m) => {
-  // Uso: /add errors.teste Isso é apenas um teste.
   if (m.body.startsWith('/add')) return await addToPrompt(m);
   if (m.body.startsWith('/push')) return await pushToPrompt(m);
   if (m.body.startsWith('/promptdelete')) return await deletePrompt(m);
   if (m.body.startsWith('/audio')) return await falaAlgumaCoisa();
-  if (m.body.startsWith('/help')) {
-    return client.sendMessage(
-      m.from,
-      'Comandos já configurados no bot:\n\n */canal criar <nome>*\n_Crio um canal de nome <nome> e devolvo com o ID, salvando no banco de dados_\n\n */insta <username>*\n _Publico no <canal> o último post de <username> no Instagram.com_\n\n */fetchinsta <link | id>*\n _Faço o fetch no instagram do post <link> ou <id>_',
-    );
-  }
   if (m.body.startsWith('/insta')) return await instagramThis(m.body.split(' ')[1]);
   if (m.body.startsWith('/fetchinsta')) return await fetchInstaId(m);
-  if (m.body.startsWith('/canal')) {
-    const command = m.body.split(' ');
-    if (command && command[1] === 'criar' && command.length > 1) {
-      if (Object.keys(config.canais).includes(command[2])) return client.sendMessage(m.from, 'Este canal já existe ou é inválido');
-      const chanId = (await client.createChannel(command[2]))?.nid._serialized;
-      console.info(`Canal ${command[2]} criado com id ${chanId}`);
-      config.canais = { [chanId]: command[2], ...config.canais }
-      saveLocal(config);
-      return client.sendMessage(m.from, 'Canal criado! ID: ' + chanId);
-    }
-  }
   if (m.body.startsWith('/bomdia')) return bomDiaComDestaque();
   return;
 };
@@ -357,6 +339,14 @@ const deletePrompt = async m => {
   return await client.sendMessage(m.from, 'Novo prompt:\n\n' + newprompt);
 }
 
+const setSubject = async m => {
+  console.log('setting subject')
+  const group = await client.getChatById(m.from);
+  console.log(group);
+  await group.setSubject(m.body.substring(8));
+  await log_this('Ajustando título de ' + group.name + ' para: ' + m.body.substring(8));
+}
+
 module.exports = {
   canal,
   instagramThis,
@@ -364,4 +354,5 @@ module.exports = {
   fetchInstaId,
   publicaMessage,
   timemania,
+  setSubject,
 };
