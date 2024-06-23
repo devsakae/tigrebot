@@ -7,6 +7,7 @@ const { site_publish, fetchApi, log_erro, log_info, publicidade, postTweet, send
 const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDestaqueDoDia, formataRodadaAoVivo } = require('./utils/functions');
 const { default: axios } = require('axios');
 const cron = require('node-cron');
+const { setSubject } = require('../canal');
 
 // const predictions = async (m) => {
 //   const thisBolao = data[m.from];
@@ -280,25 +281,24 @@ const proximaPartida = async () => {
       hour: "numeric",
       minute: "numeric"
     });
-    if (match.status.code === 60) {
-      response += "Hoje era dia de Tigre... :("
-    }
-    else {
-      response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
-      response += '\n';
-      response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
-      response += `\n🏆 ${res[0].season.name}`;
-      response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
-      if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
-      const schedmatch = `${dataehora.getMinutes()} ${dataehora.getHours()} ${dataehora.getDate()} ${(dataehora.getMonth() + 1)} *`;
-      if (cron.validate(schedmatch)) {
-        const matchStart = cron.schedule(schedmatch, () => {
-          jogoTigrelog(res[0]);
-        }, {
-          scheduled: true,
-          timezone: "America/Sao_Paulo"
-        });
-      }
+    response += prompts.proximojogo[Math.floor(Math.random() * prompts.proximojogo.length)];
+    response += '\n';
+    response += `\n⚽️ ${res[0].homeTeam.name} x ${res[0].awayTeam.name}`;
+    response += `\n🏆 ${res[0].season.name}`;
+    response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
+    if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
+ 
+    // Ajusta o título do canal TigreLOG
+    await setSubject({ from: '554896059196-1392584319@g.us', body: `!titulo [${horadojogo.substring(1)}] ${res[0].homeTeam.name} x ${res[0].awayTeam.name}` })
+ 
+    const schedmatch = `${dataehora.getMinutes()} ${dataehora.getHours()} ${dataehora.getDate()} ${(dataehora.getMonth() + 1)} *`;
+    if (cron.validate(schedmatch)) {
+      const matchStart = cron.schedule(schedmatch, () => {
+        jogoTigrelog(res[0]);
+      }, {
+        scheduled: true,
+        timezone: "America/Sao_Paulo"
+      });
     }
     const schedstart = '0 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     const schedstop = '15 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
@@ -322,11 +322,11 @@ const proximaPartida = async () => {
 }
 
 const jogoTigrelog = async (jogo) => {
-  const tigrelog = await client.getChatById('120363202676852882@g.us');
+  const tigrelog = await client.getChatById('554896059196-1392584319@g.us');
   await tigrelog.setSubject(`[1ºT] ${jogo.homeTeam.name} x ${jogo.awayTeam.name}`);
   const rodada = await jogosAoVivo();
   const modoLive = setInterval(() => {
-    client.sendMessage(tigrelog, rodada);
+    client.sendMessage('554896059196-1392584319@g.us', rodada);
   }, 25 * 60 * 1000);
   setTimeout(() => {
     clearInterval(modoLive);

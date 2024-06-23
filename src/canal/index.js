@@ -340,11 +340,9 @@ const deletePrompt = async m => {
 }
 
 const setSubject = async m => {
-  console.log('setting subject')
   const group = await client.getChatById(m.from);
-  console.log(group);
+  await log_info('Ajustando título de ' + group.name + ' para: ' + m.body.substring(8));
   await group.setSubject(m.body.substring(8));
-  await log_this('Ajustando título de ' + group.name + ' para: ' + m.body.substring(8));
 }
 
 module.exports = {
