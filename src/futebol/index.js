@@ -287,10 +287,6 @@ const proximaPartida = async () => {
     response += `\n🏆 ${res[0].season.name}`;
     response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
     if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
- 
-    // Ajusta o título do canal TigreLOG
-    await setSubject({ from: '554896059196-1392584319@g.us', body: `!titulo [${horadojogo.substring(1)}] ${res[0].homeTeam.name} x ${res[0].awayTeam.name}` })
- 
     const schedmatch = `${dataehora.getMinutes()} ${dataehora.getHours()} ${dataehora.getDate()} ${(dataehora.getMonth() + 1)} *`;
     if (cron.validate(schedmatch)) {
       const matchStart = cron.schedule(schedmatch, () => {
@@ -306,6 +302,7 @@ const proximaPartida = async () => {
       const task = cron.schedule(schedstart, async () => {
         await sendTextToGroups(response);
         await postTweet(response + '\n\n@CriciumaEC #DaleTigre #VamosTigre');
+        await setSubject({ from: '554896059196-1392584319@g.us', body: `!titulo [${horadojogo.substring(1)}] ${res[0].homeTeam.name} x ${res[0].awayTeam.name}` })
       }, {
         scheduled: true,
         timezone: "America/Sao_Paulo"
