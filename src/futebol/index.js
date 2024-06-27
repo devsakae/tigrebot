@@ -302,7 +302,7 @@ const proximaPartida = async () => {
       const task = cron.schedule(schedstart, async () => {
         await sendTextToGroups(response);
         await postTweet(response + '\n\n@CriciumaEC #DaleTigre #VamosTigre');
-        await setSubject({ from: '554896059196-1392584319@g.us', body: `!titulo [${horadojogo.substring(1)}] ${res[0].homeTeam.name} x ${res[0].awayTeam.name}` })
+        await setSubject({ from: '554896059196-1392584319@g.us', body: `!titulo [${dataehora.toTimeString().substring(0,5)}] ${res[0].homeTeam.name} x ${res[0].awayTeam.name}` })
       }, {
         scheduled: true,
         timezone: "America/Sao_Paulo"
@@ -320,7 +320,9 @@ const proximaPartida = async () => {
 
 const jogoTigrelog = async (jogo) => {
   const tigrelog = await client.getChatById('554896059196-1392584319@g.us');
-  await tigrelog.setSubject(`[1ºT] ${jogo.homeTeam.name} x ${jogo.awayTeam.name}`);
+  setTimeout(() => {
+    tigrelog.setSubject(`[1ºT] ${jogo.homeTeam.name} x ${jogo.awayTeam.name}`);
+  }, 10000)
   const rodada = await jogosAoVivo();
   const modoLive = setInterval(() => {
     client.sendMessage('554896059196-1392584319@g.us', rodada);
