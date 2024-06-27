@@ -270,7 +270,7 @@ const fetchMatchById = async id => {
 
 const proximaPartida = async () => {
   const res = await fetchProximasPartidas();
-  let response;
+  let response = '';
   if (res.length > 0) {
     const match = await fetchMatchById(res[0].id);
     const dataehora = new Date(res[0].startTimestamp * 1000)
