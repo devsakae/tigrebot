@@ -10,7 +10,7 @@ const { log_erro } = require('../../utils/admin');
 const encodedParams = new URLSearchParams();
 const fs = require('fs');
 
-const pack = fs.readdirSync('../../data/audios/');
+const pack = fs.readdirSync(__dirname + '../../data/audios/');
 console.log('audiopack:', pack);
 
 let jokeLimit = false;
