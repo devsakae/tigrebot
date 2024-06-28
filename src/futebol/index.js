@@ -323,9 +323,9 @@ const jogoTigrelog = async (jogo) => {
   setTimeout(() => {
     tigrelog.setSubject(`[1ºT] ${jogo.homeTeam.name} x ${jogo.awayTeam.name}`);
   }, 10000)
-  const rodada = await jogosAoVivo();
-  const modoLive = setInterval(() => {
-    client.sendMessage('554896059196-1392584319@g.us', rodada);
+  const modoLive = setInterval(async () => {
+    const rodada = await jogosAoVivo();
+    await client.sendMessage('554896059196-1392584319@g.us', rodada);
   }, 25 * 60 * 1000);
   setTimeout(() => {
     clearInterval(modoLive);
