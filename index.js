@@ -9,7 +9,7 @@ const { echoToGroups } = require('./utils/sender');
 const { postTweet } = require('./utils/twitter');
 const { log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
-const { futnatv } = require('./src/news');
+// const { futnatv } = require('./src/news');
 let modoQuiz = false;
 let grupoQuiz = '';
 
@@ -46,7 +46,7 @@ client.on('message', async (m) => {
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!titulo')) return await setSubject(m);
 
-  if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!twitter'))) return await futnatv();
+  // if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!twitter'))) return await futnatv();
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
     const jogos = await jogosAoVivo();
