@@ -2,14 +2,14 @@ const prompts = require('./data/prompts.json');
 const { client, mongoclient } = require('./src/connections');
 const publicacoes = require('./utils/autobot');
 const { quotes } = require('./src/quotes');
-const { replyUser, falaPraEle } = require('./src/jokes');
+const { replyUser } = require('./src/jokes');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida, jogosAoVivo } = require('./src/futebol');
 const { canal, publicaMessage, setSubject } = require('./src/canal');
 const { echoToGroups } = require('./utils/sender');
-// const { bolao } = require('./src/bolao');
 const { postTweet } = require('./utils/twitter');
 const { log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
+const { futnatv } = require('./src/news');
 let modoQuiz = false;
 let grupoQuiz = '';
 
@@ -46,7 +46,7 @@ client.on('message', async (m) => {
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!titulo')) return await setSubject(m);
 
-  if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!falapraele') || m.body.startsWith('/anuncieque') )) return await falaPraEle(m);
+  if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!twitter'))) return await futnatv();
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
     const jogos = await jogosAoVivo();

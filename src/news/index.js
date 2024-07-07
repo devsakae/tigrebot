@@ -2,7 +2,7 @@ const googleNewsAPI = require("google-news-json");
 const prompts = require("../../data/prompts.json");
 const config = require("../../data/tigrebot.json");
 const { sendTextToChannels, sendTextToGroups, saveLocal } = require("../../utils");
-const { postTweet } = require("../../utils/twitter");
+const { postTweet, getUserPost } = require("../../utils/twitter");
 
 const fetchNews = async (term = 'Criciúma') => {
   const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, term, "pt-BR");
@@ -50,9 +50,15 @@ const respondeEAtualiza = async (term) => {
   return "Não, nada por enquanto.";
 }
 
+const futnatv = async () => {
+  const tweets = await getUserPost('3059767492');
+  // 3059767492 (userId @futnatv)
+}
+
 module.exports = {
   fetchNews,
   getNovidades,
   respondeEAtualiza,
   atualizaSobreCriciuma,
+  futnatv,
 }
