@@ -45,7 +45,8 @@ const postMediaTweet = async ({ media, text }) => {
 
 const getUserPost = async (user) => {
   try {
-    const userTweets = await client.v2.get('users/' + user + '/tweets');
+    // const userTweets = await client.v2.get('users/' + user + '/tweets');
+    const userTweets = await client.v1.get('statuses/user_timeline.json', { user_id: user });;
     console.info(userTweets);
     return;
   } catch (err) {
