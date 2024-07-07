@@ -8,6 +8,9 @@ const { respondeEAtualiza } = require('../news');
 const { site_publish_reply } = require('../../utils/mongo');
 const { log_erro } = require('../../utils/admin');
 const encodedParams = new URLSearchParams();
+const fs = require('fs');
+
+const pack = fs.readdirSync(process.cwd() + '/data/audios/');
 
 let jokeLimit = false;
 
@@ -104,12 +107,7 @@ const falaPraEle = async (m) => {
 }
 
 const falaAlgumaCoisa = async () => {
-  const pack = ['mastella.mp3', 'zecalo.mp3', 'aa1.mp3', 'aa2.mp3', 'aa3.mp3', 'argel.mp3', 'tencatti.mp3', 'dmmonho.mp3', 'everton.mp3'];
   const audio = await MessageMedia.fromFilePath('./data/audios/' + pack[Math.floor(Math.random() * pack.length)])
-  // await Promise.all(Object.keys(config.canais).map(async chan => {
-  //   const chat = await client.getChatById(chan);
-  //   await chat.sendMessage(audio, { sendAudioAsVoice: true });
-  // }))
   return await Promise.all(Object.keys(config.grupos).map(async grupo => {
     const chat = await client.getChatById(grupo);
     await chat.sendMessage(audio, { sendAudioAsVoice: true });
