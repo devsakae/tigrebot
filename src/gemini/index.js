@@ -23,7 +23,7 @@ const new_history = (type, prompt) => {
 }
 
 const replyOwner = async (m) => {
-  const thisprompt = m.body.replace(process.env.BOT_NUMBER,'');
+  const thisprompt = m.body.replace(process.env.BOT_NUMBER.split('@')[0],'');
   
   console.log('Iniciando reply owner');
   config.gemini_history.push(new_history('user', thisprompt));

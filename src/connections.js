@@ -56,7 +56,7 @@ client.on('ready', async () => {
       if (group.id._serialized.endsWith('-1401890927@g.us')) return '';
       if (group.id._serialized.includes('newsletter')) return '';
       await group.clearMessages();
-      console.log('✔️ ', group.name, '[grupo]');
+      console.log('✔️', group.name, '[' + group.id._serialized + ']');
       // const totalMessages = await group.fetchMessages({ limit: 10 });
       // await Promise.all(totalMessages.filter(m => m.ack === 1).map(async m => await group.sendSeen(m.id._serialized)))
     }));
@@ -68,8 +68,7 @@ client.on('ready', async () => {
     (err) => console.error(err),
   );
   const today = new Date()
-  console.info(today.toLocaleString('pt-br'));
-  console.info('\n### TigreBot rodando! ###');
+  console.info('\n### TigreBot rodando -', today.toLocaleString('pt-br') + '! ###');
   return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
 });
 
