@@ -47,15 +47,8 @@ client.on('authenticated', () => {
 
 client.on('ready', async () => {
   console.info('\nConfigurando grupos e canais...');
-  const allChans = await client.getChannels();
-  allChans
-    .filter((chan) => !chan.isReadOnly)
-    .forEach((mine) => {
-      config.canais = { [mine.id._serialized]: mine.name };
-      console.info('✔️ ', mine.name, '[canal]');
-    });
   const allChats = await client.getChats();
-  await Promise.all(allChats.filter(c => !c.isGroup).map(async c => await c.delete()));
+  // await Promise.all(allChats.filter(c => !c.isGroup).map(async c => await c.delete()));
   await Promise.all(allChats
     .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {
