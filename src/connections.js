@@ -2,7 +2,6 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const { log_this } = require('../utils');
 
 // mongodb
 const mongoclient = new MongoClient(process.env.MONGODB_URI, {
@@ -46,7 +45,7 @@ client.on('authenticated', () => {
 
 client.on('ready', async () => {
   console.info('\n### TigreBot rodando! ###');
-  return await log_this('O pai tá on');
+  return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
 });
 
 client.initialize();
