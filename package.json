@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/devsakae/tigrebot#readme",
   "dependencies": {
+    "@google/generative-ai": "^0.14.1",
     "axios": "^1.6.1",
     "fs": "^0.0.1-security",
     "google-news-json": "^2.1.0",

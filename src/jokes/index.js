@@ -9,12 +9,17 @@ const { site_publish_reply } = require('../../utils/mongo');
 const { log_erro } = require('../../utils/admin');
 const encodedParams = new URLSearchParams();
 const fs = require('fs');
+const { replyOwner } = require('../gemini');
 
 const pack = fs.readdirSync(process.cwd() + '/data/audios/');
 
 let jokeLimit = false;
 
 const replyUser = async (m) => {
+  if (m.author === process.env.BOT_OWNER) {
+    return await replyOwner(m);
+  }
+
   const autor = await client.getContactById(m.author);
   if (m.body.endsWith('?')) {
     const wantNews = m.body.match(/novidades d[eao].*/gi);

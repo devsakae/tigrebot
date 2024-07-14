@@ -44,7 +44,7 @@ let grupoQuiz = '';
 
 client.on('message', async (m) => {
 
-  if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!titulo')) return await setSubject(m);
+  if (m.body.startsWith('!titulo')) return await setSubject(m);
 
   // if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!twitter'))) return await futnatv();
 
