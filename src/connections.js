@@ -2,6 +2,8 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const fs = require('fs');
+const config = require('../data/tigrebot.json')
 
 // mongodb
 const mongoclient = new MongoClient(process.env.MONGODB_URI, {
@@ -44,6 +46,36 @@ client.on('authenticated', () => {
 });
 
 client.on('ready', async () => {
+  console.info('\nConfigurando grupos e canais...');
+  const allChans = await client.getChannels();
+  allChans
+    .filter((chan) => !chan.isReadOnly)
+    .forEach((mine) => {
+      config.canais = { [mine.id._serialized]: mine.name };
+      console.info('✔️ ', mine.name, '[canal]');
+    });
+  const allChats = await client.getChats();
+  await Promise.all(allChats.filter(c => !c.isGroup).map(async c => await c.delete()));
+  await Promise.all(allChats
+    .filter((group) => !group.isReadOnly && group.isGroup)
+    .map(async (group) => {
+      if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
+      if (group.id._serialized.endsWith('-1401890927@g.us')) return '';
+      if (group.id._serialized.includes('newsletter')) return '';
+      await group.clearMessages();
+      console.log('✔️ ', group.name, '[grupo]');
+      // const totalMessages = await group.fetchMessages({ limit: 10 });
+      // await Promise.all(totalMessages.filter(m => m.ack === 1).map(async m => await group.sendSeen(m.id._serialized)))
+    }));
+  console.log('Gravando grupos no config...')
+  fs.writeFileSync(
+    './data/tigrebot.json',
+    JSON.stringify(config, null, 4),
+    'utf-8',
+    (err) => console.error(err),
+  );
+  const today = new Date()
+  console.info(today.toLocaleString('pt-br'));
   console.info('\n### TigreBot rodando! ###');
   return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
 });
