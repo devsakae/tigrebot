@@ -3,7 +3,8 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
-const config = require('../data/tigrebot.json')
+const config = require('../data/tigrebot.json');
+const { saveLocal } = require('../utils');
 
 // mongodb
 const mongoclient = new MongoClient(process.env.MONGODB_URI, {
@@ -61,12 +62,7 @@ client.on('ready', async () => {
       // await Promise.all(totalMessages.filter(m => m.ack === 1).map(async m => await group.sendSeen(m.id._serialized)))
     }));
   console.log('Gravando grupos no config...')
-  fs.writeFileSync(
-    './data/tigrebot.json',
-    JSON.stringify(config, null, 4),
-    'utf-8',
-    (err) => console.error(err),
-  );
+  saveLocal(config);
   const today = new Date()
   console.info('\n### TigreBot rodando -', today.toLocaleString('pt-br') + '! ###');
   return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
