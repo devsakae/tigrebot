@@ -91,7 +91,7 @@ const formatPredicts = (predicts) => {
   return response;
 };
 
-const sendAdmin = (what) => client.sendMessage(process.env.BOT_OWNER, what);
+const sendAdmin = async (what) => await client.sendMessage(process.env.BOT_OWNER, what);
 
 const calculaRanking = async (matchInfo, grupo) => {
   const today = new Date();

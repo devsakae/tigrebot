@@ -2,6 +2,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const { log_this } = require('../utils');
 
 // mongodb
 const mongoclient = new MongoClient(process.env.MONGODB_URI, {
@@ -45,16 +46,13 @@ client.on('authenticated', () => {
 
 client.on('ready', async () => {
   console.info('\n### TigreBot rodando! ###');
-  return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
+  return await log_this('O pai tá on');
 });
 
 client.initialize();
 
-
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-const gemini = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
 
 module.exports = {
   client,
@@ -65,5 +63,5 @@ module.exports = {
   bolao,
   criciuma,
   forum,
-  gemini,
+  genAI,
 };
