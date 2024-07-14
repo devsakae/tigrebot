@@ -25,6 +25,7 @@ const new_history = (type, prompt) => {
 const replyOwner = async (m) => {
   const thisprompt = m.body.replace(process.env.BOT_NUMBER,'');
   
+  console.log('Iniciando reply owner');
   config.gemini_history.push(new_history('user', thisprompt));
   saveLocal(config);
 
