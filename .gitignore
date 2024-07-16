@@ -1,7 +1,7 @@
 node_modules/
 .wwebjs_auth/
 .wwebjs_cache/
-.firebase/
+.firebasesrc/
 tests/
 tools/
 *.env*
