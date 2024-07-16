@@ -1,6 +1,7 @@
 node_modules/
 .wwebjs_auth/
 .wwebjs_cache/
+.firebase/
 tests/
 tools/
 *.env*
@@ -9,3 +10,4 @@ tools/
 !.env.example
 !*prompts.json
 !*feriados.json
+
