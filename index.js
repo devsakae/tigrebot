@@ -126,7 +126,7 @@ client.on('message_reaction', async (m) => {
     if (message) return await publicaMessage(message);
     return;
   }
-  if (m.author === process.env.BOT_OWNER) return console.log(m)
+  if (m.senderId === process.env.BOT_OWNER) return console.log(m)
   // if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
   //   const originalMsg = await client.getMessageById(m.msgId._serialized);
   //   if (originalMsg.hasReaction) {
