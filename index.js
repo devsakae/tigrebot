@@ -126,19 +126,20 @@ client.on('message_reaction', async (m) => {
     if (message) return await publicaMessage(message);
     return;
   }
-  if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
-    const originalMsg = await client.getMessageById(m.msgId._serialized);
-    if (originalMsg.hasReaction) {
-      const reactions = await originalMsg.getReactions();
-      if (reactions[0].hasReactionByMe) return;
-      if (reactions[0].aggregateEmoji === '\u26BD') {
-        log_info('Meteram um golaço, vou meter também');
-        await originalMsg.react('⚽️');
-        return await originalMsg.reply('Caralho que golaço que tu meteu hein loco\n\nEntrou nos anais, NOS ANAIS da história do grupo');
-      }
-    }
-    return;
-  }
+  if (m.author === process.env.BOT_OWNER) return console.log(m)
+  // if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
+  //   const originalMsg = await client.getMessageById(m.msgId._serialized);
+  //   if (originalMsg.hasReaction) {
+  //     const reactions = await originalMsg.getReactions();
+  //     if (reactions[0].hasReactionByMe) return;
+  //     if (reactions[0].aggregateEmoji === '\u26BD') {
+  //       log_info('Meteram um golaço, vou meter também');
+  //       await originalMsg.react('⚽️');
+  //       return await originalMsg.reply('Caralho que golaço que tu meteu hein loco\n\nEntrou nos anais, NOS ANAIS da história do grupo');
+  //     }
+  //   }
+  //   return;
+  // }
 })
 
 // client.on('group_join', async (e) => {
