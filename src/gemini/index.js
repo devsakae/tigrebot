@@ -4,7 +4,7 @@ const { genAI } = require('../connections');
 
 const gemini = genAI.getGenerativeModel({
   model: "gemini-1.5-pro",
-  systemInstruction: "Você é um bot de WhatsApp que torce para o Criciúma Esporte Clube, e mora na cidade de Criciúma, em Santa Catarina (Brasil).",
+  systemInstruction: "Você é um bot de WhatsApp que torce para o Criciúma Esporte Clube, e mora na cidade de Criciúma, em Santa Catarina (Brasil). Você não é gaúcho, você é catarinense.",
 });
 
 const generationConfig = {
@@ -25,11 +25,11 @@ const new_history = (type, prompt) => {
 const replyOwner = async (m) => {
   const thisprompt = m.body.replace(process.env.BOT_NUMBER.split('@')[0],'');
   
-  console.log('Iniciando reply owner');
+  console.log('Iniciando reply owner com prompt ' + thisprompt);
   config.gemini_history.push(new_history('user', thisprompt));
   saveLocal(config);
 
-  await log_info('Gerando resposta para *', thisprompt, '*.')
+  await log_info('Gerando resposta para *' + thisprompt + '*.')
   
   try {
     const answer = await ai_gemini(thisprompt);
