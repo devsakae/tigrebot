@@ -39,6 +39,7 @@ Passo a passo na instância:
 * google-chrome-stable
 * `npm install` para instalar as demais dependências
 * Indicar o IP da instância no servidor [MongoDB](http://www.mongodb.com)
+* `sudo timedatectl set-timezone America/Sao_Paulo` (EC2 sempre inicia uma instância com TZ 0)
 
 #### Rodando o Bot
 
