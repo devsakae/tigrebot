@@ -46,8 +46,6 @@ client.on('message', async (m) => {
 
   if (m.body.startsWith('!titulo')) return await setSubject(m);
 
-  // if ((m.author === process.env.BOT_OWNER || m.from === process.env.BOT_OWNER) && (m.body.startsWith('!twitter'))) return await futnatv();
-
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
     const jogos = await jogosAoVivo();
     return await m.reply(jogos);
