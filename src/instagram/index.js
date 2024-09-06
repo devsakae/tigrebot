@@ -18,11 +18,11 @@ const instagram = async (m) => {
     try {
       const response = await fetch(instaurl, options);
       const { data } = await response.text();
-      const caption = data.caption.text;
+      let caption = data.caption.text;
       caption += `\n📸 ${data.user.username} (${data.user.full_name})`;
       caption += `\n💛 ${data.metrics.like_count} curtidas 👁‍🗨 ${data.metrics.comment_count} comentários`;
       caption += `\nCapturado e enviado até você por TigreBot - ${config.mysite}`;
-      sendMediaUrlToGroups({ url: data.image_versions.items[-1].url, caption })
+      sendMediaUrlToGroups({ url: data.image_versions.items[-1].url, caption: caption })
     } catch (error) {
       console.error(error);
     }  
