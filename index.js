@@ -52,7 +52,7 @@ client.on('message', async (m) => {
   }
 
   // Módulo de administração de canal
-  if ((m.from === process.env.BOT_OWNER || m.author === process.env.BOT_OWNER) && m.body.startsWith('/')) {
+  if (m.from === process.env.BOT_OWNER || (m.author === process.env.BOT_OWNER && m.body.startsWith('/'))) {
     console.info('Admin solicitou', m.body);
     return await canal(m);
   }
