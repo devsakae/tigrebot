@@ -14,6 +14,7 @@ const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
 const { log_erro, log_info, log_this } = require('../../utils/admin');
+const { instagram } = require('../instagram');
 
 const canal = async (m) => {
   if (m.body.startsWith('/add')) return await addToPrompt(m);
@@ -23,7 +24,7 @@ const canal = async (m) => {
   if (m.body.startsWith('/insta')) return await instagramThis(m.body.split(' ')[1]);
   if (m.body.startsWith('/fetchinsta')) return await fetchInstaId(m);
   if (m.body.startsWith('/bomdia')) return bomDiaComDestaque();
-  return;
+  return instagram(m);
 };
 
 const bomDiaComDestaque = async () => {
