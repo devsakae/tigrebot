@@ -1,12 +1,34 @@
+const config = require('../data/tigrebot.json');
 const cron = require('node-cron');
 const { bomDiaComDestaque } = require('../src/canal');
 const { falaAlgumaCoisa } = require('../src/jokes');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../src/futebol');
-const { log_info } = require('./admin');
+const { log_info, log_this } = require('./admin');
 const { abreRodada } = require('../src/bolao');
 const { autoquiz } = require('../src/quiz');
+const { saveLocal } = require('./handleFile');
 
 let firstTime = true;
+
+const bebeAteVirarTigrelino = () => {
+  const bebiSimEstouVivendo = cron.schedule("* * * * 5", () => {
+    config.tigrelino = true;
+    saveLocal(config);
+    return log_this("VIRANO TIGRELINO SO POROGE");
+  }, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  })
+  cron.schedule("59 23 * * 5", () => {
+    bebiSimEstouVivendo.stop()
+    config.tigrelino = false;
+    saveLocal(config);
+    return log_this("NUNCA MAIS EU VOU BEBER");
+  }, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  })
+}
 
 const randomHourTomorrow = () => {
   const now = new Date();
@@ -68,10 +90,10 @@ const bolaoSystem = (time) => {
 const meuQuiz = () => {
   const randomTime = randomHourTomorrow();
   if (firstTime) {
-    console.info("Publicando quiz em cron-job de " + randomTime) 
+    console.info("Publicando quiz em cron-job para " + randomTime) 
     firstTime = false;
   }
-  else log_info("Publicando quiz em cron-job de " + randomTime);
+  else log_info("Publicando quiz em cron-job para " + randomTime);
   if (cron.validate(randomTime)) {
     const rodaQuiz = cron.schedule(randomTime, async () => {
       log_info('Rodando meuQuiz()');
@@ -91,5 +113,6 @@ module.exports = {
   atletaDestaque,
   jogosHistoricos,
   bolaoSystem,
-  meuQuiz
+  meuQuiz,
+  bebeAteVirarTigrelino
 }
