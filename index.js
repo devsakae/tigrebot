@@ -9,6 +9,7 @@ const { echoToGroups } = require('./utils/sender');
 const { postTweet } = require('./utils/twitter');
 const { log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
+const { publicarComoTigrelino } = require('./src/tigrelino');
 // const { futnatv } = require('./src/news');
 let modoQuiz = false;
 let grupoQuiz = '';
@@ -43,6 +44,8 @@ let grupoQuiz = '';
 })();
 
 client.on('message', async (m) => {
+
+  if (m.from === "120363182242020382@g.us" && m.body.startsWith("!tigrelino")) await publicarComoTigrelino(m.body.substring(11)); 
 
   if (m.body.startsWith('!titulo')) return await setSubject(m);
 
@@ -112,6 +115,7 @@ client.on('message', async (m) => {
     chat.sendStateTyping();
     return await replyUser(m);
   }
+
 
   // Módulo Bolão refeito 2024
   // return await bolao(m);

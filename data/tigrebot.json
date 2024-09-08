@@ -87,9 +87,6 @@
         },
         "120363182242020382@g.us": {
             "palpiteiros": []
-        },
-        "120363202676852882@g.us": {
-            "palpiteiros": []
         }
     },
     "instagram": {
@@ -105,8 +102,7 @@
         "caption": "É dia de FINAL da COPA SC SUB-21! 🔥 💪🐯\n\nVamos juntos torcedor apoiar nossa #BaseCarvoeira em busca de mais um título! 🏆\n\n➡️ Criciúma x Figueirense | 15h | C.T. Antenor Angeloni.\n\n✅️ Entrada gratuita pelo portão lateral do mini estádio.\n\n⚠️ Entrada liberada somente para torcida do Criciúma.\n\n.\n.\n📸 Cleiton Ramos",
         "owner": "basecarvoeira"
     },
-    "tigrelino": {},
-    "modoTigrelino" : false,
+    "tigrelino": false,
     "news": "CBMiTWh0dHBzOi8vbmRtYWlzLmNvbS5ici9wb2xpdGljYS9jYW1hcmEteC1zYWxhZGEtcGF0cmltb25pby1pbWF0ZXJpYWwtY3JpY2l1bWEv0gEA",
     "gemini_history": []
 }
