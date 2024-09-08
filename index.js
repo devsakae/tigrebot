@@ -34,7 +34,7 @@ let grupoQuiz = '';
     return console.error(err);
   } finally {
     config.tigrelino = false;
-    saveLocal(config);
+    await saveLocal(config);
     console.info('\n' + prompts.admin.welcome);
     // Programações automáticas
     publicacoes.bomDia("30 6 * * *");             // Todos os dias às 6h30min
@@ -102,7 +102,7 @@ client.on('message', async (m) => {
     const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
     console.log('Echoing:\n', echomsg);
     // await echoToChannel(echomsg);
-    await postTweet(echomsg);
+    // await postTweet(echomsg);
     return await echoToGroups(echomsg)
   }
 

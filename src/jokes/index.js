@@ -30,8 +30,9 @@ const replyUser = async (m) => {
       return await m.reply(response);
     }
     const random = Math.floor(Math.random() * prompts.oraculo.length);
-    await site_publish_reply(prompts.oraculo[random], autor.pushname, m.body)
-    return await m.reply(prompts.oraculo[random]);
+    const resposta = (config.tigrelino ? prompts.tigrelino.oraculo[random] : prompts.oraculo[random]);
+    await site_publish_reply(resposta, autor.pushname, m.body)
+    return await m.reply(resposta);
   }
   if (m.body.match(/piada/gi) && !jokeLimit) {
     jokeLimit = true;
