@@ -59,11 +59,11 @@ const variosAtletas = (str, array) => {
 
 const organizaFestinha = (array) => {
   array.sort((a, b) => a.name > b.name ? 1 : -1);
-  let response = `Outros atletas (e ex atletas) que nasceram no dia de hoje:\n`;
-  if (array.some((p) => p.jogos.some((j) => j.jogounotigre))) response += '(🐯 = Jogou com a camisa do Tigre)\n'
+  let response = ((config.tigrelino ? 'OTROS ATTLETA-JOGADO Q FISERAO NASEMEMTO OGE' : 'Outros atletas (e ex atletas) que nasceram no dia de hoje:') + '\n');
+  if (array.some((p) => p.jogos.some((j) => j.jogounotigre))) response += ((config.tigrelino ? '(CON 🐯 E PQJA JOGO NO TIGRAUM)' : '(🐯 = Jogou com a camisa do Tigre)') + '\n')
   array.forEach(
     atleta => {
-      response += `\n∙ ${atleta.name} (${atleta.position})`
+      response += (config.tigrelino ? `\n🏴󠁧󠁢󠁷󠁬󠁳󠁿 ${atleta.name.toUpperCase()} ,${atleta.position.toUpperCase()}` : `\n∙ ${atleta.name.toUpper} (${atleta.position})`)
       if (atleta.jogos.some((j) => j.jogounotigre)) response += ' 🐯'
     }
   );

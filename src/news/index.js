@@ -1,8 +1,7 @@
 const googleNewsAPI = require("google-news-json");
 const prompts = require("../../data/prompts.json");
 const config = require("../../data/tigrebot.json");
-const { sendTextToChannels, sendTextToGroups, saveLocal } = require("../../utils");
-const { postTweet } = require("../../utils/twitter");
+const { sendTextToGroups, saveLocal } = require("../../utils");
 
 const fetchNews = async (term = 'Criciúma') => {
   const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, term, "pt-BR");
@@ -23,7 +22,7 @@ const getNovidades = async () => {
   const response = articles.items.filter(a => new Date(a.pubDate) > yesterday).sort((a, b) => a.pubDate > b.pubDate ? -1 : 1)
   const organized = worldNews.items.filter(a => new Date(a.pubDate) > yesterday).sort((a, b) => a.pubDate > b.pubDate ? -1 : 1)
   if (response || response.length > 0) {
-    let texto = prompts.news[Math.floor(Math.random() * prompts.news.length)] + '\n\n🟢🔴 Destaques em Criciúma/SC:\n'
+    let texto = (config.tigrelino ? prompts.tigrelino.news[Math.floor(Math.random() * prompts.tigrelino.news.length)] : prompts.news[Math.floor(Math.random() * prompts.news.length)]) + '\n\n🟢🔴 Destaques em Criciúma/SC:\n'
     response.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
     texto += '\n\n🇧🇷 O que é notícia no resto do país:\n'
     organized.splice(0, Math.floor(Math.random() * 3) + 3).map(news => texto += `\n・ ${news.title}`)
@@ -39,9 +38,8 @@ const atualizaSobreCriciuma = async () => {
   const latest = 'Google News Criciúma 👉 ' + await response[0].title
   config.news = await response[0].guid.text;
   saveLocal(config);
-  await sendTextToChannels(latest);
-  await sendTextToGroups(latest);
-  return await postTweet(latest);
+  return await sendTextToGroups(latest);
+  // return await postTweet(latest);
 }
 
 const respondeEAtualiza = async (term) => {
@@ -50,15 +48,9 @@ const respondeEAtualiza = async (term) => {
   return "Não, nada por enquanto.";
 }
 
-const futnatv = async () => {
-  // const tweets = await getUserPost('3059767492');
-  // 3059767492 (userId @futnatv)
-}
-
 module.exports = {
   fetchNews,
   getNovidades,
   respondeEAtualiza,
-  atualizaSobreCriciuma,
-  futnatv,
+  atualizaSobreCriciuma
 }

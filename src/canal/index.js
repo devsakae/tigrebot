@@ -30,13 +30,14 @@ const canal = async (m) => {
 const bomDiaComDestaque = async () => {
   const today = new Date();
   // Inicia o bom dia
-  const legenda_greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
-  let response = '👉 ' + legenda_greeting;
+  // const legenda_greeting = prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+  const legenda_greeting = config.tigrelino ? prompts.tigrelino.saudacoes[Math.floor(Math.random() * prompts.tigrelino.saudacoes.length)] : prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
+  let response = (config.tigrelino ? '🍺 ' : '👉 ') + legenda_greeting;
   let tweet = legenda_greeting
   
   // Hoje tem feriado no país? Magina!
   const legenda_feriados = diasEspeciais();
-  if (legenda_feriados) {
+  if (legenda_feriados && !config.tigrelino) {
     response += '\n\n'
     response += legenda_feriados;
   }
@@ -287,14 +288,13 @@ const timemania = async () => {
       method: 'GET',
       url: url,
     });
-    if (data.timeCoracao.startsWith('CRICI')) response = 'Deu *TIGRE* 🟡⚫️⚪️ na Timemania!! 🐯 🐯 🐯'
-    else response = `Time do coração na Timemania: ${data.timeCoracao}.`;
+    if (data.timeCoracao.startsWith('CRICI')) response = config.tigrelino ? 'OOOOOOO DEO TIGRAUM NA TIMANIA!!!!1🐯🐯' : 'Deu *TIGRE* 🟡⚫️⚪️ na Timemania!! 🐯 🐯 🐯'
+    else response = config.tigrelino ? `NAUM DEO TIGRAUM DEO ${data.timeCoracao.toUpperCase()}` : `Time do coração na Timemania: ${data.timeCoracao}.`;
     response += `\n\n🍀 Concurso: ${data.concurso} em ${data.data}`;
     response += `\n📍 Sorteio: ${data.local}`;
     response += `\n📝 Dezenas: `
     data.dezenas.map((d, i) => response += `${i === 0 ? '' : ' - '}${d}`);
-    if (data.acumulou) response += `\n\nNinguém acertou as sete dezenas, e o prêmio estimado para o próximo concurso é de ${data.valorAcumuladoProximoConcurso.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}`;
-    // if (data.timeCoracao.startsWith('CRICI')) setTimeout(() => postTweet(response), 30000);
+    if (data.acumulou && !config.tigrelino) response += `\n\nNinguém acertou as sete dezenas, e o prêmio estimado para o próximo concurso é de ${data.valorAcumuladoProximoConcurso.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}`;
     return response;
   } catch (err) {
     console.error("Error", err)

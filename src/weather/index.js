@@ -78,15 +78,15 @@ const getForecast = async () => {
       url: 'https://forecast9.p.rapidapi.com/rapidapi/forecast/-28.6783/-49.3704/summary/',
       host: 'forecast9.p.rapidapi.com',
     });
-    let previsao = prompts.previsao[Math.floor(Math.random() * prompts.previsao.length)];
+    let previsao = config.tigrelino ? prompts.tigrelino.previsao[Math.floor(Math.random() * prompts.tigrelino.previsao.length)] : prompts.previsao[Math.floor(Math.random() * prompts.previsao.length)];
     let long = previsao + ' ';
     let short = previsao + ' ';
     if (forecastCodes[items[0].weather.state]) {
-      long += `${forecastCodes[items[0].weather.state]} com `;
-      short += `${forecastCodes[items[0].weather.state]} com `;
+      long += `${forecastCodes[items[0].weather.state]} `;
+      short += `${forecastCodes[items[0].weather.state]} `;
     }
-    long += `temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx) e sensação térmica na casa de ${items[0].windchill.min}-${items[0].windchill.max}°. `
-    short += `temperaturas 🌡 entre ${items[0].temperature.min} e ${items[0].temperature.max}°.`;
+    long += (!config.tigrelino ? `com temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx) e sensação térmica na casa de ${items[0].windchill.min}-${items[0].windchill.max}°. ` : '')
+    short += `com temperaturas 🌡 entre ${items[0].temperature.min} e ${items[0].temperature.max}°.`;
     if (items[0].weather.state === 6) long += `Precipitação ☔️ de ${items[0].prec.probability}%. `
     if (items[0].wind.significationWind) { long += `Ventos 💨 ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
     return { long, short };

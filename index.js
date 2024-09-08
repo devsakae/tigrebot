@@ -10,6 +10,7 @@ const { postTweet } = require('./utils/twitter');
 const { log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
 const { publicarComoTigrelino } = require('./src/tigrelino');
+const { saveLocal } = require('./utils');
 // const { futnatv } = require('./src/news');
 let modoQuiz = false;
 let grupoQuiz = '';
@@ -57,6 +58,11 @@ client.on('message', async (m) => {
   // Módulo de administração de canal
   if (m.from === process.env.BOT_OWNER || (m.author === process.env.BOT_OWNER && m.body.startsWith('/'))) {
     console.info('Admin solicitou', m.body);
+    if (m.body.startsWith('!modotigrelino')) {
+      log_info('Setting Tigrelino mode to *' + JSON.stringify(!config.tigrelino) + '*!')
+      config.tigrelino = !config.tigrelino;
+      saveLocal(config);
+    }
     return await canal(m);
   }
 

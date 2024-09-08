@@ -69,7 +69,7 @@ const jogounotigre = async (m) => {
 }
 
 const jogadorDoTigreAleatorio = async () => {
-  let tweet = 'Jogador do Tigre da semana: '
+  let tweet = (config.tigrelino ? 'OMENAJE TIGRELINO P ATELTA -JOGADO DA CEMANA ' : 'Jogador do Tigre da semana: ')
   const atl = await criciuma
     .collection('atletas')
     .aggregate([{ $match: { "jogos.jogounotigre": true } }, { $sample: { size: 1 } }])
@@ -90,21 +90,36 @@ const jogadorDoTigreAleatorio = async () => {
   }, { jogos: 0, gols: 0, v: 0, e: 0, d: 0 });
   const aproveitamento = (((total.v * 3) + (total.e)) / (total.jogos * 3)) * 100
   tweet += `${atl[0].nickname}!\n\nNascido em ${atl[0].birthday}, jogou ${total.jogos} partidas pelo Tigre, com aproveitamento de ${aproveitamento.toFixed(1)}%.\n\nSua última partida foi em ${jogos[0].ano}.\n\nQuer saber mais? Acesse nosso canal ${config.mysite}`
-  let response = `Você sabia que esse atleta já jogou pelo Tigre? 🐯\n\nEpisódio dessa semana: *${atl[0].nickname}* (${atl[0].position})\n\n_${atl[0].name}_ nasceu em ${atl[0].birthday} (há ${calculaIdade(atl[0].birthday)} anos, portanto) e disputou ${total.jogos} partidas pelo Criciúma Esporte Clube, tendo um aproveitamento total de ${aproveitamento.toFixed(2)}%.`;
-  response += `\n\nSua última partida pelo tricolor foi por ${jogos[0].torneio} de ${jogos[0].ano}, tendo ${atl[0].nickname} disputado ${jogos[0].jogos} jogos e conquistado ${jogos[0].v} vitórias, ${jogos[0].e} empates e ${jogos[0].d} derrotas (aproveitamento de ${(((Number(jogos[0].v) * 3) + Number(jogos[0].e)) / (Number(jogos[0].jogos) * 3) * 100).toFixed(2)}%.)`
-  if (clubes.length > 0) {
-    response += `\n\nAlém do nosso glorioso tricolor, ${atl[0].nickname} também jogou contra o Criciúma vestindo a(s) camisa(s) de `
-    clubes.forEach((c, i) => response += `${i === 0 ? '' : i === (clubes.length - 1) ? ' e ' : ', '}${c}${i === (clubes.length - 1) ? '.' : ''}`)
+  let response = '';
+  if (config.tigrelino) {
+    response = `VOSE SABIA QESE *ATLLETA ${atl[0].nickname} JAJOGO NO* TIGRAUM EU SABIA EU Q TOCONTANO A ESTORIA DELI;`;;
+    response += `\nELI TEN O TERIA ${calculaIdade(atl[0].birthday)} ANOS NAUM SEI O SACAI N BOTO SELE TA VIVO AINDA `
+    response += `\n\n+ ELE FEIS ${total.jogos} JOGO PELO TIGRAUM FEIS ${aproveitamento.toFixed(2)}% DE 'aproveitamento' NAUM SEI O QE ISSO TAVA ISCRITO AKI O SACAI MANDOBOTA`
+    if (clubes.length > 0) {
+      response += `\n    BA ESE BIXO JAJOGO COM TRA GEMTE//// TO DI KRA JOGO CAS CAMIZA DOS TIME `
+      clubes.forEach((c, i) => response += `${i === 0 ? '' : i === (clubes.length - 1) ? '....' : ', '}${c.toUpperCase()}${i === (clubes.length - 1) ? ' 🤬' : ''}`)
+    }
+    response += `\n\nBLS NO TIGRAUM ELE JOGO TD ISO AKI:`
+    atl[0].jogos.forEach((jogo) => {
+      response += `\n\n➤ *${jogo.torneio}* (${jogo.ano})`;
+      response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'JOGS' : 'PATIDA'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ⚽️ ${jogo.gols > 0 ? jogo.gols : 'SERO'} ${jogo.gols > 1 ? 'GOALS' : 'GOAL'}`
+      if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube.toUpperCase()}`
+    });
+  } else {
+    response = `Você sabia que esse atleta já jogou pelo Tigre? 🐯\n\nEpisódio dessa semana: *${atl[0].nickname}* (${atl[0].position})\n\n_${atl[0].name}_ nasceu em ${atl[0].birthday} (há ${calculaIdade(atl[0].birthday)} anos, portanto) e disputou ${total.jogos} partidas pelo Criciúma Esporte Clube, tendo um aproveitamento total de ${aproveitamento.toFixed(2)}%.`;
+    response += `\n\nSua última partida pelo tricolor foi por ${jogos[0].torneio} de ${jogos[0].ano}, tendo ${atl[0].name} disputado ${jogos[0].jogos} jogos e conquistado ${jogos[0].v} vitórias, ${jogos[0].e} empates e ${jogos[0].d} derrotas (aproveitamento de ${(((Number(jogos[0].v) * 3) + Number(jogos[0].e)) / (Number(jogos[0].jogos) * 3) * 100).toFixed(2)}%.)`
+    if (clubes.length > 0) {
+      response += `\n\nAlém do nosso glorioso tricolor, ${atl[0].nickname} também jogou contra o Criciúma vestindo a(s) camisa(s) de `
+      clubes.forEach((c, i) => response += `${i === 0 ? '' : i === (clubes.length - 1) ? ' e ' : ', '}${c}${i === (clubes.length - 1) ? '.' : ''}`)
+    }
+    response += `\n\nHistórico completo:`
+    atl[0].jogos.forEach((jogo) => {
+      response += `\n\n➤ *${jogo.torneio}* (${jogo.ano})`;
+      response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'jogos' : 'jogo'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ⚽️ ${jogo.gols > 0 ? jogo.gols : 'Nenhum'} ${jogo.gols > 1 ? 'gols' : 'gol'}`
+      if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube}`
+    });
   }
-  response += `\n\nHistórico completo:`
-  atl[0].jogos.forEach((jogo) => {
-    response += `\n\n➤ *${jogo.torneio}* (${jogo.ano})`;
-    response += `\n🏟 ${jogo.jogos} ${jogo.jogos > 1 ? 'jogos' : 'jogo'} (${jogo.v}V/${jogo.e}E/${jogo.d}D) ⚽️ ${jogo.gols > 0 ? jogo.gols : 'Nenhum'} ${jogo.gols > 1 ? 'gols' : 'gol'}`
-    if (!jogo.jogounotigre && jogo.clube) response += ` 👉 ${jogo.clube}`
-  });
   response += `\n\nDados: meutimenarede.com.br\nScraped by @devsakae - ${config.devsakae}`
-
-  // await postTweet(tweet);
   return await sendMediaUrlToGroups({ url: atl[0].image, caption: response });
 }
 
