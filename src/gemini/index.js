@@ -15,22 +15,18 @@ const generationConfig = {
   responseMimeType: "text/plain",
 };
 
-const new_history = (type, prompt) => {
-  return {
+const new_history = (type, prompt) => ({
     role: type,
     parts: [{ text: prompt }],
-  }
-}
+  });
 
 const replyOwner = async (m) => {
   const thisprompt = m.body.replace(process.env.BOT_NUMBER.split('@')[0],'');
-  
-  console.log('Iniciando reply owner com prompt ' + thisprompt);
-  config.gemini_history.push(new_history('user', thisprompt));
-  saveLocal(config);
-
   await log_info('Gerando resposta para *' + thisprompt + '*.')
-  
+  const user_history = new_history('user', thisprompt);
+  console.log(user_history);
+  config.gemini_history.push(user_history);
+  saveLocal(config);
   try {
     const answer = await ai_gemini(thisprompt);
     return await m.reply(answer);

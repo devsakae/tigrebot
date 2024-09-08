@@ -25,7 +25,6 @@ const instagram = async (m) => {
       raw_caption += `\nCapturado e enviado até você por TigreBot - ${config.mysite}`;
       const image_versions = resposta.data.image_versions.items
       const imagem = image_versions[image_versions.length - 1].url;
-      // return await log_info(raw_caption);
       return await sendMediaUrlToGroups({ url: imagem, caption: raw_caption })
     } catch (error) {
       console.error(error);
