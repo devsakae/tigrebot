@@ -63,7 +63,7 @@ const organizaFestinha = (array) => {
   if (array.some((p) => p.jogos.some((j) => j.jogounotigre))) response += ((config.tigrelino ? '(CON 🐯 E PQJA JOGO NO TIGRAUM)' : '(🐯 = Jogou com a camisa do Tigre)') + '\n')
   array.forEach(
     atleta => {
-      response += (config.tigrelino ? `\n🏴󠁧󠁢󠁷󠁬󠁳󠁿 ${atleta.name.toUpperCase()} ,${atleta.position.toUpperCase()}` : `\n∙ ${atleta.name.toUpper} (${atleta.position})`)
+      response += (config.tigrelino ? `\n🏴󠁧󠁢󠁷󠁬󠁳󠁿 ${atleta.name.toUpperCase()} ,${atleta.position.toUpperCase()}` : `\n∙ ${atleta.name.toUpperCase()} (${atleta.position})`)
       if (atleta.jogos.some((j) => j.jogounotigre)) response += ' 🐯'
     }
   );
@@ -169,7 +169,7 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   const resultado = (config.tigrelino ? (tigre.score > adversarioScore ? 'VENSE O TIME' : tigre.score < adversarioScore ? 'PERDE P' : 'EMPATA CO') : (tigre.score > adversarioScore ? 'venceu o(a)' : tigre.score < adversarioScore ? 'foi derrotado pelo(a)' : 'empatou com o(a)'))
   let texto = ((config.tigrelino ? prompts.tigrelino.jogododia[Math.floor(Math.random() * prompts.tigrelino.jogododia.length)] : prompts.jogododia[Math.floor(Math.random() * prompts.jogododia.length)]) + '\n\n')
   // let tweet = 'Grandes jogos do nosso @CriciumaEC: '
-  texto += (config.tigrelino ? `FAIS ${years} ANOS EM ${jogo.date} NOSO TIGRAUM JOGO COM TRA ${adversario.toUpperCase()} (${time.uf.toUpperCase()}) ${jogo.campeonato.startsWith('Amis') ? 'N1 JOGO AMINSTOZO' : jogo.campeonato.startsWith('Copa') ? `PELA ${jogo.campeonato.toUpperCase()}` : `PELA ${jogo.rodada} RODODADA ${jogo.campeonato.toUpper()}`}.` : `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`);
+  texto += (config.tigrelino ? `FAIS ${years} ANOS EM ${jogo.date} NOSO TIGRAUM JOGO COM TRA ${adversario.toUpperCase()} (${time.uf.toUpperCase()}) ${jogo.campeonato.startsWith('Amis') ? 'N1 JOGO AMINSTOZO' : jogo.campeonato.startsWith('Copa') ? `PELA ${jogo.campeonato.toUpperCase()}` : `PELA ${jogo.rodada} RODODADA ${jogo.campeonato.toUpperCase()}`}.` : `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`);
   // tweet += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
   const placarMaiorNaFrente = `${jogo.homeScore > jogo.awayScore ? jogo.homeScore : jogo.awayScore} x ${jogo.homeScore > jogo.awayScore ? jogo.awayScore : jogo.homeScore}`
   texto += (config.tigrelino ? `\n\n\nFORAO ${jogo.publico} TUSSEDORS${jogo.renda > 0 ? ` Q PAGARAO ${moeda} ${jogo.renda}),` : ','} P VE O TIGRAUM ${resultado} ${adversario} EM ${placarMaiorNaFrente}.` : `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`);
