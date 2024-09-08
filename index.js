@@ -1,6 +1,7 @@
 const prompts = require('./data/prompts.json');
-const { client, mongoclient } = require('./src/connections');
+const config = require('./data/tigrebot.json');
 const publicacoes = require('./utils/autobot');
+const { client, mongoclient } = require('./src/connections');
 const { quotes } = require('./src/quotes');
 const { replyUser } = require('./src/jokes');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida, jogosAoVivo } = require('./src/futebol');
