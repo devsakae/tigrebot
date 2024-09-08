@@ -33,6 +33,8 @@ let grupoQuiz = '';
   } catch (err) {
     return console.error(err);
   } finally {
+    config.tigrelino = false;
+    saveLocal(config);
     console.info('\n' + prompts.admin.welcome);
     // Programações automáticas
     publicacoes.bomDia("30 6 * * *");             // Todos os dias às 6h30min

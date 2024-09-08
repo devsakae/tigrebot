@@ -166,18 +166,15 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
     : { score: jogo.awayScore, escalacao: jogo.away_players, gols: jogo.away_goals };
   const adversario = jogo.homeTeam.startsWith('CRICI') ? jogo.awayTeam : jogo.homeTeam;
   const adversarioScore = jogo.homeTeam.startsWith('CRICI') ? jogo.awayScore : jogo.homeScore;
-  const resultado = tigre.score > adversarioScore ? 'venceu o(a)' : tigre.score < adversarioScore ? 'foi derrotado pelo(a)' : 'empatou com o(a)'
-  let texto = prompts.jogododia[Math.floor(Math.random() * prompts.jogododia.length)] + '\n\n'
-  let tweet = 'Grandes jogos do nosso @CriciumaEC: '
-  texto += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
-  tweet += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
+  const resultado = (config.tigrelino ? (tigre.score > adversarioScore ? 'VENSE O TIME' : tigre.score < adversarioScore ? 'PERDE P' : 'EMPATA CO') : (tigre.score > adversarioScore ? 'venceu o(a)' : tigre.score < adversarioScore ? 'foi derrotado pelo(a)' : 'empatou com o(a)'))
+  let texto = ((config.tigrelino ? prompts.tigrelino.jogododia[Math.floor(Math.random() * prompts.tigrelino.jogododia.length)] : prompts.jogododia[Math.floor(Math.random() * prompts.jogododia.length)]) + '\n\n')
+  // let tweet = 'Grandes jogos do nosso @CriciumaEC: '
+  texto += (config.tigrelino ? `FAIS ${years} ANOS EM ${jogo.date} NOSO TIGRAUM JOGO COM TRA ${adversario.toUpperCase()} (${time.uf.toUpperCase()}) ${jogo.campeonato.startsWith('Amis') ? 'N1 JOGO AMINSTOZO' : jogo.campeonato.startsWith('Copa') ? `PELA ${jogo.campeonato.toUpperCase()}` : `PELA ${jogo.rodada} RODODADA ${jogo.campeonato.toUpper()}`}.` : `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`);
+  // tweet += `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`;
   const placarMaiorNaFrente = `${jogo.homeScore > jogo.awayScore ? jogo.homeScore : jogo.awayScore} x ${jogo.homeScore > jogo.awayScore ? jogo.awayScore : jogo.homeScore}`
-  texto += `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`;
-  tweet += `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario}. A partida terminou em ${placarMaiorNaFrente}, do nosso histórico de ${time.resumo.v}V/${time.resumo.e}E/${time.resumo.d}D (${time.resumo.j} jogos).`;
-  // Envia o primeiro tweet, com resumo;
-  await postTweet(tweet);
-  texto += `\n\nNosso histórico contra ${adversario} (${time.uf}) é o seguinte:`;
-  const stats = `\n🎫 ${time.resumo.j} jogos\n👍 ${time.resumo.v} vitórias\n🫳 ${time.resumo.e} empates\n👎 ${time.resumo.d} derrotas\n⚽️ ${gols.gm} gols neles\n🥅 ${gols.gs} gols deles`;
+  texto += (config.tigrelino ? `\n\n\nFORAO ${jogo.publico} TUSSEDORS${jogo.renda > 0 ? ` Q PAGARAO ${moeda} ${jogo.renda}),` : ','} P VE O TIGRAUM ${resultado} ${adversario} EM ${placarMaiorNaFrente}.` : `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`);
+  texto += (config.tigrelino ? `\n\nEM FRETANDO O ${adversario.toUpperCase()} NOIS JA:` : `\n\nNosso histórico contra ${adversario} (${time.uf}) é o seguinte:`);
+  const stats = (config.tigrelino ? `\n🎫 ${time.resumo.j} VESES JOGADAS\n👍 ${time.resumo.v} FISEMO O V DE VITOREA\n🫳 EMPATEMO ${time.resumo.e} \n👎 PERDEMO ${time.resumo.d}\n⚽️ ${gols.gm} GOALS NOSOS\n🥅 ${gols.gs} GOALS DELIS` : `\n🎫 ${time.resumo.j} jogos\n👍 ${time.resumo.v} vitórias\n🫳 ${time.resumo.e} empates\n👎 ${time.resumo.d} derrotas\n⚽️ ${gols.gm} gols neles\n🥅 ${gols.gs} gols deles`)
   texto += stats
   if (jogo.homeScore > 0) {
     texto += `\n\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? golsDoTigre(jogo.homeScore) : golsDosCara(jogo.homeScore)}`;
@@ -187,18 +184,35 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
     texto += `\n\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? golsDoTigre(jogo.awayScore) : golsDosCara(jogo.awayScore)}`;
     jogo.away_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.away_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.away_goals.length - 1 ? '.' : ''}`);
   }
-  texto += `\n\nTreinados por ${jogo.home_treinador}, o anfitrião ${jogo.homeTeam} tinha a seguinte escalação: `;
-  jogo.home_escalacao.forEach((p, i) => {
-    ycp = jogo?.home_cards.find(c => c.nome === p.nome);
-    sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
-    texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
-  })
-  texto += `\n\nCom ${jogo.away_treinador} no comando, o visitante ${jogo.awayTeam} jogou com: `;
-  jogo.away_players.forEach((p, i) => {
-    ycp = jogo?.away_cards.find(c => c.nome === p.nome);
-    sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
-    texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
-  })
+  texto += (config.tigrelino ? `\n\nTRENADOS POR ${jogo.home_treinador.toUpperCase()} O ${jogo.homeTeam.toUpperCase()} Q JOGAVA ENCASA JOGO CON ` : `\n\nTreinados por ${jogo.home_treinador}, o anfitrião ${jogo.homeTeam} tinha a seguinte escalação: `);
+  
+  
+  // Desse jeito ficaria mais fácil, só me dei conta agora
+  if (config.tigrelino) {
+    jogo.home_escalacao.forEach((p, i) => {
+      ycp = jogo?.home_cards.find(c => c.nome === p.nome);
+      sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
+      texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
+    })
+    texto += `\n\nCom ${jogo.away_treinador} no comando, o visitante ${jogo.awayTeam} jogou com: `;
+    jogo.away_players.forEach((p, i) => {
+      ycp = jogo?.away_cards.find(c => c.nome === p.nome);
+      sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
+      texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
+    })
+  } else {
+    jogo.home_escalacao.forEach((p, i) => {
+      ycp = jogo?.home_cards.find(c => c.nome === p.nome);
+      sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
+      texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
+    })
+    texto += `\n\nCom ${jogo.away_treinador} no comando, o visitante ${jogo.awayTeam} jogou com: `;
+    jogo.away_players.forEach((p, i) => {
+      ycp = jogo?.away_cards.find(c => c.nome === p.nome);
+      sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
+      texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
+    })
+  }
   return texto;
 }
 

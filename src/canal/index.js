@@ -9,21 +9,24 @@ const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { falaAlgumaCoisa } = require('../jokes');
 const { golacoAleatorio } = require('../quotes');
-const { postTweet } = require('../../utils/twitter');
+// const { postTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
 const { log_erro, log_info, log_this } = require('../../utils/admin');
 const { instagram } = require('../instagram');
+const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../futebol');
 
 const canal = async (m) => {
   if (m.body.startsWith('/add')) return await addToPrompt(m);
   if (m.body.startsWith('/push')) return await pushToPrompt(m);
   if (m.body.startsWith('/promptdelete')) return await deletePrompt(m);
   if (m.body.startsWith('/audio')) return await falaAlgumaCoisa();
-  if (m.body.startsWith('/insta')) return await instagramThis(m.body.split(' ')[1]);
-  if (m.body.startsWith('/fetchinsta')) return await fetchInstaId(m);
+  // if (m.body.startsWith('/insta')) return await instagramThis(m.body.split(' ')[1]);
+  // if (m.body.startsWith('/fetchinsta')) return await fetchInstaId(m);
   if (m.body.startsWith('/bomdia')) return bomDiaComDestaque();
+  if (m.body.startsWith('/atletadestaque')) return jogadorDoTigreAleatorio();
+  if (m.body.startsWith('/jogodestaque')) return publicaJogoAleatorio();
   return instagram(m);
 };
 
