@@ -104,7 +104,7 @@ const jogadorDoTigreAleatorio = async () => {
   });
   response += `\n\nDados: meutimenarede.com.br\nScraped by @devsakae - ${config.devsakae}`
 
-  await postTweet(tweet);
+  // await postTweet(tweet);
   return await sendMediaUrlToGroups({ url: atl[0].image, caption: response });
 }
 
@@ -301,7 +301,7 @@ const proximaPartida = async () => {
     if (cron.validate(schedstart)) {
       const task = cron.schedule(schedstart, async () => {
         await sendTextToGroups(response);
-        await postTweet(response + '\n\n@CriciumaEC #DaleTigre #VamosTigre');
+        // await postTweet(response + '\n\n@CriciumaEC #DaleTigre #VamosTigre');
         await setSubject({ from: '554896059196-1392584319@g.us', body: `!titulo [${dataehora.toTimeString().substring(0,5)}] ${res[0].homeTeam.name} x ${res[0].awayTeam.name}` })
       }, {
         scheduled: true,

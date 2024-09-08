@@ -50,7 +50,7 @@ const bomDiaComDestaque = async () => {
     response += legenda_previsao.long;
   }
 
-  await postTweet(tweet);
+  // await postTweet(tweet);
   tweet = '';
 
   // Busca as últimas notícias de Criciúma
@@ -99,16 +99,16 @@ const bomDiaComDestaque = async () => {
       }, { jogos: 0, v: 0, e: 0, d: 0, gols: 0 })
       response = `_Hoje é aniversário de nascimento de ${chosenOne.name} (${chosenOne.position})._\n\nPelo Tigre, *${chosenOne.nickname}* disputou ${totalJogos.jogos} partidas (${totalJogos.v}V/${totalJogos.e}E/${totalJogos.d}D), marcou ${totalJogos.gols} gols e jogou a última partida com a camisa do Tigre por ${jogosPeloTigre[0].torneio} em ${jogosPeloTigre[0].ano}.\n\n${response}\n\n${legenda_aniversariantes}`;
       tweet += `\n\nAniversário de nascimento de ${chosenOne.nickname}, que jogou ${totalJogos.jogos} partidas, fez ${totalJogos.gols} gol(s) e venceu ${totalJogos.v} jogos.`;
-      await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
-      return await postTweet(tweet);
+      return await sendMediaUrlToGroups({ url: chosenOne.image, caption: response });
+      // return await postTweet(tweet);
     }
     // Adiciona a lista de aniversariantes SEM atletas do Tigre
     response += '\n\n'
     response += legenda_aniversariantes
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
-  await sendTextToGroups(response);
-  return await postTweet(tweet);
+  return await sendTextToGroups(response);
+  // return await postTweet(tweet);
 }
 
 const saveLocalInstagram = (update) => {
@@ -294,7 +294,7 @@ const timemania = async () => {
     response += `\n📝 Dezenas: `
     data.dezenas.map((d, i) => response += `${i === 0 ? '' : ' - '}${d}`);
     if (data.acumulou) response += `\n\nNinguém acertou as sete dezenas, e o prêmio estimado para o próximo concurso é de ${data.valorAcumuladoProximoConcurso.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}`;
-    if (data.timeCoracao.startsWith('CRICI')) setTimeout(() => postTweet(response), 30000);
+    // if (data.timeCoracao.startsWith('CRICI')) setTimeout(() => postTweet(response), 30000);
     return response;
   } catch (err) {
     console.error("Error", err)

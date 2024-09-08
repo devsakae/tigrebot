@@ -64,12 +64,12 @@ const forecastCodes = {
   80: 'chuvas leves pontuais 🌨', // 80 | Light showers | Convective precipitation in liquid form in a confined area (<10km²) with a maximum duration of 45 minutes, droplet size 0.6 to 3 mm, rainfall between 0.1 and 0.4 liters / 10min 
   81: 'chuvas pontuais 🌨', // 81 | Showers | Convective precipitation in liquid form in a confined area (<10km²) with a maximum duration of 45 minutes, droplet size 0.6 to 3 mm, rainfall between 0.2 and 2 liters / 10min 
   82: 'pancadas de chuva isoladas 🌨', // 82 | Heavy showers | Convective precipitation in liquid form in a confined area (<10km²) with a maximum duration of 45 minutes, droplet size 0.6 to 3 mm, rainfall more than 2 liters / 10min 
-  83: 'vai até nevar de tão frio ❄️', // 83 | Light snowfall/showers | Convective precipitation in liquid and solid form in a confined area (<10km²) with a maximum duration of 45 minutes, precipitation between 0.1 and 0.4 liters / hour 
-  84: 'vai até nevar de tão frio ❄️', // 84 | Heavy snowfall/showers | Convective precipitation in liquid and solid form in a confined area (<10km²) with a maximum duration of 45 minutes, precipitation exceeding 2 litres / hour 
-  85: 'vai até nevar de tão frio ❄️', // 85 | Light flurry of snow | Convective precipitation in solid form in a confined area (<10km²) with a maximum duration of 45 minutes, new snowfall less than 1 cm / hour 
-  86: 'vai até nevar de tão frio ❄️', // 86 | Moderate or heavy flurry of snow | Convective precipitation in solid form in a confined area (<10km²) with a maximum duration of 45 minutes, new snowfall more than 1 cm / hour 
-  95: 'vai ter tempestade ⛈', // 95 | Light thunderstorm | Lightning and thunder, usually accompanied by heavy rain, hail or gusts of wind; low lightning frequency, longer intervals between individual discharges 
-  96: 'vai ter tempestade ⛈', // 96 | Severe thunderstorm | Lightning and thunder, usually accompanied by heavy rain, hail or gusts of wind; high frequency of lightning, constant rolls of thunder
+  83: 'nevar de tão frio ❄️', // 83 | Light snowfall/showers | Convective precipitation in liquid and solid form in a confined area (<10km²) with a maximum duration of 45 minutes, precipitation between 0.1 and 0.4 liters / hour 
+  84: 'neve, de tão frio ❄️', // 84 | Heavy snowfall/showers | Convective precipitation in liquid and solid form in a confined area (<10km²) with a maximum duration of 45 minutes, precipitation exceeding 2 litres / hour 
+  85: 'neve, de tão frio ❄️', // 85 | Light flurry of snow | Convective precipitation in solid form in a confined area (<10km²) with a maximum duration of 45 minutes, new snowfall less than 1 cm / hour 
+  86: 'neve, de tão frio ❄️', // 86 | Moderate or heavy flurry of snow | Convective precipitation in solid form in a confined area (<10km²) with a maximum duration of 45 minutes, new snowfall more than 1 cm / hour 
+  95: 'pancadas leves de chuva ⛈', // 95 | Light thunderstorm | Lightning and thunder, usually accompanied by heavy rain, hail or gusts of wind; low lightning frequency, longer intervals between individual discharges 
+  96: 'tempestade ⛈', // 96 | Severe thunderstorm | Lightning and thunder, usually accompanied by heavy rain, hail or gusts of wind; high frequency of lightning, constant rolls of thunder
 }
 
 const getForecast = async () => {
