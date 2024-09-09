@@ -6,7 +6,8 @@
   "scripts": {
     "start": "./install.sh",
     "production": "pm2 start npm --name \"TigreBot\" -- start && pm2 monit",
-    "test": "jest"
+    "test": "jest",
+    "dev": "node --env-file=.env index.js"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.14.1",
     "axios": "^1.6.1",
+    "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "google-news-json": "^2.1.0",
     "mongodb": "^6.2.0",

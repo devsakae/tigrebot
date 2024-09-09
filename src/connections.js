@@ -5,6 +5,12 @@ const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const config = require('../data/tigrebot.json')
 
+// api express
+const express = require("express");
+const api = express();
+api.use(express.json())
+api.listen(process.env.API_PORT, () => console.log("API rodando na porta " + process.env.API_PORT));
+
 // mongodb
 const mongoclient = new MongoClient(process.env.MONGODB_URI, {
   serverApi: {
@@ -35,7 +41,17 @@ const client = new Client({
   },
 });
 
-client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
+client.on('qr', async (qr) => {
+  qrcode.generate(qr, { small: true })
+  let pairingCodeRequested = false;
+  const pairingCodeEnabled = true;
+  if (pairingCodeEnabled && !pairingCodeRequested) {
+      const pairingCode = await client.requestPairingCode('5548920009732');
+      console.log('Pairing code enabled, code: '+ pairingCode);
+      pairingCodeRequested = true;
+  }
+
+});
 
 client.on('loading_screen', async (percent, message) => {
   console.log('LOADING SCREEN', percent, message);
@@ -48,7 +64,6 @@ client.on('authenticated', () => {
 client.on('ready', async () => {
   console.info('\nConfigurando grupos e canais...');
   const allChats = await client.getChats();
-  // await Promise.all(allChats.filter(c => !c.isGroup).map(async c => await c.delete()));
   await Promise.all(allChats
     .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {
@@ -57,8 +72,6 @@ client.on('ready', async () => {
       if (group.id._serialized.includes('newsletter')) return '';
       await group.clearMessages();
       console.log('✔️', group.name, '[' + group.id._serialized + ']');
-      // const totalMessages = await group.fetchMessages({ limit: 10 });
-      // await Promise.all(totalMessages.filter(m => m.ack === 1).map(async m => await group.sendSeen(m.id._serialized)))
     }));
   console.log('Gravando grupos no config...')
   fs.writeFileSync(
@@ -87,4 +100,5 @@ module.exports = {
   criciuma,
   forum,
   genAI,
+  api,
 };

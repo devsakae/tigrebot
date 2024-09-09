@@ -1,4 +1,4 @@
-const { client, criciuma } = require('../connections');
+const { client, criciuma, api } = require('../connections');
 const { MessageMedia } = require('whatsapp-web.js');
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
@@ -17,18 +17,33 @@ const { log_erro, log_info, log_this } = require('../../utils/admin');
 const { instagram } = require('../instagram');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../futebol');
 
+api.get("/", (req, res) => res.status(200).send("dale tigre"));
+api.post("/", async (req, res) => {
+  console.log(req.body);
+  if (req.body && req.headers.authorization === process.env.API_TOKEN && req.body.destinatarios.length >= 1 && req.body.mensagem.length >= 1) {
+    await apiToWpp({ destinatarios: req.body.destinatarios, mensagem: req.body.mensagem });
+    return res.status(200).send("Mensagem enviada!");
+  }
+  return res.status(400).send({ message: "Sem permissões suficientes" })
+})
+
 const canal = async (m) => {
   if (m.body.startsWith('/add')) return await addToPrompt(m);
   if (m.body.startsWith('/push')) return await pushToPrompt(m);
   if (m.body.startsWith('/promptdelete')) return await deletePrompt(m);
   if (m.body.startsWith('/audio')) return await falaAlgumaCoisa();
-  // if (m.body.startsWith('/insta')) return await instagramThis(m.body.split(' ')[1]);
-  // if (m.body.startsWith('/fetchinsta')) return await fetchInstaId(m);
   if (m.body.startsWith('/bomdia')) return bomDiaComDestaque();
   if (m.body.startsWith('/atletadestaque')) return jogadorDoTigreAleatorio();
   if (m.body.startsWith('/jogodestaque')) return publicaJogoAleatorio();
   return instagram(m);
 };
+
+const apiToWpp = async (data) => {
+  return await Promise.all(data.destinatarios.map(async (dest) => {
+    const formatado = dest + "@c.us";
+    await client.sendMessage(formatado, data.mensagem);
+  }))
+}
 
 const bomDiaComDestaque = async () => {
   const today = new Date();
@@ -229,29 +244,6 @@ const fetchInstaId = async (m) => {
   return await sendInstagramToGroups(update);
 }
 
-// const publicaQuotedMessage = async (m) => {
-//   const raw = await m.getQuotedMessage();
-//   if (raw.hasMedia) {
-//     const media = await raw.downloadMedia();
-//     if (media) {
-//       const contentComMedia = new MessageMedia(
-//         media.mimetype,
-//         media.data.toString('base64')
-//       );
-//       for (grupo of Object.keys(config.grupos)) {
-//         await client.sendMessage(grupo, contentComMedia, { caption: raw.body });
-//       }
-//       for (chan of Object.keys(config.canais)) {
-//         await client.sendMessage(chan, contentComMedia, { caption: raw.body })
-//       }
-//       return await postMediaTweet({ media: media, text: raw.body });
-//     }
-//   }
-//   // await sendTextToChannels(raw.body);
-//   await sendTextToGroups(raw.body);
-//   return await postTweet(raw.body)
-// }
-
 const publicaMessage = async (m) => {
   if (m.hasMedia) {
     const media = await m.downloadMedia()
@@ -345,7 +337,6 @@ const deletePrompt = async m => {
 
 const setSubject = async m => {
   const group = await client.getChatById(m.from);
-  await log_info('Ajustando título de ' + group.name + ' para: ' + m.body.substring(8));
   await group.setSubject(m.body.substring(8));
 }
 
@@ -357,4 +348,5 @@ module.exports = {
   publicaMessage,
   timemania,
   setSubject,
+  apiToWpp,
 };
