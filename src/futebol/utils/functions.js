@@ -184,23 +184,23 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
     texto += `\n\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? golsDoTigre(jogo.awayScore) : golsDosCara(jogo.awayScore)}`;
     jogo.away_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.away_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.away_goals.length - 1 ? '.' : ''}`);
   }
-  texto += (config.tigrelino ? `\n\nTRENADOS POR ${jogo.home_treinador.toUpperCase()} O ${jogo.homeTeam.toUpperCase()} Q JOGAVA ENCASA JOGO CON ` : `\n\nTreinados por ${jogo.home_treinador}, o anfitrião ${jogo.homeTeam} tinha a seguinte escalação: `);
-  
   
   // Desse jeito ficaria mais fácil, só me dei conta agora
   if (config.tigrelino) {
+    texto += `\n\nTRENADOS POR ${jogo.home_treinador.toUpperCase()} O ${jogo.homeTeam.toUpperCase()} Q JOGAVA ENCASA JOGO CON `;
     jogo.home_escalacao.forEach((p, i) => {
       ycp = jogo?.home_cards.find(c => c.nome === p.nome);
       sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
-      texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
+      texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' E ' : ', ' : ''}${p.nome.toUpperCase()}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome.toUpperCase()} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
     })
-    texto += `\n\nCom ${jogo.away_treinador} no comando, o visitante ${jogo.awayTeam} jogou com: `;
+    texto += `\n\nO COMADAMTE ${jogo.away_treinador.toUpperCase()} DO ${jogo.awayTeam.toUpperCase()} DISE PRA ELIS VIN ASIM/ `;
     jogo.away_players.forEach((p, i) => {
       ycp = jogo?.away_cards.find(c => c.nome === p.nome);
       sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
-      texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
+      texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' E ' : ', ' : ''}${p.nome.toUpperCase()}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome.toUpperCase()} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
     })
   } else {
+    texto += `\n\nTreinados por ${jogo.home_treinador}, o anfitrião ${jogo.homeTeam} tinha a seguinte escalação: `;
     jogo.home_escalacao.forEach((p, i) => {
       ycp = jogo?.home_cards.find(c => c.nome === p.nome);
       sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
