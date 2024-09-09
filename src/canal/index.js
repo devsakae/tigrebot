@@ -41,6 +41,7 @@ const canal = async (m) => {
 const apiToWpp = async (data) => {
   return await Promise.all(data.destinatarios.map(async (dest) => {
     const formatado = dest + "@c.us";
+    log_this("Enviando para " + dest + " a seguinte mensagem: " + data.mensagem)
     await client.sendMessage(formatado, data.mensagem);
   }))
 }
