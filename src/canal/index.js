@@ -1,4 +1,4 @@
-const { client, criciuma, api } = require('../connections');
+const { client, criciuma } = require('../connections');
 const { MessageMedia } = require('whatsapp-web.js');
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
@@ -17,15 +17,15 @@ const { log_erro, log_info, log_this } = require('../../utils/admin');
 const { instagram } = require('../instagram');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../futebol');
 
-api.get("/", (req, res) => res.status(200).send("dale tigre"));
-api.post("/", async (req, res) => {
-  console.log(req.body);
-  if (req.body && req.headers.authorization === process.env.API_TOKEN && req.body.destinatarios.length >= 1 && req.body.mensagem.length >= 1) {
-    await apiToWpp({ destinatarios: req.body.destinatarios, mensagem: req.body.mensagem });
-    return res.status(200).send("Mensagem enviada!");
-  }
-  return res.status(400).send({ message: "Sem permissões suficientes" })
-})
+// api.get("/", (req, res) => res.status(200).send("dale tigre"));
+// api.post("/", async (req, res) => {
+//   console.log(req.body);
+//   if (req.body && req.headers.authorization === process.env.API_TOKEN && req.body.destinatarios.length >= 1 && req.body.mensagem.length >= 1) {
+//     await apiToWpp({ destinatarios: req.body.destinatarios, mensagem: req.body.mensagem });
+//     return res.status(200).send("Mensagem enviada!");
+//   }
+//   return res.status(400).send({ message: "Sem permissões suficientes" })
+// })
 
 const canal = async (m) => {
   if (m.body.startsWith('/add')) return await addToPrompt(m);

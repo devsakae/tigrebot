@@ -6,10 +6,10 @@ const fs = require('fs');
 const config = require('../data/tigrebot.json')
 
 // api express
-const express = require("express");
-const api = express();
-api.use(express.json())
-api.listen(process.env.API_PORT, () => console.log("API rodando na porta " + process.env.API_PORT));
+// const express = require("express");
+// const api = express();
+// api.use(express.json())
+// api.listen(process.env.API_PORT, () => console.log("API rodando na porta " + process.env.API_PORT));
 
 // mongodb
 const mongoclient = new MongoClient(process.env.MONGODB_URI, {
@@ -100,5 +100,5 @@ module.exports = {
   criciuma,
   forum,
   genAI,
-  api,
+  // api,
 };

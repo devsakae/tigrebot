@@ -21,7 +21,8 @@ const new_history = (type, prompt) => ({
   });
 
 const replyOwner = async (m) => {
-  const thisprompt = m.body.replace(("@" + process.env.BOT_NUMBER).split(' ')[0],'');
+  // const thisprompt = m.body.replace(("@" + process.env.BOT_NUMBER).split(' ')[0],'');
+  const thisprompt = m.body.substring(15);
   await log_info('Gerando resposta para _' + thisprompt + '_')
   try {
     const answer = await ai_gemini(thisprompt);

@@ -63,7 +63,7 @@ const organizaFestinha = (array) => {
   if (array.some((p) => p.jogos.some((j) => j.jogounotigre))) response += ((config.tigrelino ? '(CON 🐯 E PQJA JOGO NO TIGRAUM)' : '(🐯 = Jogou com a camisa do Tigre)') + '\n')
   array.forEach(
     atleta => {
-      response += (config.tigrelino ? `\n🏴󠁧󠁢󠁷󠁬󠁳󠁿 ${atleta.name.toUpperCase()} ,${atleta.position.toUpperCase()}` : `\n∙ ${atleta.name.toUpperCase()} (${atleta.position})`)
+      response += (config.tigrelino ? `\n🏴󠁧󠁢󠁷󠁬󠁳󠁿 ${atleta.name.toUpperCase()} ,${atleta.position.toUpperCase()}` : `\n∙ ${atleta.name} (${atleta.position})`)
       if (atleta.jogos.some((j) => j.jogounotigre)) response += ' 🐯'
     }
   );
