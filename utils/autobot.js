@@ -10,6 +10,26 @@ const { saveLocal } = require('./handleFile');
 
 let firstTime = true;
 
+const bebeAteVirarTigrelino = () => {
+  const bebiSimEstouVivendo = cron.schedule("* * * * 5", () => {
+    config.tigrelino = true;
+    saveLocal(config);
+    return log_this("VIRANO TIGRELINO SO POROGE");
+  }, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  })
+  cron.schedule("59 23 * * 5", () => {
+    bebiSimEstouVivendo.stop()
+    config.tigrelino = false;
+    saveLocal(config);
+    return log_this("NUNCA MAIS EU VOU BEBER");
+  }, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  })
+}
+
 const randomHourTomorrow = () => {
   const now = new Date();
   const randomTimeTomorrow = (Math.floor(Math.random() * 59)) + ' ' + (Math.floor(Math.random() * 15) + 6) + ' ' + (now.getDate() + 1) + ' ' + (now.getMonth() + 1) + ' *';
