@@ -33,8 +33,8 @@ let grupoQuiz = '';
   } catch (err) {
     return console.error(err);
   } finally {
-    config.tigrelino = false;
-    await saveLocal(config);
+    // config.tigrelino = false;
+    // await saveLocal(config);
     console.info('\n' + prompts.admin.welcome);
     // Programações automáticas
     publicacoes.bomDia("30 6 * * *");             // Todos os dias às 6h30min
@@ -43,7 +43,7 @@ let grupoQuiz = '';
     publicacoes.jogosHistoricos('45 13 * * *');   // Todos os dias às 13h45min
     publicacoes.meuQuiz()
     // publicacoes.bolaoSystem('30 9 * * *');        // Todos os dias às 9h30min
-    publicacoes.bebeAteVirarTigrelino();
+    // publicacoes.bebeAteVirarTigrelino();
     proximaPartida()                              // Publica sobre a partida do Tigre no dia do jogo às 8h00min
   }
 })();
