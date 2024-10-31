@@ -34,7 +34,8 @@ const randomHourTomorrow = () => {
   const now = new Date();
   const randomTimeTomorrow = (Math.floor(Math.random() * 59)) + ' ' + (Math.floor(Math.random() * 15) + 6) + ' ' + (now.getDate() + 1) + ' ' + (now.getMonth() + 1) + ' *';
   if (cron.validate(randomTimeTomorrow)) return randomTimeTomorrow;
-  return randomHourTomorrow();
+  return console.error('Horario nao validado');
+  /* return randomHourTomorrow(); */
 }
 
 const bomDia = time => {
