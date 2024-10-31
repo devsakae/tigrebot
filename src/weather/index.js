@@ -1,4 +1,5 @@
 const prompts = require("../../data/prompts.json");
+const config = require("../../data/tigrebot.json");
 const { fetchWithParams, fetchApi } = require("../../utils");
 const { sendTextToGroups } = require("../../utils/sender");
 
