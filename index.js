@@ -12,6 +12,7 @@ const { log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
 const { publicarComoTigrelino } = require('./src/tigrelino');
 const { saveLocal } = require('./utils');
+const { defendeAi } = require('./src/defendeai');
 // const { futnatv } = require('./src/news');
 let modoQuiz = false;
 let grupoQuiz = '';
@@ -50,13 +51,37 @@ let grupoQuiz = '';
 
 client.on('message', async (m) => {
 
-  if (m.from === "120363182242020382@g.us" && m.body.startsWith("!tigrelino")) await publicarComoTigrelino(m.body.substring(11)); 
+  // Módulo Quotes (usa: MongoDB)
+  if (
+    m.body.startsWith('!addquote') ||
+    m.body.startsWith('!autor') ||
+    m.body.startsWith('!data') ||
+    m.body.startsWith('!delquote') ||
+    m.body.startsWith('!quote')
+  ) {
+    return await quotes(m);
+  }
 
   if (m.body.startsWith('!titulo')) return await setSubject(m);
 
-  if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
-    const jogos = await jogosAoVivo();
-    return await m.reply(jogos);
+  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
+    const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
+    console.log('Echoing:\n', echomsg);
+    // await echoToChannel(echomsg);
+    // await postTweet(echomsg);
+    return await echoToGroups(echomsg)
+  }
+
+  // Módulo Defende AI - Projeto com Silvano
+  if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
+    if (m.from === process.env.DEFENDE_AI) return await defendeAi(m);
+    else {
+      // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
+      const chat = await m.getChat();
+      log_info('Alguém mencionou o bot no grupo ' + chat.name);
+      chat.sendStateTyping();
+      return await replyUser(m);
+    }
   }
 
   // Módulo de administração de canal
@@ -68,6 +93,11 @@ client.on('message', async (m) => {
       saveLocal(config);
     }
     return await canal(m);
+  }
+
+  if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
+    const jogos = await jogosAoVivo();
+    return await m.reply(jogos);
   }
 
   if (m.body.startsWith('!quiz')) {
@@ -99,36 +129,6 @@ client.on('message', async (m) => {
     return await publicaJogoAleatorio();
   }
 
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
-    const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
-    console.log('Echoing:\n', echomsg);
-    // await echoToChannel(echomsg);
-    // await postTweet(echomsg);
-    return await echoToGroups(echomsg)
-  }
-
-  // Módulo Quotes (usa: MongoDB)
-  if (
-    m.body.startsWith('!addquote') ||
-    m.body.startsWith('!autor') ||
-    m.body.startsWith('!data') ||
-    m.body.startsWith('!delquote') ||
-    m.body.startsWith('!quote')
-  ) {
-    return await quotes(m);
-  }
-
-  // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
-  if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
-    console.info('Alguém mencionou o bot no grupo');
-    const chat = await m.getChat();
-    chat.sendStateTyping();
-    return await replyUser(m);
-  }
-
-
-  // Módulo Bolão refeito 2024
-  // return await bolao(m);
 });
 
 client.on('message_reaction', async (m) => {
