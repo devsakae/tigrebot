@@ -138,7 +138,6 @@ client.on('message_reaction', async (m) => {
     if (message) return await publicaMessage(message);
     return;
   }
-  if (m.senderId === process.env.BOT_OWNER) return console.log(m)
   // if (m && m.reaction === '\u26BD') { // Unicode for ⚽️
   //   const originalMsg = await client.getMessageById(m.msgId._serialized);
   //   if (originalMsg.hasReaction) {
@@ -155,9 +154,9 @@ client.on('message_reaction', async (m) => {
 })
 
 client.on('group_join', async (e) => {
-  const user = await client.getContactById(e.author);
-  console.log("join");
-  return await client.sendMessage(e.chatId, "Dae blz " + user.pushname + "?");
+  if (e.recipientIds.includes(process.env.BOT_NUMBER)) return;
+  await Promise.all(e.recipientIds.map((user) => client.sendMessage(e.chatId, "Fala " + user.pushname + " blz?")))
+  return log_info('Saudando usuários em grupo');
 })
 
 // client.on('group_leave', async (e) => {
