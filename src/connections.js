@@ -50,7 +50,6 @@ client.on('qr', async (qr) => {
       console.log('Pairing code enabled, code: '+ pairingCode);
       pairingCodeRequested = true;
   }
-
 });
 
 client.on('loading_screen', async (percent, message) => {

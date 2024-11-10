@@ -7,7 +7,7 @@ const { replyUser } = require('./src/jokes');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida, jogosAoVivo } = require('./src/futebol');
 const { canal, publicaMessage, setSubject } = require('./src/canal');
 const { echoToGroups } = require('./utils/sender');
-const { postTweet } = require('./utils/twitter');
+// const { postTweet } = require('./utils/twitter');
 const { log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
 const { publicarComoTigrelino } = require('./src/tigrelino');
@@ -154,11 +154,11 @@ client.on('message_reaction', async (m) => {
   // }
 })
 
-// client.on('group_join', async (e) => {
-//   const newGroup = await e.getChat();
-//   log_this("Boas vindas a usuário no grupo " + newGroup.name);
-//   return await client.sendMessage(newGroup.id,_serialized, 'Olha, ele entrou no grupo mesmo');
-// })
+client.on('group_join', async (e) => {
+  const user = await client.getContactById(e.author);
+  console.log("join");
+  return await client.sendMessage(e.chatId, "Dae blz " + user.pushname + "?");
+})
 
 // client.on('group_leave', async (e) => {
 //   const newGroup = await e.getChat();
