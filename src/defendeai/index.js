@@ -1,4 +1,4 @@
-const { log_erro, log_info, saveLocal } = require('../../utils');
+const { log_erro } = require('../../utils');
 const base = require('../../data/defendeai.json');
 const { genAI, client } = require('../connections');
 const { saveDefendeAi } = require('../../utils/handleFile');
@@ -47,17 +47,23 @@ const ai_gemini = async (prompt) => {
 }
 
 const defendeAi = async (m) => {
-  if (base[m.author].nome === '') {
+  if (!base[m.author] || base[m.author].nome === '') {
    await m.sendMessage(m.from, 'Olá, obrigado por testar o Defende AI. Verifiquei que você está utilizando o bot pela primeira vez.');
    const contato = await client.getContactById(m.author);
-   const grava_nome = `Já salvei seu nome como *${contato.pushname}* aqui na minha agenda, mas também vou precisar do número da sua OAB. Você pode informar os dígitos e a UF de expedição (ex.: SC027116)?`;
-   setTimeout(async () => await m.sendMessage(m.from, grava_nome), 1000);
+   const grava_nome = `Já salvei seu nome como *${contato.pushname}* aqui na minha agenda, mas também vou precisar do número e UF de expedição da sua OAB.\n\nFavor enviar *apenas os dígitos e UF de expedição* na próxima mensagem! (exemplo: SC027116, 27116/SC)`;
+   setTimeout(async () => await m.sendMessage(m.from, grava_nome), 600);
    base[m.author] = {
     nome: contato.pushname || contato.name || contato.shortName,
-    primeiro_contato: new Date()
+    primeiro_contato: new Date(),
+    oab: null
    }
-   saveDefendeAi(base);
+   return saveDefendeAi(base);
   }
+  else if (!base[m.author].oab) {
+    // const oab_uf = regex.match(, m.body)
+    return await m.reply('Checando OAB.')
+  }
+  await m.reply('Executando prompt: ', m.body.substring(process.env.BOT_NUMBER.length + 2));
 }
 
 module.exports = {
