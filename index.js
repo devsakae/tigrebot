@@ -155,11 +155,15 @@ client.on('message_reaction', async (m) => {
 
 client.on('group_join', async (e) => {
   if (e.recipientIds.includes(process.env.BOT_NUMBER)) return;
-  await Promise.all(e.recipientIds.map(async (user) => {
-    const userPayload = await client.getContactById(user);
-    await client.sendMessage(e.chatId, "Fala " + userPayload.pushname + " blz?")
+  await Promise.all(e.recipientIds.map(async (u) => {
+    const user = await client.getContactById(u);
+    const name = user.pushname || user.name || user.shortName;
+    const promptSorteado = prompts.boasvindas[Math.floor(Math.random() * prompts.boasvindas.length)]
+    const helloMoto = promptSorteado.replace("${nome}", name);
+    await log_info(`Saudando o usuário ${name} em grupo`);
+    return await client.sendMessage(e.chatId, helloMoto);
 }))
-  return log_info('Saudando usuários em grupo');
+  return;
 })
 
 // client.on('group_leave', async (e) => {
