@@ -121,6 +121,14 @@
     "Tô ansioso!! O Tigre vai jogar!! 😍",
     "Bora pro próximo desafio? 💪"
   ],
+  "boasvindas": [
+    "Colé jogador ${nome} blz?",
+    "E aiiiii ${nome} sumido",
+    "Chegou o maluco ${nome}",
+    "...e ${nome.toLowerCase()} era o nome dele-ops daí ${nome} blz?",
+    "Fala ae ${nome} 🖐",
+    "Trouxe cerveja, ${nome}?"
+  ],
   "tigrelino": {
     "saudacoes": [
       "BONDIA JA PASO DAS SINCO DAMATINA INTAUM JA TA PODENO",

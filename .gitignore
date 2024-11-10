@@ -4,10 +4,10 @@ node_modules/
 .firebasesrc/
 tests/
 tools/
-*.env*
-*.json
-*/*.json
-!.env.example
-!*prompts.json
 !*feriados.json
+!*prompts.json
+!.env.example
+*.env*
+*/*.json
+*.json
 

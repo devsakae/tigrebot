@@ -155,7 +155,10 @@ client.on('message_reaction', async (m) => {
 
 client.on('group_join', async (e) => {
   if (e.recipientIds.includes(process.env.BOT_NUMBER)) return;
-  await Promise.all(e.recipientIds.map((user) => client.sendMessage(e.chatId, "Fala " + user.pushname + " blz?")))
+  await Promise.all(e.recipientIds.map(async (user) => {
+    const userPayload = await client.getContactById(user);
+    await client.sendMessage(e.chatId, "Fala " + userPayload.pushname + " blz?")
+}))
   return log_info('Saudando usuários em grupo');
 })
 
