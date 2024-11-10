@@ -48,10 +48,10 @@ const ai_gemini = async (prompt) => {
 
 const defendeAi = async (m) => {
   if (!base[m.author] || base[m.author].nome === '') {
-   await m.sendMessage(m.from, 'Olá, obrigado por testar o Defende AI. Verifiquei que você está utilizando o bot pela primeira vez.');
+   await client.sendMessage(m.from, 'Olá, obrigado por testar o Defende AI. Verifiquei que você está utilizando o bot pela primeira vez.');
    const contato = await client.getContactById(m.author);
    const grava_nome = `Já salvei seu nome como *${contato.pushname}* aqui na minha agenda, mas também vou precisar do número e UF de expedição da sua OAB.\n\nFavor enviar *apenas os dígitos e UF de expedição* na próxima mensagem! (exemplo: SC027116, 27116/SC)`;
-   setTimeout(async () => await m.sendMessage(m.from, grava_nome), 600);
+   setTimeout(async () => await client.sendMessage(m.from, grava_nome), 600);
    base[m.author] = {
     nome: contato.pushname || contato.name || contato.shortName,
     primeiro_contato: new Date(),
