@@ -7,6 +7,7 @@ const { log_info, log_this } = require('./admin');
 const { abreRodada } = require('../src/bolao');
 const { autoquiz } = require('../src/quiz');
 const { saveLocal } = require('./handleFile');
+const { publicaGolacoAleatorio } = require('../src/quotes');
 
 let firstTime = true;
 
@@ -108,6 +109,16 @@ const meuQuiz = () => {
   }
 }
 
+const golacoTigrelog = (time) => {
+  cron.schedule(time, async () => {
+    log_info('Rodando golacoTigrelog()');
+    await publicaGolacoAleatorio();
+  }, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  })
+}
+
 module.exports = {
   bomDia,
   audio,
@@ -115,5 +126,6 @@ module.exports = {
   jogosHistoricos,
   bolaoSystem,
   meuQuiz,
-  bebeAteVirarTigrelino
+  bebeAteVirarTigrelino,
+  golacoTigrelog
 }

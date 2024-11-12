@@ -38,11 +38,12 @@ let grupoQuiz = '';
     // await saveLocal(config);
     console.info('\n' + prompts.admin.welcome);
     // Programações automáticas
-    publicacoes.bomDia("30 6 * * *");             // Todos os dias às 6h30min
+    publicacoes.bomDia('30 6 * * *');             // Todos os dias às 6h30min
     publicacoes.audio('20 9 * * 3,6');            // Quartas e sábados às 9h20min
     publicacoes.atletaDestaque('20 9 * * 2,5');   // Terças e sextas às 9h20min
     publicacoes.jogosHistoricos('45 13 * * *');   // Todos os dias às 13h45min
     publicacoes.meuQuiz()
+    publicacoes.golacoTigrelog('0 11 * * *')      // Todos os dias às 11h00min
     // publicacoes.bolaoSystem('30 9 * * *');        // Todos os dias às 9h30min
     // publicacoes.bebeAteVirarTigrelino();
     proximaPartida()                              // Publica sobre a partida do Tigre no dia do jogo às 8h00min

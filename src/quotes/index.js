@@ -1,4 +1,4 @@
-const { site_publish } = require('../../utils');
+const { site_publish, sendTextToGroups } = require('../../utils');
 const { site_publish_reply } = require('../../utils/mongo');
 const { db, forum, criciuma, client } = require('../connections');
 const { formatQuote, bestQuote } = require('./utils/functions');
@@ -169,6 +169,12 @@ const quotes = async (m) => {
   }
 };
 
+const publicaGolacoAleatorio = async () => {
+  const quoteAleatoria = await golacoAleatorio();
+  await site_publish(quoteAleatoria);
+  return await sendTextToGroups(quoteAleatoria);
+}
+
 const golacoAleatorio = async () => {
   const today = new Date();
   const isoToday = today.toISOString().substring(4, 10);
@@ -195,4 +201,5 @@ module.exports = {
   addQuote,
   quotes,
   golacoAleatorio,
+  publicaGolacoAleatorio,
 }
