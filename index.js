@@ -5,7 +5,7 @@ const { client, mongoclient } = require('./src/connections');
 const { quotes } = require('./src/quotes');
 const { replyUser } = require('./src/jokes');
 const { jogounotigre, adversarios, partida, publicaJogoAleatorio, proximaPartida, jogosAoVivo } = require('./src/futebol');
-const { canal, publicaMessage, setSubject } = require('./src/canal');
+const { canal, publicaMessage } = require('./src/canal');
 const { echoToGroups } = require('./utils/sender');
 // const { postTweet } = require('./utils/twitter');
 const { log_info } = require('./utils/admin');
@@ -62,7 +62,10 @@ client.on('message', async (m) => {
     return await quotes(m);
   }
 
-  if (m.body.startsWith('!titulo')) return await setSubject(m);
+  if (m.body.startsWith('!titulo')) {
+    const group = await client.getChatById(m.from);
+    await group.setSubject(m.body.substring(8));  
+  }
 
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
     const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
@@ -158,8 +161,7 @@ client.on('group_join', async (e) => {
   await Promise.all(e.recipientIds.map(async (u) => {
     const user = await client.getContactById(u);
     const name = user.pushname || user.name || user.shortName;
-    const promptSorteado = prompts.boasvindas[Math.floor(Math.random() * prompts.boasvindas.length)]
-    const helloMoto = promptSorteado.replace("${nome}", name);
+    const helloMoto = prompts.boasvindas[Math.floor(Math.random() * prompts.boasvindas.length)].replace("${nome}", name);
     await log_info(`Saudando o usuário ${name} em grupo`);
     return await client.sendMessage(e.chatId, helloMoto);
 }))
