@@ -70,8 +70,10 @@ client.on('ready', async () => {
       if (group.id._serialized.endsWith('-1401890927@g.us')) return '';
       if (group.id._serialized.includes('newsletter')) return '';
       await group.clearMessages();
-      config.grupos[group.id._serialized] = { "palpiteiros": [] };
       console.log('✔️', group.name, '[' + group.id._serialized + ']');
+      if (group.id._serialized !== '120363361730511399@g.us') {
+        config.grupos[group.id._serialized] = { "palpiteiros": [] };
+      }
     }));
   console.log('Gravando grupos no config...')
   fs.writeFileSync(
