@@ -26,7 +26,6 @@ const instagramscraperapi2 = async (m) => {
     if (res.data.is_video) {
       return await log_erro("Post é vídeo, e eu ainda tô aprendendo patrão");
     } else {
-
       let raw_caption = res.data.caption.text;
       raw_caption += `\n📸 ${res.data.user.username} (${res.data.user.full_name})`;
       raw_caption += `\n💛 ${res.data.metrics.like_count} curtidas 👁‍🗨 ${res.data.metrics.comment_count} comentários`;

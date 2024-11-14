@@ -35,15 +35,15 @@ const canal = async (m) => {
   if (m.body.startsWith('/bomdia')) return bomDiaComDestaque();
   if (m.body.startsWith('/atletadestaque')) return jogadorDoTigreAleatorio();
   if (m.body.startsWith('/jogodestaque')) return publicaJogoAleatorio();
+  if (m.body.startsWith('/instaignore')) return instaIgnore(m);
   return instagram(m);
 };
 
-const apiToWpp = async (data) => {
-  return await Promise.all(data.destinatarios.map(async (dest) => {
-    const formatado = dest + "@c.us";
-    log_this("Enviando para " + dest + " a seguinte mensagem: " + data.mensagem)
-    await client.sendMessage(formatado, data.mensagem);
-  }))
+const instaIgnore = (m) => {
+  const ignoreURL = m.body.split(' ')[1];
+  config.instagram.published.push(ignoreURL);
+  saveLocal(config);
+  return log_info(`O post com ID ${ignoreURL} foi adicionado na lista de ignore.`)
 }
 
 const bomDiaComDestaque = async () => {
@@ -349,5 +349,4 @@ module.exports = {
   publicaMessage,
   timemania,
   setSubject,
-  apiToWpp,
 };
