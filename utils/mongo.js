@@ -8,7 +8,6 @@ const site_publish = async (msg) => {
   }
   try {
     await tigrebot.collection('mensagens').insertOne(document)
-    log_this('Salvei na DB: ' + msg.substring(0, 255) + ' (...)');
   } catch (err) {
     log_erro('Erro ao publicar última mensagem no site: ', err)
   }
@@ -25,7 +24,6 @@ const site_publish_reply = async (msg, user = '[Suprimido]', msgOrig = '[Mensage
   }
   try {
     await tigrebot.collection('mensagens').insertOne(document)
-    log_this('Salvei no DB: ' + msg.substring(0, 255) + ' (...)');
   } catch (err) {
     log_erro('Erro ao publicar última mensagem no site: ', err)
   }

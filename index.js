@@ -13,6 +13,7 @@ const { quiz } = require('./src/quiz');
 const { publicarComoTigrelino } = require('./src/tigrelino');
 const { saveLocal } = require('./utils');
 const { defendeAi } = require('./src/defendeai');
+const { instagramscraperapi2 } = require('./src/instagram');
 // const { futnatv } = require('./src/news');
 let modoQuiz = false;
 let grupoQuiz = '';
@@ -71,8 +72,6 @@ client.on('message', async (m) => {
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
     const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
     console.log('Echoing:\n', echomsg);
-    // await echoToChannel(echomsg);
-    // await postTweet(echomsg);
     return await echoToGroups(echomsg)
   }
 
@@ -97,6 +96,10 @@ client.on('message', async (m) => {
       saveLocal(config);
     }
     return await canal(m);
+  }
+
+  if (m.from === process.env.BOT_OWNER && m.body.includes('instagram.com')) {
+    return await instagramscraperapi2(m.body);
   }
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
