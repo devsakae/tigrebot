@@ -66,16 +66,15 @@ client.on('ready', async () => {
   await Promise.all(allChats
     .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {
+      console.log('✔️', group.name, '[' + group.id._serialized + ']');
+      await group.clearMessages();
       if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
       if (group.id._serialized.endsWith('-1401890927@g.us')) return '';
       if (group.id._serialized.includes('newsletter')) return '';
-      await group.clearMessages();
-      console.log('✔️', group.name, '[' + group.id._serialized + ']');
-      if (group.id._serialized !== '120363361730511399@g.us') {
-        config.grupos[group.id._serialized] = { "palpiteiros": [] };
-      }
+      if (group.id._serialized.includes('120363361730511399@g.us')) return ''
+      config.grupos[group.id._serialized] = { "palpiteiros": [] };
     }));
-  console.log('Gravando grupos no config...')
+  console.log('Gravando grupos em tigrebot.json...')
   fs.writeFileSync(
     './data/tigrebot.json',
     JSON.stringify(config, null, 4),
