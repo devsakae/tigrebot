@@ -16,7 +16,6 @@ const instagramscraperapi2 = async (body) => {
   log_info("Fetching instagram! Aguarde...");
   const splitado = body.split('/');
   instaurl = url + ((splitado[3] === "p" || splitado[3] === "reel") ? splitado[4] : body) + '&include_insights=true';
-  console.info(instaurl)
   try {
     options.path = '/v1/post_info?code_or_id_or_url=' + instaurl
     const response = await fetch(instaurl, options);
@@ -29,9 +28,8 @@ const instagramscraperapi2 = async (body) => {
       raw_caption += `\n📸 ${res.data.user.username} (${res.data.user.full_name})`;
       raw_caption += `\n💛 ${res.data.metrics.like_count} curtidas 👁‍🗨 ${res.data.metrics.comment_count} comentários`;
       raw_caption += `\nCapturado e enviado até você por TigreBot - ${config.mysite}`;
-      const image_versions = resposta.data.image_versions.items
+      const image_versions = res.data.image_versions.items
       const imagem = image_versions[image_versions.length - 1].url;
-      console.info(imagem);
       return await sendMediaUrlToGroups({ url: imagem, caption: raw_caption })
     }
   } catch (error) {
