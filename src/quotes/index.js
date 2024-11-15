@@ -1,4 +1,4 @@
-const { site_publish, sendTextToGroups } = require('../../utils');
+const { site_publish, sendTextToGroups, log_erro } = require('../../utils');
 const { site_publish_reply } = require('../../utils/mongo');
 const { db, forum, criciuma, client } = require('../connections');
 const { formatQuote, bestQuote } = require('./utils/functions');
@@ -170,12 +170,12 @@ const quotes = async (m) => {
 };
 
 const publicaGolacoAleatorio = async () => {
-  const quoteAleatoria = await golacoAleatorio();
+  const quoteAleatoria = await fetchGolacoTigrelog();
   await site_publish(quoteAleatoria);
   return await sendTextToGroups(quoteAleatoria);
 }
 
-const golacoAleatorio = async () => {
+const fetchGolacoTigrelog = async () => {
   const today = new Date();
   const isoToday = today.toISOString().substring(4, 10);
   const dateRegex = new RegExp(isoToday);
@@ -183,23 +183,19 @@ const golacoAleatorio = async () => {
     .collection("golacos_tigrelog")
     .find({ "data": dateRegex })
     .toArray();
-  let response = '';
-  if (res.length > 0) {
-    const q = res[Math.floor(Math.random() * res.length)];
-    const anosAtras = today.getFullYear() - Number(q.data.substring(0, 4));
-    let response = `Há ${anosAtras} anos, rolava essa mensagem no fórum TigreLOG:`
-    response += `\n\n"\`\`\`${q.quote.substring(0, 240)}\`\`\`"`
-    response += q.quote.length > 240 ? ' - Texto completo só no grupo TigreLOG https://chat.whatsapp.com/2yy89JmmjYf6mQLW87wjTQ\n' : '\n'
-    response += `\n👤 Autor: ${q.autor.substring(0, 1) + "∙".repeat(q.autor.length - 2) + q.autor.substring(q.autor.length - 1, q.autor.length)}`
-    response += `\n✍️ Tópico: ${q.titulo}`
-    response += `\n⚽️ ${q.gols} ${Number(q.gols) > 1 ? 'usuários consideraram' : 'usuário considerou'} essa mensagem um golaço`
-  }
+  if (res.length === 0) return log_erro('Nenhum golaço Tigrelog hoje');
+  const q = res[Math.floor(Math.random() * res.length)];
+  const anosAtras = today.getFullYear() - Number(q.data.substring(0, 4));
+  let response = `Há ${anosAtras} anos, rolava essa mensagem no fórum TigreLOG:`
+  response += `\n\n"\`\`\`${q.quote}\`\`\`"`
+  response += `\n👤 Autor: ${q.autor}`
+  response += `\n✍️ Tópico: ${q.titulo}`
+  response += `\n⚽️ ${q.gols} ${Number(q.gols) > 1 ? 'usuários consideraram' : 'usuário considerou'} essa mensagem um golaço`
   return response;
 }
 
 module.exports = {
   addQuote,
   quotes,
-  golacoAleatorio,
   publicaGolacoAleatorio,
 }
