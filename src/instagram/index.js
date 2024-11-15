@@ -12,11 +12,10 @@ const options = {
   }
 };
 
-const instagramscraperapi2 = async (m) => {
+const instagramscraperapi2 = async (body) => {
   log_info("Fetching instagram! Aguarde...");
-  const splitado = m.body.split('/');
-  console.info(splitado)
-  instaurl = url + ((splitado[3] === "p" || splitado[3] === "reel") ? splitado[4] : m.body) + '&include_insights=true';
+  const splitado = body.split('/');
+  instaurl = url + ((splitado[3] === "p" || splitado[3] === "reel") ? splitado[4] : body) + '&include_insights=true';
   console.info(instaurl)
   try {
     options.path = '/v1/post_info?code_or_id_or_url=' + instaurl
