@@ -9,12 +9,10 @@ const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { falaAlgumaCoisa } = require('../jokes');
 const { golacoAleatorio } = require('../quotes');
-// const { postTweet } = require('../../utils/twitter');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
 const { log_erro, log_info, log_this } = require('../../utils/admin');
-const { instagram } = require('../instagram');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../futebol');
 
 // api.get("/", (req, res) => res.status(200).send("dale tigre"));
@@ -36,7 +34,7 @@ const canal = async (m) => {
   if (m.body.startsWith('/atletadestaque')) return jogadorDoTigreAleatorio();
   if (m.body.startsWith('/jogodestaque')) return publicaJogoAleatorio();
   if (m.body.startsWith('/instaignore')) return instaIgnore(m);
-  return instagram(m);
+  // return instagram(m);
 };
 
 const instaIgnore = (m) => {
@@ -131,119 +129,119 @@ const bomDiaComDestaque = async () => {
   // return await postTweet(tweet);
 }
 
-const saveLocalInstagram = (update) => {
-  config.instagram.published.push(update.id);
-  config.instagram = {
-    ...config.instagram,
-    ...update
-  };
-  saveLocal(config);
-}
+// const saveLocalInstagram = (update) => {
+//   config.instagram.published.push(update.id);
+//   config.instagram = {
+//     ...config.instagram,
+//     ...update
+//   };
+//   saveLocal(config);
+// }
 
-let instaApiOption = 0;
-const instaApiList = ['insta30', 'insta243'];
+// let instaApiOption = 0;
+// const instaApiList = ['insta30', 'insta243'];
 
-const instagramThis = async (user = 'criciumaoficial') => {
-  instaApiOption = instaApiOption === instaApiList.length ? 0 : instaApiOption;
-  log_info('Aguarde! Iniciando fetch no instagram de @' + user + ' com ' + instaApiList[instaApiOption])
-  try {
-    const post = instaApiList[instaApiOption] === 'insta30'
-      ? await instaApi30(user)
-      : await instaApi243(user);
-    instaApiOption += 1;
-    return await sendInstagramToGroups(post);
-  } catch (err) {
-    return log_erro(err);
-  }
-};
+// const instagramThis = async (user = 'criciumaoficial') => {
+//   instaApiOption = instaApiOption === instaApiList.length ? 0 : instaApiOption;
+//   log_info('Aguarde! Iniciando fetch no instagram de @' + user + ' com ' + instaApiList[instaApiOption])
+//   try {
+//     const post = instaApiList[instaApiOption] === 'insta30'
+//       ? await instaApi30(user)
+//       : await instaApi243(user);
+//     instaApiOption += 1;
+//     return await sendInstagramToGroups(post);
+//   } catch (err) {
+//     return log_erro(err);
+//   }
+// };
 
 // Publicação no whatsapp de conta do instagram
-const instaApi30 = async (user) => {
-  log_this('Buscando com INSTAAPI30');
-  return await fetchWithParams({
-    url: process.env.INSTAGRAM130_API_URL + '/account-feed',
-    host: process.env.INSTAGRAM130_API_HOST,
-    params: {
-      username: user,
-    },
-  })
-    .then(async (res) => {
-      if (!res || res.length === 0) throw Error('Não foi possível buscar nenhum post');
-      let response = res[0];
-      if (config.instagram.published.includes(response.node.id)) response = res.find((item) => !config.instagram.published.includes(item.node.id));
-      const update = {
-        date: new Date(),
-        id: response.node.id,
-        link: 'http://instagram.com/p/' + response.node.shortcode,
-        type: response.node.__typename,
-        url:
-          response.node.is_video
-            ? response.node.video_url
-            : response.node.display_url,
-        caption: response.node.edge_media_to_caption.edges[0].node.text,
-        owner: response.node.owner.username,
-      }
-      saveLocalInstagram(update);
-      return update;
-    })
-    .catch((err) => log_erro(err) );
-}
+// const instaApi30 = async (user) => {
+//   log_this('Buscando com INSTAAPI30');
+//   return await fetchWithParams({
+//     url: process.env.INSTAGRAM130_API_URL + '/account-feed',
+//     host: process.env.INSTAGRAM130_API_HOST,
+//     params: {
+//       username: user,
+//     },
+//   })
+//     .then(async (res) => {
+//       if (!res || res.length === 0) throw Error('Não foi possível buscar nenhum post');
+//       let response = res[0];
+//       if (config.instagram.published.includes(response.node.id)) response = res.find((item) => !config.instagram.published.includes(item.node.id));
+//       const update = {
+//         date: new Date(),
+//         id: response.node.id,
+//         link: 'http://instagram.com/p/' + response.node.shortcode,
+//         type: response.node.__typename,
+//         url:
+//           response.node.is_video
+//             ? response.node.video_url
+//             : response.node.display_url,
+//         caption: response.node.edge_media_to_caption.edges[0].node.text,
+//         owner: response.node.owner.username,
+//       }
+//       saveLocalInstagram(update);
+//       return update;
+//     })
+//     .catch((err) => log_erro(err) );
+// }
 
-const instaApi243 = async () => {
-  log_info('Buscando com INSTAAPI243...')
-  return await fetchApi({
-    url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/10/%7Bend_cursor%7D', // @criciumaoficial
-    host: 'instagram243.p.rapidapi.com'
-  })
-    .then(({ data }) => {
-      let response = data.edges;
-      if (config.instagram.published.includes(response[0].node.id)) response = data.edges.find((item) => !config.instagram.published.includes(item.node.id));
-      const update = {
-        date: new Date(),
-        id: response.node.id,
-        link: 'http://instagram.com/p/' + response.node.shortcode,
-        type: response.node.__typename,
-        url:
-          response.node.is_video
-            ? response.node.video_url
-            : response.node.display_url,
-        caption: response.node.edge_media_to_caption.edges[0].node.text,
-        owner: response.node.owner.username,
-      }
-      saveLocalInstagram(update);
-      return update;
-    }).catch((err) => console.error(err));
-}
+// const instaApi243 = async () => {
+//   log_info('Buscando com INSTAAPI243...')
+//   return await fetchApi({
+//     url: 'https://instagram243.p.rapidapi.com/userposts/1752837621/10/%7Bend_cursor%7D', // @criciumaoficial
+//     host: 'instagram243.p.rapidapi.com'
+//   })
+//     .then(({ data }) => {
+//       let response = data.edges;
+//       if (config.instagram.published.includes(response[0].node.id)) response = data.edges.find((item) => !config.instagram.published.includes(item.node.id));
+//       const update = {
+//         date: new Date(),
+//         id: response.node.id,
+//         link: 'http://instagram.com/p/' + response.node.shortcode,
+//         type: response.node.__typename,
+//         url:
+//           response.node.is_video
+//             ? response.node.video_url
+//             : response.node.display_url,
+//         caption: response.node.edge_media_to_caption.edges[0].node.text,
+//         owner: response.node.owner.username,
+//       }
+//       saveLocalInstagram(update);
+//       return update;
+//     }).catch((err) => console.error(err));
+// }
 
-const fetchInstaId = async (m) => {
-  const id = m.body.split(' ')[1].includes('instagram.com')
-    ? m.body.match(/(\w+)\/?$/)[1]
-    : m.body.split(' ')[1];
-  client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch do post', id);
-  const raw = await fetchWithParams({
-    url: "https://instagram191.p.rapidapi.com/v2/post/details-by-shortcode/",
-    host: "instagram191.p.rapidapi.com",
-    params: {
-      "shortcode": id
-    }
-  })
-  const data = raw.graphql.shortcode_media;
-  const update = {
-    date: new Date(),
-    id: data.id,
-    link: 'http://instagram.com/p/' + data.shortcode,
-    type: data.__typename,
-    url:
-      data.is_video
-        ? data.video_url
-        : data.display_url,
-    caption: data.edge_media_to_caption.edges[0].node.text,
-    owner: data.owner.username,
-  }
-  saveLocalInstagram(update)
-  // await sendInstagramToChannels(update);
-  return await sendInstagramToGroups(update);
-}
+// const fetchInstaId = async (m) => {
+//   const id = m.body.split(' ')[1].includes('instagram.com')
+//     ? m.body.match(/(\w+)\/?$/)[1]
+//     : m.body.split(' ')[1];
+//   client.sendMessage(process.env.BOT_OWNER, 'Aguarde! Iniciando fetch do post', id);
+//   const raw = await fetchWithParams({
+//     url: "https://instagram191.p.rapidapi.com/v2/post/details-by-shortcode/",
+//     host: "instagram191.p.rapidapi.com",
+//     params: {
+//       "shortcode": id
+//     }
+//   })
+//   const data = raw.graphql.shortcode_media;
+//   const update = {
+//     date: new Date(),
+//     id: data.id,
+//     link: 'http://instagram.com/p/' + data.shortcode,
+//     type: data.__typename,
+//     url:
+//       data.is_video
+//         ? data.video_url
+//         : data.display_url,
+//     caption: data.edge_media_to_caption.edges[0].node.text,
+//     owner: data.owner.username,
+//   }
+//   saveLocalInstagram(update)
+//   // await sendInstagramToChannels(update);
+//   return await sendInstagramToGroups(update);
+// }
 
 const publicaMessage = async (m) => {
   if (m.hasMedia) {
@@ -336,17 +334,15 @@ const deletePrompt = async m => {
   return await client.sendMessage(m.from, 'Novo prompt:\n\n' + newprompt);
 }
 
-const setSubject = async m => {
+const mudaTitulo = async m => {
   const group = await client.getChatById(m.from);
   await group.setSubject(m.body.substring(8));
 }
 
 module.exports = {
   canal,
-  instagramThis,
   bomDiaComDestaque,
-  fetchInstaId,
   publicaMessage,
   timemania,
-  setSubject,
+  mudaTitulo,
 };
