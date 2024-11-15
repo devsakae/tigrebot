@@ -95,11 +95,10 @@ client.on('message', async (m) => {
       config.tigrelino = !config.tigrelino;
       saveLocal(config);
     }
+    if (m.body.includes('instagram.com')) {
+      return await instagramscraperapi2(m.body);
+    }
     return await canal(m);
-  }
-
-  if (m.from === process.env.BOT_OWNER && m.body.includes('instagram.com')) {
-    return await instagramscraperapi2(m.body);
   }
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
