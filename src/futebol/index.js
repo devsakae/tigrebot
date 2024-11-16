@@ -188,10 +188,10 @@ const adversarios = async (m) => {
     await site_publish(texto);
     await client.sendMessage(m.from, logo, { caption: texto });
     const partes = Math.floor(t.jogos.length / 20) + 1
-    let auxi = 1;
+    let auxi = 0;
     for (let i = 0; i < t.jogos.length; i + 20) {
-      let textofull = `Página ${auxi}/${partes}\n`;
-      t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n[${id + i}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
+      let textofull = `Página ${auxi + 1}/${partes}\n`;
+      t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n[${id + 1 + (auxi * 20)}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
       auxi += 1;
       await site_publish(textofull);
       await client.sendMessage(m.from, textofull);
