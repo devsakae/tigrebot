@@ -25,8 +25,8 @@ const instagramscraperapi2 = async (body) => {
       return await log_erro("Post é vídeo, e eu ainda tô aprendendo patrão");
     } else {
       let raw_caption = res.data.caption.text;
-      raw_caption += `\n📸 ${res.data.user.username} (${res.data.user.full_name})`;
-      raw_caption += `\n💛 ${res.data.metrics.like_count} curtidas 👁‍🗨 ${res.data.metrics.comment_count} comentários`;
+      raw_caption += `\n\n📸 ${res.data.user.username} (${res.data.user.full_name})`;
+      raw_caption += `\n\n💛 ${res.data.metrics.like_count} curtidas 👁‍🗨 ${res.data.metrics.comment_count} comentários`;
       raw_caption += `\nCapturado e enviado até você por TigreBot - ${config.mysite}`;
       const image_versions = res.data.image_versions.items
       const imagem = image_versions[image_versions.length - 1].url;

@@ -198,4 +198,5 @@ module.exports = {
   addQuote,
   quotes,
   publicaGolacoAleatorio,
+  fetchGolacoTigrelog,
 }

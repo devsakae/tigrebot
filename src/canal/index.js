@@ -2,13 +2,13 @@ const { client, criciuma } = require('../connections');
 const { MessageMedia } = require('whatsapp-web.js');
 const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
-const { fetchWithParams, fetchApi, site_publish } = require('../../utils');
+const { site_publish } = require('../../utils');
 const { saveLocal, savePrompts } = require('../../utils/handleFile');
-const { sendInstagramToGroups, sendMediaUrlToGroups, sendTextToGroups } = require('../../utils/sender');
+const { sendMediaUrlToGroups, sendTextToGroups } = require('../../utils/sender');
 const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { falaAlgumaCoisa } = require('../jokes');
-const { golacoAleatorio } = require('../quotes');
+const { fetchGolacoTigrelog } = require('../quotes');
 const { getNovidades } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
@@ -87,11 +87,11 @@ const bomDiaComDestaque = async () => {
   }
 
   // Pega um golaço aleatório do fórum e adiciona na resposta
-  const legenda_forum = await golacoAleatorio();
-  if (legenda_forum) {
-    response += '\n\n';
-    response += legenda_forum;
-  }
+  // const legenda_forum = await fetchGolacoTigrelog();
+  // if (legenda_forum) {
+  //   response += '\n\n';
+  //   response += legenda_forum;
+  // }
 
   // Busca atletas aniversariando hoje
   const birthDate = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
