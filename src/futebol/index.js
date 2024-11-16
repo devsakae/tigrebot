@@ -158,7 +158,7 @@ const adversarios = async (m) => {
   if (response.length > 1) {
     let moreThanOne = `Encontrei mais de 1 ${search}. Qual você deseja? Use o comando correto:\n`
     response.map(t => moreThanOne += `\n‣ !jogos ${t.adversario} ${t.uf}`);
-    return m.reply(moreThanOne);
+    return await m.reply(moreThanOne);
   }
   const t = response[0];
   const aproveitamento = headToHead(t.resumo);
@@ -188,15 +188,15 @@ const adversarios = async (m) => {
     await site_publish(texto);
     await client.sendMessage(m.from, logo, { caption: texto });
     const partes = Math.floor(t.jogos.length / 20) + 1
-    let auxi = 0;
+    let auxi = 1;
     for (let i = 0; i < t.jogos.length; i + 20) {
-      let textofull = `Parte ${auxi + 1}/${partes}\n`;
-      t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n[${id + 1}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
-      auxi += 20;
+      let textofull = `Página ${auxi}/${partes}\n`;
+      t.jogos.splice(i, i + 20).map((j, id) => textofull += `\n[${id + i}] ${j.homeTeam} ${j.homeScore} x ${j.awayScore} ${j.awayTeam}\n ${j.campeonato} ${j.date.substring(j.date.length - 4)}\n`)
+      auxi += 1;
       await site_publish(textofull);
       await client.sendMessage(m.from, textofull);
     }
-    return await m.reply('!matchid ' + t._id + '-x');
+    return await m.reply('!matchid ' + t._id + '-');
   }
   texto += `\n\nEu tenho ${t.jogos.length} jogos cadastrados, mas só o admin pode pedir para listá-los (eu sou muito caro e chique).\n`
   await site_publish(texto);
@@ -211,7 +211,8 @@ const partida = async (m) => {
     .collection("jogos")
     .find({ _id: teamId }, { $projection: { "jogos": 1 } })
     .toArray();
-  if (response.length === 0) return m.reply('Nenhuma partida encontrada com este ID. Digitou certo?');
+  if (response.length === 0) return await m.reply('Nenhuma partida encontrada com este ID. Digitou certo?');
+  console.log(response[0].jogos[matchIdx])
   const texto = formataJogo(response[0].jogos[matchIdx]);
   await site_publish(texto);
   return await client.sendMessage(m.from, texto);
