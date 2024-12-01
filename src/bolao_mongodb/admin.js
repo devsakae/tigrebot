@@ -2,7 +2,7 @@ const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { fetchWithParams, saveLocal, sendTextToGroups } = require('../../utils')
 const { forMatch } = require('./utils');
-const { client, bolao, mongoclient } = require('../connections');
+const { client, db_bolao, mongoclient } = require('../connections');
 const { listaPalpites } = require('./user');
 
 const start = async (m) => {
@@ -16,7 +16,7 @@ const start = async (m) => {
       },
     });
     if (season_leagues.response.length < 1) throw new Error(prompts.errors.no_league);
-    const database_leagues = await bolao
+    const database_leagues = await db_bolao
       .collection('fixtures')
       .find()
       .project({ league: 1, seasons: 1 })

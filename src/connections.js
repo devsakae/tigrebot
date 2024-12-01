@@ -25,7 +25,7 @@ const forum = mongoclient.db('quotes').collection('tigrelog');
 const criciuma = mongoclient.db('criciuma');
 const tigrebot = mongoclient.db('tigrebot');
 const canais = mongoclient.db('#channels')
-const bolao = mongoclient.db('bolao');
+const db_bolao = mongoclient.db('bolao');
 
 // wweb.js
 const executablePath =
@@ -97,7 +97,7 @@ module.exports = {
   tigrebot,
   mongoclient,
   canais,
-  bolao,
+  db_bolao,
   criciuma,
   forum,
   genAI,
