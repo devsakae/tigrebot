@@ -22,6 +22,16 @@ const bebeAteVirarTigrelino = () => {
     scheduled: true,
     timezone: "America/Sao_Paulo"
   })
+   cron.schedule("1 0 * * 6", () => {
+    bebiSimEstouVivendo.stop()
+    config.tigrelino = false;
+    saveLocal(config);
+    log_this("Destigrelinizando");
+    return sendTextToGroups("Sinto que fui abalroado por um veículo de considerável tamanho e velocidade 🥴")
+  }, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  });
   cron.schedule("59 23 * * 5", () => {
     bebiSimEstouVivendo.stop()
     config.tigrelino = false;
@@ -30,7 +40,8 @@ const bebeAteVirarTigrelino = () => {
   }, {
     scheduled: true,
     timezone: "America/Sao_Paulo"
-  })
+  });
+
 }
 
 const randomHourTomorrow = () => {
