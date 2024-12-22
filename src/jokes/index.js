@@ -10,6 +10,7 @@ const { log_erro } = require('../../utils/admin');
 const encodedParams = new URLSearchParams();
 const fs = require('fs');
 const { replyOwner } = require('../gemini');
+const { sendTextToGroups } = require('../../utils');
 
 const pack = fs.readdirSync(process.cwd() + '/data/audios/');
 
@@ -120,10 +121,17 @@ const falaAlgumaCoisa = async () => {
   }))
 }
 
+const sextamosEnfim = async () => {
+  await sendTextToGroups("9h de sexta");
+  setTimeout(() => sendTextToGroups("Deu né"), 900);
+  setTimeout(() => sendTextToGroups("Quem fez fez"), 1500);
+}
+
 module.exports = {
   replyUser,
   getUselessFact,
   getJokes,
   falaPraEle,
   falaAlgumaCoisa,
+  sextamosEnfim,
 }

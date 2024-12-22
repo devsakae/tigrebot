@@ -45,8 +45,9 @@ let grupoQuiz = '';
     publicacoes.jogosHistoricos('45 13 * * *');   // Todos os dias às 13h45min
     publicacoes.meuQuiz()
     publicacoes.golacoTigrelog('0 11 * * *')      // Todos os dias às 11h00min
+    publicacoes.sextouuuuu();                     // Sextas às 9h faz palhaçada
     // publicacoes.bolaoSystem('30 9 * * *');        // Todos os dias às 9h30min
-    // publicacoes.bebeAteVirarTigrelino();
+    publicacoes.bebeAteVirarTigrelino();
     proximaPartida()                              // Publica sobre a partida do Tigre no dia do jogo às 8h00min
   }
 })();

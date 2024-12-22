@@ -146,13 +146,9 @@ const golsDosCara = score => score === 1 ? 'O gol deles foi marcado por' : 'Os g
 
 const jogoDestaqueDoDia = async ({ jogo, time }) => {
   const gols = time.jogos.reduce((acc, curr) => {
-    const check = curr.homeTeam.startsWith('CRICI')
-    check
-      ? acc.gm += curr.homeScore
-      : acc.gm += curr.awayScore;
-    check
-      ? acc.gs += curr.awayScore
-      : acc.gs += curr.homeScore
+    curr.homeTeam.startsWith('CRICI')
+      ? (acc.gm += curr.homeScore, acc.gs += curr.awayScore)
+      : (acc.gm += curr.awayScore, acc.gs += curr.homeScore);
     return acc;
   }, { gm: 0, gs: 0 });
   const today = new Date()

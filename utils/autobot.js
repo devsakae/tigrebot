@@ -1,21 +1,23 @@
 const config = require('../data/tigrebot.json');
 const cron = require('node-cron');
 const { bomDiaComDestaque } = require('../src/canal');
-const { falaAlgumaCoisa } = require('../src/jokes');
+const { falaAlgumaCoisa, sextamosEnfim } = require('../src/jokes');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../src/futebol');
 const { log_info, log_this } = require('./admin');
 const { abreRodada } = require('../src/bolao');
 const { autoquiz } = require('../src/quiz');
 const { saveLocal } = require('./handleFile');
 const { publicaGolacoAleatorio } = require('../src/quotes');
+const { sendTextToGroups } = require('./sender');
 
 let firstTime = true;
 
 const bebeAteVirarTigrelino = () => {
-  const bebiSimEstouVivendo = cron.schedule("* * * * 5", () => {
+  const bebiSimEstouVivendo = cron.schedule("5 9 * * 5", () => {
     config.tigrelino = true;
     saveLocal(config);
-    return log_this("VIRANO TIGRELINO SO POROGE");
+    log_this("VIRANO TIGRELINO SO POROGE");
+    return sendTextToGroups("BORA RASA SO POROGE")
   }, {
     scheduled: true,
     timezone: "America/Sao_Paulo"
@@ -119,6 +121,16 @@ const golacoTigrelog = (time) => {
   })
 }
 
+const sextouuuuu = () => {
+  cron.schedule("0 9 * * 5", async () => {
+    log_info('Sextou maluco');
+    await sextamosEnfim();
+  }, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  })
+}
+
 module.exports = {
   bomDia,
   audio,
@@ -127,5 +139,6 @@ module.exports = {
   bolaoSystem,
   meuQuiz,
   bebeAteVirarTigrelino,
-  golacoTigrelog
+  golacoTigrelog,
+  sextouuuuu
 }
