@@ -16,15 +16,12 @@
   "keywords": [
     "bot",
     "chatbot",
+    "torcedor",
     "futebol",
-    "série",
-    "A",
-    "série",
-    "B",
-    "série",
-    "C",
-    "série",
-    "D",
+    "série A",
+    "série B",
+    "série C",
+    "série D",
     "campeonato",
     "brasileiro",
     "brasileirão"
@@ -38,7 +35,6 @@
   "dependencies": {
     "@google/generative-ai": "^0.14.1",
     "axios": "^1.6.1",
-    "express": "^4.21.1",
     "fs": "^0.0.1-security",
     "google-news-json": "^2.1.0",
     "mongodb": "^6.2.0",
