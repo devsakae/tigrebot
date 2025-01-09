@@ -7,7 +7,6 @@ const { site_publish, fetchApi, log_erro, log_info, publicidade, sendTextToGroup
 const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDestaqueDoDia, formataRodadaAoVivo } = require('./utils/functions');
 const { default: axios } = require('axios');
 const cron = require('node-cron');
-const { setSubject } = require('../canal');
 
 // const predictions = async (m) => {
 //   const thisBolao = data[m.from];
@@ -331,20 +330,6 @@ const proximaPartida = async () => {
   }
 }
 
-const jogoTigrelog = async (jogo) => {
-  const tigrelog = await client.getChatById('554896059196-1392584319@g.us');
-  setTimeout(() => {
-    tigrelog.setSubject(`[1ºT] ${jogo.homeTeam.name} x ${jogo.awayTeam.name}`);
-  }, 10000)
-  const modoLive = setInterval(async () => {
-    const rodada = await jogosAoVivo();
-    await client.sendMessage('554896059196-1392584319@g.us', rodada);
-  }, 25 * 60 * 1000);
-  setTimeout(() => {
-    clearInterval(modoLive);
-  }, 80 * 60 * 1000)
-  return;
-}
 
 const jogosAoVivo = async () => {
   try {
