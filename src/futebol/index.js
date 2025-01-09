@@ -247,7 +247,7 @@ const publicaJogoAleatorio = async () => {
 
 const fetchProximasPartidas = async () => {
   try {
-    const { data } = await axios.request({
+    const response = await axios.request({
       method: 'GET',
       url: "https://footapi7.p.rapidapi.com/api/team/1984/matches/next/0",
       headers: {
@@ -255,8 +255,8 @@ const fetchProximasPartidas = async () => {
         'X-RapidAPI-Host': "footapi7.p.rapidapi.com",
       },
     });
-    if (data.events.length === 0) throw new Error('Nenhuma partida programada');
-    return data.events;
+    if (response.data.events.length > 0) return response.data.events;
+    return ''
   }
   catch (err) {
     log_erro(err);
@@ -316,7 +316,6 @@ const proximaPartida = async () => {
     if (cron.validate(schedstart)) {
       const task = cron.schedule(schedstart, async () => {
         await sendTextToGroups(response);
-        await setSubject({ from: '554896059196-1392584319@g.us', body: `!titulo [${dataehora.toTimeString().substring(0,5)}] ${res[0].homeTeam.name} x ${res[0].awayTeam.name}` })
       }, {
         scheduled: true,
         timezone: "America/Sao_Paulo"
@@ -372,6 +371,5 @@ module.exports = {
   adversarios,
   partida,
   publicaJogoAleatorio,
-  proximaPartida,
   jogosAoVivo,
 };
