@@ -301,15 +301,6 @@ const proximaPartida = async () => {
     response += `\n🏆 ${res[0].season.name}`;
     response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
     if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
-    // const schedmatch = `${dataehora.getMinutes()} ${dataehora.getHours()} ${dataehora.getDate()} ${(dataehora.getMonth() + 1)} *`;
-    // if (cron.validate(schedmatch)) {
-    //   const matchStart = cron.schedule(schedmatch, () => {
-    //     jogoTigrelog(res[0]);
-    //   }, {
-    //     scheduled: true,
-    //     timezone: "America/Sao_Paulo"
-    //   });
-    // }
     const schedstart = '0 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     const schedstop = '15 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     if (cron.validate(schedstart)) {
