@@ -135,7 +135,6 @@ module.exports = {
   audio,
   atletaDestaque,
   jogosHistoricos,
-  bolaoSystem,
   meuQuiz,
   bebeAteVirarTigrelino,
   golacoTigrelog,
