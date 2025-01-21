@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const { bomDiaComDestaque } = require('../src/canal');
 const { falaAlgumaCoisa, sextamosEnfim } = require('../src/jokes');
 const { jogadorDoTigreAleatorio, publicaJogoAleatorio } = require('../src/futebol');
-const { log_info, log_this } = require('./admin');
+const { log_info } = require('./admin');
 const { abreRodada } = require('../src/bolao');
 const { autoquiz } = require('../src/quiz');
 const { saveLocal } = require('./handleFile');
@@ -16,7 +16,6 @@ const bebeAteVirarTigrelino = () => {
   const bebiSimEstouVivendo = cron.schedule("5 9 * * 5", () => {
     config.tigrelino = true;
     saveLocal(config);
-    log_this("VIRANO TIGRELINO SO POROGE");
     return sendTextToGroups("BORA RASA SO POROGE")
   }, {
     scheduled: true,
@@ -26,22 +25,11 @@ const bebeAteVirarTigrelino = () => {
     bebiSimEstouVivendo.stop()
     config.tigrelino = false;
     saveLocal(config);
-    log_this("Destigrelinizando");
-    return sendTextToGroups("Sinto que fui abalroado por um veículo de considerável tamanho e velocidade 🥴")
+    return sendTextToGroups("eu nunca mais vou beber")
   }, {
     scheduled: true,
     timezone: "America/Sao_Paulo"
   });
-  cron.schedule("59 23 * * 5", () => {
-    bebiSimEstouVivendo.stop()
-    config.tigrelino = false;
-    saveLocal(config);
-    return log_this("NUNCA MAIS EU VOU BEBER");
-  }, {
-    scheduled: true,
-    timezone: "America/Sao_Paulo"
-  });
-
 }
 
 const randomHourTomorrow = () => {
@@ -92,15 +80,15 @@ const jogosHistoricos = (time) => {
   })
 }
 
-const bolaoSystem = (time) => {
-  cron.schedule(time, async () => {
-    log_info('Rodando abreRodada()');
-    await abreRodada();
-  }, {
-    scheduled: true,
-    timezone: "America/Sao_Paulo"
-  })
-}
+// const bolaoSystem = (time) => {
+//   cron.schedule(time, async () => {
+//     log_info('Rodando abreRodada()');
+//     await abreRodada();
+//   }, {
+//     scheduled: true,
+//     timezone: "America/Sao_Paulo"
+//   })
+// }
 
 const meuQuiz = () => {
   const randomTime = randomHourTomorrow();

@@ -7,7 +7,6 @@ const { site_publish, fetchApi, log_erro, log_info, publicidade, sendTextToGroup
 const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDestaqueDoDia, formataRodadaAoVivo } = require('./utils/functions');
 const { default: axios } = require('axios');
 const cron = require('node-cron');
-const { setSubject } = require('../canal');
 
 // const predictions = async (m) => {
 //   const thisBolao = data[m.from];
@@ -65,7 +64,7 @@ const jogounotigre = async (m) => {
     const caption = umAtleta(atletasDoTigre);
     return client.sendMessage(m.from, foto, { caption: caption });
   }
-  return m.reply('Não que saiba ou tenha conhecimento.');
+  return await m.reply('Não que saiba ou tenha conhecimento.');
 }
 
 const jogadorDoTigreAleatorio = async () => {
@@ -247,7 +246,7 @@ const publicaJogoAleatorio = async () => {
 
 const fetchProximasPartidas = async () => {
   try {
-    const { data } = await axios.request({
+    const response = await axios.request({
       method: 'GET',
       url: "https://footapi7.p.rapidapi.com/api/team/1984/matches/next/0",
       headers: {
@@ -255,8 +254,8 @@ const fetchProximasPartidas = async () => {
         'X-RapidAPI-Host': "footapi7.p.rapidapi.com",
       },
     });
-    if (data.events.length === 0) throw new Error('Nenhuma partida programada');
-    return data.events;
+    if (response.data.events.length > 0) return response.data.events;
+    return ''
   }
   catch (err) {
     log_erro(err);
@@ -302,21 +301,11 @@ const proximaPartida = async () => {
     response += `\n🏆 ${res[0].season.name}`;
     response += `\n🗓 ${horadojogo.charAt(0).toUpperCase() + horadojogo.substring(1)}`;
     if (match) response += `\n🏟 ${match.homeTeam.venue.stadium.name} (${match.homeTeam.venue.stadium.capacity} pessoas)`;
-    // const schedmatch = `${dataehora.getMinutes()} ${dataehora.getHours()} ${dataehora.getDate()} ${(dataehora.getMonth() + 1)} *`;
-    // if (cron.validate(schedmatch)) {
-    //   const matchStart = cron.schedule(schedmatch, () => {
-    //     jogoTigrelog(res[0]);
-    //   }, {
-    //     scheduled: true,
-    //     timezone: "America/Sao_Paulo"
-    //   });
-    // }
     const schedstart = '0 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     const schedstop = '15 8 ' + dataehora.getDate() + ' ' + (dataehora.getMonth() + 1) + ' *';
     if (cron.validate(schedstart)) {
       const task = cron.schedule(schedstart, async () => {
         await sendTextToGroups(response);
-        await setSubject({ from: '554896059196-1392584319@g.us', body: `!titulo [${dataehora.toTimeString().substring(0,5)}] ${res[0].homeTeam.name} x ${res[0].awayTeam.name}` })
       }, {
         scheduled: true,
         timezone: "America/Sao_Paulo"
@@ -332,20 +321,6 @@ const proximaPartida = async () => {
   }
 }
 
-const jogoTigrelog = async (jogo) => {
-  const tigrelog = await client.getChatById('554896059196-1392584319@g.us');
-  setTimeout(() => {
-    tigrelog.setSubject(`[1ºT] ${jogo.homeTeam.name} x ${jogo.awayTeam.name}`);
-  }, 10000)
-  const modoLive = setInterval(async () => {
-    const rodada = await jogosAoVivo();
-    await client.sendMessage('554896059196-1392584319@g.us', rodada);
-  }, 25 * 60 * 1000);
-  setTimeout(() => {
-    clearInterval(modoLive);
-  }, 80 * 60 * 1000)
-  return;
-}
 
 const jogosAoVivo = async () => {
   try {
@@ -372,6 +347,5 @@ module.exports = {
   adversarios,
   partida,
   publicaJogoAleatorio,
-  proximaPartida,
   jogosAoVivo,
 };
