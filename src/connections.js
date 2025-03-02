@@ -46,7 +46,7 @@ client.on('qr', async (qr) => {
   let pairingCodeRequested = false;
   const pairingCodeEnabled = true;
   if (pairingCodeEnabled && !pairingCodeRequested) {
-      const pairingCode = await client.requestPairingCode('5548920009732');
+      const pairingCode = await client.requestPairingCode(process.env.BOT_NUMBER.split('@')[0]);
       console.log('Pairing code enabled, code: '+ pairingCode);
       pairingCodeRequested = true;
   }
@@ -88,7 +88,6 @@ client.on('ready', async () => {
 
 client.initialize();
 
-// Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 module.exports = {

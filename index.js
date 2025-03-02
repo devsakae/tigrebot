@@ -10,7 +10,6 @@ const { echoToGroups } = require('./utils/sender');
 // const { postTweet } = require('./utils/twitter');
 const { log_info } = require('./utils/admin');
 const { quiz } = require('./src/quiz');
-const { publicarComoTigrelino } = require('./src/tigrelino');
 const { saveLocal } = require('./utils');
 const { defendeAi } = require('./src/defendeai');
 const { instagramscraperapi2 } = require('./src/instagram');
