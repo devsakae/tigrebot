@@ -51,13 +51,25 @@ const bomDiaComDestaque = async () => {
   const legenda_greeting = config.tigrelino ? prompts.tigrelino.saudacoes[Math.floor(Math.random() * prompts.tigrelino.saudacoes.length)] : prompts.saudacoes[Math.floor(Math.random() * prompts.saudacoes.length)];
   let response = (config.tigrelino ? '🍺 ' : '👉 ') + legenda_greeting;
   let tweet = legenda_greeting
-  
+
   // Hoje tem feriado no país? Magina!
-  const legenda_feriados = diasEspeciais();
-  if (legenda_feriados && !config.tigrelino) {
-    response += '\n\n'
-    response += legenda_feriados;
+  // const legenda_feriados = diasEspeciais();
+  // if (legenda_feriados && !config.tigrelino) {
+  //   response += '\n\n'
+  //   response += legenda_feriados;
+  // }
+
+  const doty = await daysOfTheYear();
+  if (doty.length > 0) {
+    const filteredDoty = doty.filter((days) => days.type === 'day')
+    const chosen_doty = filteredDoty.data[Math.floor(Math.random() * doty.data.length)];
+    const { name, excerpt } = chosen_doty;
+    const translateThis = name + ' - ' + excerpt;
+    const translated = await googleTranslate({ query: translateThis, source: 'en', target: 'pt-BR' }) || "(Falha na API do DOTY)"
+    response += '\n\n';
+    response += translated;
   }
+
 
   // Pega a previsão do tempo em Criciúma/SC para hoje
   const legenda_previsao = await getForecast()
@@ -125,8 +137,8 @@ const bomDiaComDestaque = async () => {
     response += legenda_aniversariantes
   }
   // Retorna bom dia, previsão e fórum (sem aniversariantes)
+  // await postTweet(tweet);
   return await sendTextToGroups(response);
-  // return await postTweet(tweet);
 }
 
 // const saveLocalInstagram = (update) => {
@@ -264,7 +276,7 @@ const diasEspeciais = () => {
   const todayComZero = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
   let response = '';
   response += feriados.nacional.find(f => f.data.startsWith(todayComZero))?.descricao || ''
-  if (response.length > 0) response += '. \n';  
+  if (response.length > 0) response += '. \n';
   const fest = feriados.estadual.filter(f => f.data.startsWith(todayComZero))
   fest.length === 1
     ? response += `Hoje é ${fest[0].nome} no estado do(a) ${fest[0].uf}.`
@@ -273,6 +285,36 @@ const diasEspeciais = () => {
   // fmun.length > 0 && fmun.forEach((f, i) => response += `${i === (fmun.length - 1) && fmun.length > 1 ? ' e ' : i > 0 ? ', ' : '\nComemora(m) feriado municipal hoje a(s) cidade(s) de '}${f.municipio} (${f.uf})${i === (fmun.length - 1) ? '.' : ''}`)
   return response;
 }
+
+const daysOfTheYear = async () => {
+  return await axios({
+    method: 'GET',
+    url: 'https://www.daysoftheyear.com/api/v1/today/?timezone_offset=-3',
+    headers: {
+      'X-Api-Key': process.env.DOTY_API_KEY
+    },
+  }).then((res) => {
+    if (res.data.code === 200) return res.data.data;
+    else throw new Error({ data: [] })
+  }).catch((err) => {
+    console.error('Erro getting DOTY', err.data || err)
+    return [];
+  })
+
+}
+
+const googleTranslate = async (params) => {
+  return await axios.get('https://translation.googleapis.com/language/translate/v2', {
+    params: {
+      key: GOOGLE_API_KEY,
+      source: params.source,
+      target: params.target,
+      q: params.query,
+    }
+  }).then((res) => res.data?.data?.translations[0]?.translatedText)
+    .catch((err) => err.data);
+}
+
 
 const timemania = async () => {
   const url = "https://loteriascaixa-api.herokuapp.com/api/timemania/latest";
@@ -300,7 +342,7 @@ const addToPrompt = async m => {
   // "/add errors.teste Um teste" para adicionar a chave teste na chave errors.
   const msgArr = m.body.split(' ');
   const mykeys = msgArr[1];
-  if (mykeys === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts).slice(0,3)));
+  if (mykeys === "keys") return await client.sendMessage(m.from, JSON.stringify(Object.keys(prompts).slice(0, 3)));
   const promptkey = mykeys.split('.')[0]
   const newkey = mykeys.split('.')[1]
   const myprompt = m.body.substring(5 + mykeys.length).trim();
