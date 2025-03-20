@@ -62,8 +62,6 @@ client.on('authenticated', () => {
 
 client.on('ready', async () => {
   console.info('\nConfigurando grupos e canais...');
-  const allChats = await client.getChats();
-  console.log("allchats:", allChats);
   await Promise.all(allChats
     .filter((group) => !group.isReadOnly && group.isGroup)
     .map(async (group) => {

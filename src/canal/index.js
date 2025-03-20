@@ -60,7 +60,7 @@ const bomDiaComDestaque = async () => {
   // }
 
   const doty = await daysOfTheYear();
-  if (doty.length > 0) {
+  if (doty && doty.length > 0) {
     const filteredDoty = doty.filter((days) => days.type === 'day')
     const chosen_doty = filteredDoty.data[Math.floor(Math.random() * doty.data.length)];
     const { name, excerpt } = chosen_doty;
@@ -112,7 +112,7 @@ const bomDiaComDestaque = async () => {
     .find({ 'birthday': { $regex: birthDate } })
     .toArray();
   // Encontrou aniversariante? 
-  if (aniversariantes.length > 0) {
+  if (aniversariantes && aniversariantes.length > 0) {
     const jogaramNoTigre = aniversariantes.filter(j => j.jogos.some(jogo => jogo.jogounotigre));
     const legenda_aniversariantes = organizaFestinha(aniversariantes);
     // Adiciona foto e stats de atleta que jogou no Tigre
@@ -276,7 +276,7 @@ const diasEspeciais = () => {
   const todayComZero = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
   let response = '';
   response += feriados.nacional.find(f => f.data.startsWith(todayComZero))?.descricao || ''
-  if (response.length > 0) response += '. \n';
+  if (response && response.length > 0) response += '. \n';
   const fest = feriados.estadual.filter(f => f.data.startsWith(todayComZero))
   fest.length === 1
     ? response += `Hoje é ${fest[0].nome} no estado do(a) ${fest[0].uf}.`
