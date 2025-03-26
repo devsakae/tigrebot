@@ -62,7 +62,7 @@ const bomDiaComDestaque = async () => {
   const doty = await daysOfTheYear();
   if (doty && doty.length > 0) {
     const filteredDoty = doty.filter((days) => days.type === 'day')
-    const chosen_doty = filteredDoty.data[Math.floor(Math.random() * filteredDoty.length)];
+    const chosen_doty = filteredDoty[Math.floor(Math.random() * filteredDoty.length)];
     const { name, excerpt } = chosen_doty;
     const translateThis = name + ' - ' + excerpt;
     const translated = await googleTranslate({ query: translateThis, source: 'en', target: 'pt-BR' }) || "(Falha na API do DOTY)"
