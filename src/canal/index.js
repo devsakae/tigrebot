@@ -65,7 +65,9 @@ const bomDiaComDestaque = async () => {
     const chosen_doty = filteredDoty[Math.floor(Math.random() * filteredDoty.length)];
     const { name, excerpt } = chosen_doty;
     const translateThis = name + ' - ' + excerpt;
-    const translated = await googleTranslate({ query: translateThis, source: 'en', target: 'pt-BR' }) || "(Falha na API do DOTY)"
+    console.log('translateThis:', translateThis)
+    const translated = await googleTranslate({ query: translateThis, source: 'en', target: 'pt-BR' }) || ""
+    console.log('did!:', translated)
     response += '\n\n';
     response += translated;
   }
