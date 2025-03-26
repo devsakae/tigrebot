@@ -72,6 +72,8 @@ const bomDiaComDestaque = async () => {
     response += translated;
   }
 
+  return console.log(response);
+
 
   // Pega a previsão do tempo em Criciúma/SC para hoje
   const legenda_previsao = await getForecast()
@@ -313,8 +315,14 @@ const googleTranslate = async (params) => {
       target: params.target,
       q: params.query,
     }
-  }).then((res) => res.data?.data?.translations[0]?.translatedText)
-    .catch((err) => err.data);
+  }).then((res) => {
+    console.log('translated!', res);
+    return res.data?.data?.translations[0]?.translatedText
+})
+    .catch((err) => {
+      console.log(err.data);
+      return ""
+    });
 }
 
 
