@@ -306,7 +306,7 @@ const daysOfTheYear = async () => {
 const googleTranslate = async (params) => {
   return await axios.get('https://translation.googleapis.com/language/translate/v2', {
     params: {
-      key: GOOGLE_API_KEY,
+      key: process.env.GOOGLE_API_KEY,
       source: params.source,
       target: params.target,
       q: params.query,
