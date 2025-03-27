@@ -65,15 +65,11 @@ const bomDiaComDestaque = async () => {
     const chosen_doty = filteredDoty[Math.floor(Math.random() * filteredDoty.length)];
     const { name, excerpt } = chosen_doty;
     const translateThis = name + ' - ' + excerpt;
-    console.log('translateThis:', translateThis)
-    const translated = await googleTranslate({ query: translateThis, source: 'en', target: 'pt-BR' }) || ""
-    console.log('did!:', translated)
-    response += '\n\n';
-    response += translated;
+    // const translated = await googleTranslate({ query: translateThis, source: 'en', target: 'pt-BR' }) || ""
+    // console.log('did!:', translated)
+    response += '\n\n> ';
+    response += translateThis;
   }
-
-  return console.log(response);
-
 
   // Pega a previsão do tempo em Criciúma/SC para hoje
   const legenda_previsao = await getForecast()
@@ -308,17 +304,21 @@ const daysOfTheYear = async () => {
 }
 
 const googleTranslate = async (params) => {
-  return await axios.get('https://translation.googleapis.com/language/translate/v2', {
-    params: {
-      key: process.env.GOOGLE_API_KEY,
-      source: params.source,
-      target: params.target,
-      q: params.query,
+  return await axios({
+    method: 'GET',
+    url: 'https://translation.googleapis.com/language/translate/v2?key=' + process.env.GOOGLE_API_KEY,
+    headers: {
+      params: {
+        key: process.env.GOOGLE_API_KEY,
+        source: params.source,
+        target: params.target,
+        q: params.query,
+      }
     }
   }).then((res) => {
     console.log('translated!', res);
     return res.data?.data?.translations[0]?.translatedText
-})
+  })
     .catch((err) => {
       console.log(err.data);
       return ""
