@@ -11,7 +11,7 @@ const {
 const { site_publish } = require('./mongo');
 const { publicidade } = require('./marketing');
 const { log_erro, log_info, log_this } = require('./admin');
-const { postTweet, replyTweet } = require('./twitter');
+/* const { postTweet, replyTweet } = require('./twitter'); */
 
 module.exports = {
   fetchApi,
@@ -28,6 +28,6 @@ module.exports = {
   log_erro,
   log_info,
   log_this,
-  postTweet,
-  replyTweet,
+  /* postTweet,
+  replyTweet, */
 };

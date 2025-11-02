@@ -1,3 +1,4 @@
+/*
 const { TwitterApi } = require('twitter-api-v2');
 const config = require('../data/tigrebot.json');
 const { log_this, log_erro } = require('./admin');
@@ -49,4 +50,4 @@ module.exports = {
   postTweet,
   postMediaTweet,
   replyTweet,
-}
+} */
