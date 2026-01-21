@@ -75,21 +75,29 @@ const forecastCodes = {
 
 const getForecast = async () => {
   try {
-    const { items } = await fetchApi({
-      url: 'https://forecast9.p.rapidapi.com/rapidapi/forecast/-28.6783/-49.3704/summary/',
-      host: 'forecast9.p.rapidapi.com',
+    // LAT:  -28.6775
+    // LONG: -49.3697
+    const response = await fetchWithParams({
+      url: 'https://open-weather13.p.rapidapi.com/city',
+      host: 'open-weather13.p.rapidapi.com',
+      params: {
+        city: 'Criciúma',
+        lang: 'PT_BR'
+      },
     });
     let previsao = config.tigrelino ? prompts.tigrelino.previsao[Math.floor(Math.random() * prompts.tigrelino.previsao.length)] : prompts.previsao[Math.floor(Math.random() * prompts.previsao.length)];
-    let long = previsao + ' ';
-    let short = previsao + ' ';
-    if (forecastCodes[items[0].weather.state]) {
-      long += `${forecastCodes[items[0].weather.state]} `;
-      short += `${forecastCodes[items[0].weather.state]} `;
-    }
-    long += (!config.tigrelino ? `com temperaturas 🌡 entre ${items[0].temperature.min} (mín) e ${items[0].temperature.max}° (máx) e sensação térmica na casa de ${items[0].windchill.min}-${items[0].windchill.max}°. ` : '')
-    short += `com temperaturas 🌡 entre ${items[0].temperature.min} e ${items[0].temperature.max}°.`;
-    if (items[0].weather.state === 6) long += `Precipitação ☔️ de ${items[0].prec.probability}%. `
-    if (items[0].wind.significationWind) { long += `Ventos 💨 ${items[0].wind.text} de ${items[0].wind.min}-${items[0].wind.max} ${items[0].wind.unit}` }
+    let long = previsao + ' ' + response.weather[0].description + ' ';
+    let short = previsao + ' ' + response.weather[0].description + ' ';
+    // if (forecastCodes[items[0].weather.state]) {
+    //   long += `${forecastCodes[items[0].weather.state]} `;
+    //   short += `${forecastCodes[items[0].weather.state]} `;
+    // }
+    const calcCelsius = fah => (fah - 32) * 5/9;
+    
+    long += (!config.tigrelino ? `com temperaturas 🌡 entre ${calcCelsius(response.main.temp_min)} (mín) e ${calcCelsius(response.main.temp_max)}° (máx) e sensação térmica na casa de ${calcCelsius(response.main.feels_like)}°. ` : '')
+    short += `com temperaturas 🌡 entre ${calcCelsius(response.main.temp_min)} e ${calcCelsius(response.main.temp_max)}°.`;
+    console.info(long);
+    console.info(short);
     return { long, short };
   } catch (err) {
     console.error(err);

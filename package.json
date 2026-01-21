@@ -39,7 +39,8 @@
     "google-news-json": "^2.1.0",
     "mongodb": "^6.20.0",
     "prompt-sync": "^4.2.0",
-    "qrcode-terminal": "^0.12.0"
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.34.4"
   },
   "devDependencies": {
     "jest": "^29.7.0",

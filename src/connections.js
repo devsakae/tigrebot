@@ -43,13 +43,13 @@ const client = new Client({
 
 client.on('qr', async (qr) => {
   qrcode.generate(qr, { small: true })
-  let pairingCodeRequested = false;
-  const pairingCodeEnabled = true;
-  if (pairingCodeEnabled && !pairingCodeRequested) {
-      const pairingCode = await client.requestPairingCode(process.env.BOT_NUMBER.split('@')[0]);
-      console.log('Pairing code enabled, code: '+ pairingCode);
-      pairingCodeRequested = true;
-  }
+  // let pairingCodeRequested = false;
+  // const pairingCodeEnabled = true;
+  // if (pairingCodeEnabled && !pairingCodeRequested) {
+  //     const pairingCode = await client.requestPairingCode(process.env.BOT_NUMBER.split('@')[0]);
+  //     console.log('Pairing code enabled, code: '+ pairingCode);
+  //     pairingCodeRequested = true;
+  // }
 });
 
 client.on('loading_screen', async (percent, message) => {
@@ -69,9 +69,6 @@ client.on('ready', async () => {
       console.log('✔️', group.name, '[' + group.id._serialized + ']');
       await group.clearMessages();
       if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
-      if (group.id._serialized.endsWith('-1401890927@g.us')) return '';
-      if (group.id._serialized.includes('newsletter')) return '';
-      if (group.id._serialized.includes('120363361730511399@g.us')) return ''
       config.grupos[group.id._serialized] = { "palpiteiros": [] };
     }));
   console.log('Gravando grupos em tigrebot.json...')
@@ -83,7 +80,8 @@ client.on('ready', async () => {
   );
   const today = new Date()
   console.info('\n### TigreBot rodando -', today.toLocaleString('pt-br') + '! ###');
-  return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
+  return;
+  // return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
 });
 
 client.initialize();
