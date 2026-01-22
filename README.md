@@ -36,7 +36,9 @@ Passo a passo na instância:
 * [Setting Up Node.js on Amazon EC2 Instance](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html)
 * git
 * pm2
-* google-chrome-stable
+* google-chrome-stable `curl https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm --output /tmp/google-chrome-stable_current_x86_64.rpm`
+`sudo yum install -y /tmp/google-chrome-stable_current_x86_64.rpm`
+* headless gui `sudo yum install -y xorg-x11-server-Xvfb gtk3-devel libnotify-devel nss libXScrnSaver alsa-lib`
 * `npm install` para instalar as demais dependências
 * Indicar o IP da instância no servidor [MongoDB](http://www.mongodb.com)
 * `sudo timedatectl set-timezone America/Sao_Paulo` (EC2 sempre inicia uma instância com TZ 0)

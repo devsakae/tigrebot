@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "./install.sh",
-    "production": "pm2 start npm --name \"TigreBot\" -- start && pm2 monit",
+    "production": "pm2 start npm --name \"TigreBot\" -- start && pm2 logs",
     "test": "jest",
     "dev": "node --env-file=.env index.js"
   },

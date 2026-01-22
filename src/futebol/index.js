@@ -216,7 +216,7 @@ const partida = async (m) => {
   return await client.sendMessage(m.from, texto);
 }
 
-const fetchJogosDe = async (data) => {
+const fetchJogosDe = async () => {
   const today = new Date();
   const thisDay = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
   try {

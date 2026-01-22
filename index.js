@@ -13,6 +13,7 @@ const { quiz } = require('./src/quiz');
 const { saveLocal } = require('./utils');
 /* const { defendeAi } = require('./src/defendeai'); */
 const { instagramscraperapi2 } = require('./src/instagram');
+const { getWeather } = require('./src/weather');
 // const { futnatv } = require('./src/news');
 let modoQuiz = false;
 let grupoQuiz = '';
@@ -51,8 +52,10 @@ let grupoQuiz = '';
   }
 })();
 
-client.on('message', async (m) => {
 
+
+client.on('message_create', async (m) => {
+  console.log(m.author);
   // Módulo Quotes (usa: MongoDB)
   if (
     m.body.startsWith('!addquote') ||
@@ -75,17 +78,22 @@ client.on('message', async (m) => {
     return await echoToGroups(echomsg)
   }
 
-  // Módulo Defende AI - Projeto com Silvano
-  if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
-    if (m.from === process.env.DEFENDE_AI) return await defendeAi(m);
-    else {
-      // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
-      const chat = await m.getChat();
-      log_info('Alguém mencionou o bot no grupo ' + chat.name);
-      chat.sendStateTyping();
-      return await replyUser(m);
-    }
+  if (m.from === process.env.BOT_OWNER && m.body.includes('chovendo aí?')) {
+    const climaNow = await getWeather();
+    return await m.reply(climaNow.caption);
   }
+
+  // Módulo Defende AI - Projeto com Silvano
+  // if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
+  //   if (m.from === process.env.DEFENDE_AI) return await defendeAi(m);
+  //   else {
+  //     // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
+  //     const chat = await m.getChat();
+  //     log_info('Alguém mencionou o bot no grupo ' + chat.name);
+  //     chat.sendStateTyping();
+  //     return await replyUser(m);
+  //   }
+  // }
 
   // Módulo de administração de canal
   if (m.from === process.env.BOT_OWNER || (m.author === process.env.BOT_OWNER && m.body.startsWith('/'))) {

@@ -80,8 +80,7 @@ client.on('ready', async () => {
   );
   const today = new Date()
   console.info('\n### TigreBot rodando -', today.toLocaleString('pt-br') + '! ###');
-  return;
-  // return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
+  return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
 });
 
 client.initialize();

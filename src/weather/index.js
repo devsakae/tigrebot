@@ -92,10 +92,10 @@ const getForecast = async () => {
     //   long += `${forecastCodes[items[0].weather.state]} `;
     //   short += `${forecastCodes[items[0].weather.state]} `;
     // }
-    const calcCelsius = fah => (fah - 32) * 5/9;
+    const calcCelsius = fah => ((fah - 32) * 5/9).toFixed(1);
     
-    long += (!config.tigrelino ? `com temperaturas 🌡 entre ${calcCelsius(response.main.temp_min)} (mín) e ${calcCelsius(response.main.temp_max)}° (máx) e sensação térmica na casa de ${calcCelsius(response.main.feels_like)}°. ` : '')
-    short += `com temperaturas 🌡 entre ${calcCelsius(response.main.temp_min)} e ${calcCelsius(response.main.temp_max)}°.`;
+    long += (config.tigrelino ? '' : `com sensação térmica de ${calcCelsius(response.main.feels_like)}°. `)
+    short += `com sensação térmica de ${calcCelsius(response.main.feels_like)}°. `;
     console.info(long);
     console.info(short);
     return { long, short };
