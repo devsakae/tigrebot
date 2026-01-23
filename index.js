@@ -73,21 +73,12 @@ client.on('message_create', async (m) => {
     await group.setSubject(m.body.substring(8));  
   }
 
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
-    console.info('[echo]', m.body, m.from)
-    const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
-    console.log('Echoing:\n', echomsg);
-    return await echoToGroups(echomsg)
-  }
-
-  if (m.from === process.env.BOT_OWNER && m.body.includes('chovendo aí?')) {
-    console.info('[chovendo ai?]', m.body, m.from)
-    const climaNow = await getWeather();
-    return await m.reply(climaNow.caption);
-  }
-
-  if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
+  if (m.mentionedJidList.includes(process.env.BOT_NUMBER)) {
     console.info('[MENÇÃO]', m.body, m.from)
+    if (m.body.includes('chovendo aí?')) {
+      const climaNow = await getWeather();
+      return await m.reply(climaNow.caption);
+    }
     // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
     const chat = await m.getChat();
     log_info('Alguém mencionou o bot no grupo ' + chat.name);
@@ -96,7 +87,7 @@ client.on('message_create', async (m) => {
   }
 
   // Módulo de administração de canal
-  if (m.from === process.env.BOT_OWNER || (m.author === process.env.BOT_OWNER && m.body.startsWith('/'))) {
+  if (m.from === process.env.BOT_OWNER) {
     console.info('[ADMIN]', m.body, m.from)
     if (m.body.startsWith('!modotigrelino')) {
       log_info('Setting Tigrelino mode to *' + JSON.stringify(!config.tigrelino) + '*!')
@@ -106,6 +97,12 @@ client.on('message_create', async (m) => {
     if (m.body.includes('instagram.com')) {
       return await instagramscraperapi2(m.body);
     }
+    if (m.body.startsWith('!echo')) {
+      const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
+      console.log('Echoing:\n', echomsg);
+      return await echoToGroups(echomsg)
+    }
+
     return await canal(m);
   }
 
