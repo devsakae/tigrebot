@@ -53,6 +53,8 @@ let grupoQuiz = '';
 })();
 
 client.on('message_create', async (m) => {
+  if (m.body.startsWith('!!sakae')) return console.log(m);
+
   // Módulo Quotes (usa: MongoDB)
   if (
     m.body.startsWith('!addquote') ||
