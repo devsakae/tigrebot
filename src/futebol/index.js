@@ -328,7 +328,7 @@ const jogosAoVivo = async () => {
       url: process.env.FOOTAPI7_URL + '/matches/live',
       host: process.env.FOOTAPI7_HOST,
     });
-    const liveMatches = await getRodada.events.filter((e) => e.status.type === 'inprogress').filter((e) => e.tournament.name.includes('Brasil'));
+    const liveMatches = await getRodada.events.filter((e) => e.status.type.includes('progress')).filter((e) => e.tournament.category.name.includes('Brazil'));
     if (liveMatches.length == 0) return 'Nenhum jogo ao vivo no momento!';
     let response = `🎙 Rádio TigreLOG faz pra você agora o GIRO DA RODADA, RODAAAAAAAA\n`;
     liveMatches.forEach((lm) => response += formataRodadaAoVivo(lm));
