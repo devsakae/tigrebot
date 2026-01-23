@@ -73,7 +73,7 @@ client.on('message_create', async (m) => {
     await group.setSubject(m.body.substring(8));  
   }
 
-  if (m?.mentionedJidList?.includes(process.env.BOT_NUMBER)) {
+  if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
     console.info('[MENÇÃO]', m.body, m.from)
     if (m.body.includes('chovendo aí?')) {
       const climaNow = await getWeather();
