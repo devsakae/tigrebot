@@ -52,10 +52,7 @@ let grupoQuiz = '';
   }
 })();
 
-
-
 client.on('message_create', async (m) => {
-  console.log(m.author);
   // Módulo Quotes (usa: MongoDB)
   if (
     m.body.startsWith('!addquote') ||
@@ -64,40 +61,41 @@ client.on('message_create', async (m) => {
     m.body.startsWith('!delquote') ||
     m.body.startsWith('!quote')
   ) {
+    console.info('[quote]', m.body, m.from)
     return await quotes(m);
   }
 
   if (m.body.startsWith('!titulo')) {
+    console.info('[titulo]', m.body, m.from)
     const group = await client.getChatById(m.from);
     await group.setSubject(m.body.substring(8));  
   }
 
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!echo')) {
+    console.info('[echo]', m.body, m.from)
     const echomsg = m.body.substring(m.body.split(' ')[0].length + 1)
     console.log('Echoing:\n', echomsg);
     return await echoToGroups(echomsg)
   }
 
   if (m.from === process.env.BOT_OWNER && m.body.includes('chovendo aí?')) {
+    console.info('[chovendo ai?]', m.body, m.from)
     const climaNow = await getWeather();
     return await m.reply(climaNow.caption);
   }
 
-  // Módulo Defende AI - Projeto com Silvano
-  // if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
-  //   if (m.from === process.env.DEFENDE_AI) return await defendeAi(m);
-  //   else {
-  //     // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
-  //     const chat = await m.getChat();
-  //     log_info('Alguém mencionou o bot no grupo ' + chat.name);
-  //     chat.sendStateTyping();
-  //     return await replyUser(m);
-  //   }
-  // }
+  if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
+    console.info('[MENÇÃO]', m.body, m.from)
+    // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
+    const chat = await m.getChat();
+    log_info('Alguém mencionou o bot no grupo ' + chat.name);
+    chat.sendStateTyping();
+    return await replyUser(m);
+  }
 
   // Módulo de administração de canal
   if (m.from === process.env.BOT_OWNER || (m.author === process.env.BOT_OWNER && m.body.startsWith('/'))) {
-    console.info('Admin solicitou', m.body);
+    console.info('[ADMIN]', m.body, m.from)
     if (m.body.startsWith('!modotigrelino')) {
       log_info('Setting Tigrelino mode to *' + JSON.stringify(!config.tigrelino) + '*!')
       config.tigrelino = !config.tigrelino;
@@ -110,12 +108,13 @@ client.on('message_create', async (m) => {
   }
 
   if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
+    console.info('[jogosaovivo]', m.body, m.from)
     const jogos = await jogosAoVivo();
     return await m.reply(jogos);
   }
 
   if (m.body.startsWith('!quiz')) {
-    console.info('Alguém pediu !quiz');
+    console.info('[quiz]', m.body, m.from)
     if (grupoQuiz === m.from && modoQuiz) return m.reply("Um quiz por hora, sossega o bumbum guloso aí");
     grupoQuiz = m.from;
     modoQuiz = true;
@@ -126,20 +125,20 @@ client.on('message_create', async (m) => {
   
   // Módulo Futebol (usa: Api-Football e FootApi7)
   if (m.body.startsWith('!jogounotigre')) {
-    console.info('Alguém pediu !jogounotigre');
+    console.info('[jogounotigre]', m.body, m.from)
     if (grupoQuiz === m.from) return m.reply("Durante o quiz é sacanagem né")
     return await jogounotigre(m);
   }
   if (m.body.startsWith('!jogos')) {
-    console.info('Alguém pediu !jogos');
+    console.info('[jogos]', m.body, m.from)
     return await adversarios(m);
   }
   if (m.body.toLowerCase().startsWith('!matchid')) {
-    console.info('Admin pediu !matchid');
+    console.info('[matchid]', m.body, m.from)
     return await partida(m);
   }
   if (m.author === process.env.BOT_OWNER && m.body.startsWith('!hojenahistoria')) {
-    console.info('Admin pediu !hojenahistoria');
+    console.info('[hojenahistoria]', m.body, m.from)
     return await publicaJogoAleatorio();
   }
 
