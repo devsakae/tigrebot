@@ -57,6 +57,12 @@ const atualizaSobreCriciuma = async () => {
   // return await postTweet(latest);
 }
 
+const atualizaSobre = async (tema) => {
+  const response = await fetchGnews(tema);
+  const latest = 'Google News 👉 ' + await response[0].title
+  return await sendTextToGroups(latest);
+}
+
 const respondeEAtualiza = async (term) => {
   // const n = await fetchNews(term);
   const n = await fetchGnews(term);
@@ -70,5 +76,6 @@ module.exports = {
   fetchNews,
   getNovidades,
   respondeEAtualiza,
-  atualizaSobreCriciuma
+  atualizaSobreCriciuma,
+  atualizaSobre
 }

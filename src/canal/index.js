@@ -9,7 +9,7 @@ const { getForecast } = require('../weather');
 const { organizaFestinha } = require('../futebol/utils/functions');
 const { falaAlgumaCoisa } = require('../jokes');
 const { fetchGolacoTigrelog } = require('../quotes');
-const { getNovidades } = require('../news');
+const { getNovidades, atualizaSobre } = require('../news');
 const feriados = require('../../data/2024feriados.json');
 const { default: axios } = require('axios');
 const { log_erro, log_info, log_this } = require('../../utils/admin');
@@ -34,6 +34,8 @@ const canal = async (m) => {
   if (m.body.startsWith('/atletadestaque')) return jogadorDoTigreAleatorio();
   if (m.body.startsWith('/jogodestaque')) return publicaJogoAleatorio();
   if (m.body.startsWith('/instaignore')) return instaIgnore(m);
+  if (m.body.startsWith('/news')) return await atualizaSobre(m.body.substring(6));
+  if (m.body.startsWith('/tigrenews')) return await atualizaSobre(m.body.substring(6));
   // return instagram(m);
 };
 
