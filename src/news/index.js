@@ -1,4 +1,4 @@
-const googleNewsAPI = require("google-news-json");
+// const googleNewsAPI = require("google-news-json");
 const prompts = require("../../data/prompts.json");
 const config = require("../../data/tigrebot.json");
 const { sendTextToGroups, saveLocal } = require("../../utils");
