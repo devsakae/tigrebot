@@ -2,6 +2,7 @@ const googleNewsAPI = require("google-news-json");
 const prompts = require("../../data/prompts.json");
 const config = require("../../data/tigrebot.json");
 const { sendTextToGroups, saveLocal } = require("../../utils");
+const gnews = require('gnews');
 
 const fetchNews = async (term = 'Criciúma') => {
   const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, term, "pt-BR");
@@ -12,9 +13,22 @@ const fetchNews = async (term = 'Criciúma') => {
   return articles.items.filter(a => new Date(a.pubDate) > yesterday).sort((a, b) => a.pubDate > b.pubDate ? -1 : 1)
 }
 
+const fetchGnews = async (tema = "headlines") => {
+  let cricinews;
+  if (tema !== "headlines") cricinews = await gnews.search(tema, { country: 'br', language: 'pt', n: 5 });
+  else cricinews = await gnews.headlines({ country: 'br', language: 'pt', n: 5 });
+  return cricinews;
+  // for (let article of ) {
+  //   console.log(article.pubDate + ' | ' + article.title);
+  // }
+}
+
+
 const getNovidades = async () => {
-  const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, "Criciúma", "pt-BR");
-  const worldNews = await googleNewsAPI.getNews(googleNewsAPI.TOPICS_WORLD, null, "pt-BR");
+  // const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, "Criciúma", "pt-BR");
+  const articles = await fetchGnews("Criciúma");
+  // const worldNews = await googleNewsAPI.getNews(googleNewsAPI.TOPICS_WORLD, null, "pt-BR");
+  const worldNews = await fetchGnews("headlines");
   const today = new Date();
   const oneLess = new Date(today.getTime());
   oneLess.setDate(today.getDate() - 1)
@@ -33,7 +47,8 @@ const getNovidades = async () => {
 }
 
 const atualizaSobreCriciuma = async () => {
-  const response = await fetchNews();
+  // const response = await fetchNews();
+  const response = await fetchGnews();
   if (config.news === response[0].guid.text) return;
   const latest = 'Google News Criciúma 👉 ' + await response[0].title
   config.news = await response[0].guid.text;
@@ -43,10 +58,13 @@ const atualizaSobreCriciuma = async () => {
 }
 
 const respondeEAtualiza = async (term) => {
-  const n = await fetchNews(term);
+  // const n = await fetchNews(term);
+  const n = await fetchGnews(term);
   if (n.length > 0) return `Só te digo isso: ${n[0].title}`;
   return "Não, nada por enquanto.";
 }
+
+fetchGnews();
 
 module.exports = {
   fetchNews,
