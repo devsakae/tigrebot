@@ -1,11 +1,11 @@
 {
   "name": "tigrebot",
-  "version": "3.5",
+  "version": "4.0",
   "description": "Um bot exclusivo pra quem é apaixonado pelo Tigre",
   "main": "index.js",
   "scripts": {
     "start": "./install.sh",
-    "production": "pm2 start npm --name \"TigreBot\" -- start && pm2 logs",
+    "production": "pm2 start npm --name \"Tigrebot 4.0\" -- start && pm2 logs",
     "test": "jest",
     "dev": "node --env-file=.env index.js"
   },
