@@ -55,7 +55,23 @@ let grupoQuiz = '';
 client.on('message_create', async (m) => {
   if (m.body.startsWith('!!sakae')) return console.log(m);
 
-  // Módulo Quotes (usa: MongoDB)
+  // Menções ao bot no grupo
+  if (m?.mentionedIds.includes(process.env.BOT_NUMBER)) {
+    console.info('[MENÇÃO]', m.body, m.from)
+    // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
+    const chat = await m.getChat();
+    log_info('Alguém mencionou o bot no grupo ' + chat.name);
+    chat.sendStateTyping();
+    return await replyUser(m);
+  }
+
+  // Módulo Clima
+  if (m.body.includes('chovendo aí?')) {
+    const climaNow = await getWeather();
+    return await m.reply(climaNow.caption);
+  }
+
+  // Módulo Quotes
   if (
     m.body.startsWith('!addquote') ||
     m.body.startsWith('!autor') ||
@@ -70,23 +86,10 @@ client.on('message_create', async (m) => {
   if (m.body.startsWith('!titulo')) {
     console.info('[titulo]', m.body, m.from)
     const group = await client.getChatById(m.from);
-    await group.setSubject(m.body.substring(8));  
+    await group.setSubject(m.body.substring(8));
   }
 
-  if (m.mentionedIds.includes(process.env.BOT_NUMBER)) {
-    console.info('[MENÇÃO]', m.body, m.from)
-    if (m.body.includes('chovendo aí?')) {
-      const climaNow = await getWeather();
-      return await m.reply(climaNow.caption);
-    }
-    // Módulo Jokes (usa: RapidApi/Dad Jokes, Useless Fact Api)
-    const chat = await m.getChat();
-    log_info('Alguém mencionou o bot no grupo ' + chat.name);
-    chat.sendStateTyping();
-    return await replyUser(m);
-  }
-
-  // Módulo de administração de canal
+  // Comandos exclusivos de admin
   if (m?.from === process.env.BOT_OWNER || m?.author === process.env.BOT_OWNER) {
     console.info('[ADMIN]', m.body, m.from)
     if (m.body.startsWith('!modotigrelino')) {
@@ -103,15 +106,21 @@ client.on('message_create', async (m) => {
       return await echoToGroups(echomsg)
     }
 
+    if (m.body.startsWith('!hojenahistoria')) {
+      console.info('[hojenahistoria]', m.body, m.from)
+      return await publicaJogoAleatorio();
+    }
+
+    if (m.body.startsWith('!jogosaovivo')) {
+      console.info('[jogosaovivo]', m.body, m.from)
+      const jogos = await jogosAoVivo();
+      return await m.reply(jogos);
+    }
+
     return await canal(m);
   }
 
-  if ((m.author === process.env.BOT_OWNER) && m.body.startsWith('!jogosaovivo')) {
-    console.info('[jogosaovivo]', m.body, m.from)
-    const jogos = await jogosAoVivo();
-    return await m.reply(jogos);
-  }
-
+  // Módulo Quiz
   if (m.body.startsWith('!quiz')) {
     console.info('[quiz]', m.body, m.from)
     if (grupoQuiz === m.from && modoQuiz) return m.reply("Um quiz por hora, sossega o bumbum guloso aí");
@@ -121,7 +130,7 @@ client.on('message_create', async (m) => {
     setTimeout(() => modoQuiz = false, (60 * 60 * 1000));
     return await quiz(m);
   }
-  
+
   // Módulo Futebol (usa: Api-Football e FootApi7)
   if (m.body.startsWith('!jogounotigre')) {
     console.info('[jogounotigre]', m.body, m.from)
@@ -135,10 +144,6 @@ client.on('message_create', async (m) => {
   if (m.body.toLowerCase().startsWith('!matchid')) {
     console.info('[matchid]', m.body, m.from)
     return await partida(m);
-  }
-  if (m.author === process.env.BOT_OWNER && m.body.startsWith('!hojenahistoria')) {
-    console.info('[hojenahistoria]', m.body, m.from)
-    return await publicaJogoAleatorio();
   }
 
 });
@@ -173,7 +178,7 @@ client.on('group_join', async (e) => {
     const helloMoto = prompts.boasvindas[Math.floor(Math.random() * prompts.boasvindas.length)].replace("${nome}", name);
     await log_info(`Saudando o usuário ${name} em grupo`);
     return await client.sendMessage(e.chatId, helloMoto);
-}))
+  }))
   return;
 })
 
