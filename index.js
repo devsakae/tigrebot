@@ -87,7 +87,7 @@ client.on('message_create', async (m) => {
   }
 
   // Módulo de administração de canal
-  if (m?.from.includes(process.env.BOT_OWNER) || m?.author.includes(process.env.BOT_OWNER)) {
+  if (m?.from === process.env.BOT_OWNER || m?.author === process.env.BOT_OWNER) {
     console.info('[ADMIN]', m.body, m.from)
     if (m.body.startsWith('!modotigrelino')) {
       log_info('Setting Tigrelino mode to *' + JSON.stringify(!config.tigrelino) + '*!')
