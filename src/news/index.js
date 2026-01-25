@@ -68,8 +68,6 @@ const respondeEAtualiza = async (term) => {
   return "Não, nada por enquanto.";
 }
 
-fetchGnews();
-
 module.exports = {
   fetchNews,
   getNovidades,
