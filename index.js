@@ -89,9 +89,37 @@ client.on('message_create', async (m) => {
     await group.setSubject(m.body.substring(8));
   }
 
-  // Comandos exclusivos de admin
+  // Módulo Quiz
+  if (m.body.startsWith('!quiz')) {
+    console.info('[quiz]', m.body, m.from)
+    if (grupoQuiz === m.from && modoQuiz) return m.reply("Um quiz por hora, sossega o bumbum guloso aí");
+    grupoQuiz = m.from;
+    modoQuiz = true;
+    setTimeout(() => grupoQuiz = '', (15 * 60 * 1000));
+    setTimeout(() => modoQuiz = false, (60 * 60 * 1000));
+    return await quiz(m);
+  }
+
+  // Módulo Futebol (usa: Api-Football e FootApi7)
+  if (m.body.startsWith('!jogounotigre')) {
+    console.info('[jogounotigre]', m.body, m.from)
+    if (grupoQuiz === m.from) return m.reply("Durante o quiz é sacanagem né")
+    return await jogounotigre(m);
+  }
+  if (m.body.startsWith('!jogos')) {
+    console.info('[jogos]', m.body, m.from)
+    return await adversarios(m);
+  }
+  if (m.body.toLowerCase().startsWith('!matchid')) {
+    console.info('[matchid]', m.body, m.from)
+    return await partida(m);
+  }
+
+    // Comandos exclusivos de admin
   if (m?.from === process.env.BOT_OWNER || m?.author === process.env.BOT_OWNER) {
+    
     console.info('[ADMIN]', m.body, m.from)
+
     if (m.body.startsWith('!modotigrelino')) {
       log_info('Setting Tigrelino mode to *' + JSON.stringify(!config.tigrelino) + '*!')
       config.tigrelino = !config.tigrelino;
@@ -118,32 +146,6 @@ client.on('message_create', async (m) => {
     }
 
     return await canal(m);
-  }
-
-  // Módulo Quiz
-  if (m.body.startsWith('!quiz')) {
-    console.info('[quiz]', m.body, m.from)
-    if (grupoQuiz === m.from && modoQuiz) return m.reply("Um quiz por hora, sossega o bumbum guloso aí");
-    grupoQuiz = m.from;
-    modoQuiz = true;
-    setTimeout(() => grupoQuiz = '', (15 * 60 * 1000));
-    setTimeout(() => modoQuiz = false, (60 * 60 * 1000));
-    return await quiz(m);
-  }
-
-  // Módulo Futebol (usa: Api-Football e FootApi7)
-  if (m.body.startsWith('!jogounotigre')) {
-    console.info('[jogounotigre]', m.body, m.from)
-    if (grupoQuiz === m.from) return m.reply("Durante o quiz é sacanagem né")
-    return await jogounotigre(m);
-  }
-  if (m.body.startsWith('!jogos')) {
-    console.info('[jogos]', m.body, m.from)
-    return await adversarios(m);
-  }
-  if (m.body.toLowerCase().startsWith('!matchid')) {
-    console.info('[matchid]', m.body, m.from)
-    return await partida(m);
   }
 
 });
