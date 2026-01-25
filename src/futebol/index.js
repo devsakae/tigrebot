@@ -4,7 +4,7 @@ const config = require('../../data/tigrebot.json');
 const prompts = require('../../data/prompts.json');
 const { client, criciuma } = require('../connections');
 const { site_publish, fetchApi, log_erro, log_info, publicidade, sendTextToGroups, sendMediaUrlToGroups } = require('../../utils');
-const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDestaqueDoDia, formataRodadaAoVivo } = require('./utils/functions');
+const { variosAtletas, umAtleta, organizaFestinha, headToHead, formataJogo, jogoDestaqueDoDia, jogoDestaqueDoDiaNew, formataRodadaAoVivo } = require('./utils/functions');
 const { default: axios } = require('axios');
 const cron = require('node-cron');
 
@@ -234,11 +234,30 @@ const fetchJogosDe = async () => {
   }
 }
 
+const fetchJogosDeNew = async () => {
+  const today = new Date();
+  const thisDay = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2)
+  try {
+    const response = await criciuma
+      .collection('jogos_novo')
+      .find({ "jogos.date": { $regex: thisDay, $options: "i" } })
+      .toArray();
+    if (response.length === 0) throw new Error('Nenhum time encontrado');
+    const team = response[Math.floor(Math.random() * response.length)];
+    let match = team.jogos.filter(m => m.date.includes(thisDay));
+    match = match.length > 1 ? match[Math.floor(Math.random() * match.length)] : match[0];
+    return { match, team };
+  } catch (err) {
+    return log_erro(err);
+  }
+}
+
 const publicaJogoAleatorio = async () => {
   const today = new Date();
-  const response = await fetchJogosDe(today);
+  const response = await fetchJogosDeNew(today);
   if (response) {
-    const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
+    // const texto = await jogoDestaqueDoDia({ jogo: response.match, time: response.team });
+    const texto = await jogoDestaqueDoDiaNew({ jogo: response.match, time: response.team });
     return await sendTextToGroups(texto);
   }
   log_info('Nenhum jogo hoje!');
@@ -320,7 +339,6 @@ const proximaPartida = async () => {
     }
   }
 }
-
 
 const jogosAoVivo = async () => {
   try {

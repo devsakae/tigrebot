@@ -141,6 +141,18 @@ const formataAdversario = (adversario) => {
   return response;
 }
 
+const formataAdversarioNew = (adversario) => {
+  let response = `O ~querido~ ${adversario.nome_full} (${adversario.adversario}/${adversario.uf}) nos enfrentou o total de ${adversario.info.J} vezes na história do futebol.`;
+  response += "\n✅ Vencemos: *" + adversario.info.V + "*";
+  response += "\n🫳 Empates: *" + adversario.info.E + "*";
+  response += "\n🤬 Perdemos: *" + adversario.info.D + "*";
+  response += "\n⚽️ Gols marcados: *" + adversario.info.GM + "*";
+  response += "\n🥅 Gols sofridos: *" + adversario.info.GS + "*\n\n";
+  response += "De todos os confrontos, eu nunca vou esquecer ";
+  response += formataJogo(adversario.jogos[Math.floor(Math.random() * adversario.jogos.length)]);
+  return response;
+}
+
 const golsDoTigre = score => score === 1 ? 'Nosso único gol foi marcado por' : 'Nossos gols foram anotados por';
 const golsDosCara = score => score === 1 ? 'O gol deles foi marcado por' : 'Os gols deles foram marcados por';
 
@@ -212,6 +224,74 @@ const jogoDestaqueDoDia = async ({ jogo, time }) => {
   return texto;
 }
 
+const jogoDestaqueDoDiaNew = async ({ jogo, time }) => {
+  const gols = time.jogos.reduce((acc, curr) => {
+    curr.homeTeam.startsWith('CRICI')
+      ? (acc.gm += curr.homeScore, acc.gs += curr.awayScore)
+      : (acc.gm += curr.awayScore, acc.gs += curr.homeScore);
+    return acc;
+  }, { gm: 0, gs: 0 });
+  const today = new Date()
+  const sp = jogo.date.split('/')
+  const moeda = Number(sp[2]) >= 1994 ? 'R$' : Number(sp[2]) >= 1990 ? 'Cr$' ? Number(sp[2]) >= 1989 : 'Cz$' : 'Cr$';
+  const matchDate = new Date(sp[2], sp[1], sp[0])
+  const diff = today.getTime() - matchDate.getTime()
+  const years = Math.ceil(diff / (1000 * 3600 * 24 * 365));
+  const tigre = jogo.homeTeam.startsWith('CRICI')
+    ? { score: jogo.homeScore, escalacao: jogo.home_escalacao, gols: jogo.home_goals }
+    : { score: jogo.awayScore, escalacao: jogo.away_players, gols: jogo.away_goals };
+  const adversario = jogo.homeTeam.startsWith('CRICI') ? jogo.awayTeam : jogo.homeTeam;
+  const adversarioScore = jogo.homeTeam.startsWith('CRICI') ? jogo.awayScore : jogo.homeScore;
+  const resultado = (config.tigrelino ? (tigre.score > adversarioScore ? 'VENSE O TIME' : tigre.score < adversarioScore ? 'PERDE P' : 'EMPATA CO') : (tigre.score > adversarioScore ? 'venceu o(a)' : tigre.score < adversarioScore ? 'foi derrotado pelo(a)' : 'empatou com o(a)'))
+  let texto = ((config.tigrelino ? prompts.tigrelino.jogododia[Math.floor(Math.random() * prompts.tigrelino.jogododia.length)] : prompts.jogododia[Math.floor(Math.random() * prompts.jogododia.length)]) + '\n\n')
+  // let tweet = 'Grandes jogos do nosso @CriciumaEC: '
+  texto += (config.tigrelino ? `FAIS ${years} ANOS EM ${jogo.date} NOSO TIGRAUM JOGO COM TRA ${adversario.toUpperCase()} (${time.uf.toUpperCase()}) ${jogo.campeonato.startsWith('Amis') ? 'N1 JOGO AMINSTOZO' : jogo.campeonato.startsWith('Copa') ? `PELA ${jogo.campeonato.toUpperCase()}` : `PELA ${jogo.rodada} RODODADA ${jogo.campeonato.toUpperCase()}`}.` : `Há ${years} anos (em ${jogo.date}), o Tigre enfrentava o ${adversario} (${time.uf}) ${jogo.campeonato.startsWith('Amis') ? 'em partida amistosa, combinada entre os clubes' : jogo.campeonato.startsWith('Copa') ? `pela ${jogo.campeonato}` : `pela ${jogo.rodada}ª rodada do ${jogo.campeonato}`}.`);
+  const placarMaiorNaFrente = `${jogo.homeScore > jogo.awayScore ? jogo.homeScore : jogo.awayScore} x ${jogo.homeScore > jogo.awayScore ? jogo.awayScore : jogo.homeScore}`
+  texto += (config.tigrelino ? `\n\n\nFORAO ${jogo.publico} TUSSEDORS${jogo.renda > 0 ? ` Q PAGARAO ${moeda} ${jogo.renda}),` : ','} P VE O TIGRAUM ${resultado} ${adversario} EM ${placarMaiorNaFrente}.` : `\n\nCom público de ${jogo.publico} pessoas${jogo.renda > 0 ? ` e renda de ${moeda} ${jogo.renda}),` : ','} o Tigre ${resultado} ${adversario} na partida que terminou em ${placarMaiorNaFrente}.`);
+  texto += (config.tigrelino ? `\n\nEM FRETANDO O ${adversario.toUpperCase()} NOIS JA:` : `\n\nNosso histórico contra ${adversario} (${time.uf}) é o seguinte:`);
+  const stats = (config.tigrelino ? `\n🎫 ${time.info.J} VESES JOGADAS\n👍 ${time.info.V} FISEMO O V DE VITOREA\n🫳 EMPATEMO ${time.info.E} \n👎 PERDEMO ${time.info.E}\n⚽️ ${time.info.GM} GOALS NOSOS\n🥅 ${time.info.GS} GOALS DELIS` : `\n🎫 ${time.info.J} jogos\n👍 ${time.info.V} vitórias\n🫳 ${time.info.E} empates\n👎 ${time.info.D} derrotas\n⚽️ ${time.info.GM} gols neles\n🥅 ${time.info.GS} gols deles`)
+  texto += stats
+  if (jogo.homeScore > 0) {
+    texto += `\n\n⚽️ ${jogo.homeTeam.startsWith('CRICI') ? golsDoTigre(jogo.homeScore) : golsDosCara(jogo.homeScore)}`;
+    jogo.home_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.home_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.home_goals.length - 1 ? '.' : ''}`);
+  }
+  if (jogo.awayScore > 0) {
+    texto += `\n\n⚽️ ${jogo.awayTeam.startsWith('CRICI') ? golsDoTigre(jogo.awayScore) : golsDosCara(jogo.awayScore)}`;
+    jogo.away_goals.forEach((m, i) => texto += `${i > 0 ? i === jogo.away_goals.length - 1 ? ' e' : ',' : ''} ${m.autor} (${m.minuto}'/${m.tempo}T)${i === jogo.away_goals.length - 1 ? '.' : ''}`);
+  }
+  
+  // Desse jeito ficaria mais fácil, só me dei conta agora
+  if (config.tigrelino) {
+    texto += `\n\nTRENADOS POR ${jogo.home_treinador.toUpperCase()} O ${jogo.homeTeam.toUpperCase()} Q JOGAVA ENCASA JOGO CON `;
+    jogo.home_escalacao.forEach((p, i) => {
+      ycp = jogo?.home_cards.find(c => c.nome === p.nome);
+      sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
+      texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' E ' : ', ' : ''}${p.nome.toUpperCase()}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome.toUpperCase()} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
+    })
+    texto += `\n\nO COMADAMTE ${jogo.away_treinador.toUpperCase()} DO ${jogo.awayTeam.toUpperCase()} DISE PRA ELIS VIN ASIM/ `;
+    jogo.away_players.forEach((p, i) => {
+      ycp = jogo?.away_cards.find(c => c.nome === p.nome);
+      sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
+      texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' E ' : ', ' : ''}${p.nome.toUpperCase()}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome.toUpperCase()} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
+    })
+  } else {
+    texto += `\n\nTreinados por ${jogo.home_treinador}, o anfitrião ${jogo.homeTeam} tinha a seguinte escalação: `;
+    jogo.home_escalacao.forEach((p, i) => {
+      ycp = jogo?.home_cards.find(c => c.nome === p.nome);
+      sbp = jogo?.home_subs.findIndex(s => Number(p.num) === Number(s.numero));
+      texto += `${i > 0 ? i === jogo.home_escalacao.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.home_subs[sbp + 1].nome} (${jogo.home_subs[sbp + 1].pos})` : ''}${i === jogo.home_escalacao.length ? '.' : ''}`;
+    })
+    texto += `\n\nCom ${jogo.away_treinador} no comando, o visitante ${jogo.awayTeam} jogou com: `;
+    jogo.away_players.forEach((p, i) => {
+      ycp = jogo?.away_cards.find(c => c.nome === p.nome);
+      sbp = jogo?.away_subs.findIndex(s => Number(p.num) === Number(s.numero));
+      texto += `${i > 0 ? i === jogo.away_players.length - 1 ? ' e ' : ', ' : ''}${p.nome}${ycp ? ycp.card === 'Amarelo' ? ' 🟨' : ' 🟥' : ''} (${p.pos})${sbp !== -1 ? ` ↔️ ${jogo.away_subs[sbp + 1].nome} (${jogo.away_subs[sbp + 1].pos})` : ''}${i === jogo.away_players.length ? '.' : ''}`
+    })
+  }
+  return texto;
+}
+
+
 const formataRodadaAoVivo = (jogo) => {
   return `\n・ [${jogo.tournament.name}] ${jogo.homeTeam.shortName} ${Number(jogo.homeScore.current)} x ${Number(jogo.awayScore.current)} ${jogo.awayTeam.shortName} (${jogo.status.description})`
 }
@@ -224,7 +304,9 @@ module.exports = {
   headToHead,
   formataJogo,
   jogoDestaqueDoDia,
+  jogoDestaqueDoDiaNew,
   calculaIdade,
   formataAdversario,
+  formataAdversarioNew,
   formataRodadaAoVivo,
 };
