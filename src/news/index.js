@@ -14,15 +14,13 @@ const fetchNews = async (term = 'Criciúma') => {
 }
 
 const fetchGnews = async (tema = "headlines") => {
-  let cricinews;
-  if (tema !== "headlines") cricinews = await gnews.search(tema, { country: 'br', language: 'pt', n: 5 });
-  else cricinews = await gnews.headlines({ country: 'br', language: 'pt', n: 5 });
-  return cricinews;
-  // for (let article of ) {
-  //   console.log(article.pubDate + ' | ' + article.title);
-  // }
+  let newsResponse;
+  if (tema !== "headlines") newsResponse = await gnews.search(tema, { country: 'br', language: 'pt', n: 6 });
+  else newsResponse = await gnews.headlines({ country: 'br', language: 'pt', n: 10 });
+  console.info("google news fetch this for", tema)
+  for (let article of newsResponse) console.log(article.pubDate + ' | ' + article.title);
+  return newsResponse;
 }
-
 
 const getNovidades = async () => {
   // const articles = await googleNewsAPI.getNews(googleNewsAPI.SEARCH, "Criciúma", "pt-BR");
