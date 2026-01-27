@@ -101,16 +101,16 @@ client.on('message_create', async (m) => {
   }
 
   // Módulo Futebol (usa: Api-Football e FootApi7)
-  if (m.body.startsWith('!jogounotigre')) {
+  if (m.body.startsWith('!jogounotigre ')) {
     console.info('[jogounotigre]', m.body, m.from)
     if (grupoQuiz === m.from) return m.reply("Durante o quiz é sacanagem né")
     return await jogounotigre(m);
   }
-  if (m.body.startsWith('!jogos')) {
+  if (m.body.startsWith('!jogos ')) {
     console.info('[jogos]', m.body, m.from)
     return await adversarios(m);
   }
-  if (m.body.toLowerCase().startsWith('!matchid')) {
+  if (m.body.toLowerCase().startsWith('!matchid ')) {
     console.info('[matchid]', m.body, m.from)
     return await partida(m);
   }

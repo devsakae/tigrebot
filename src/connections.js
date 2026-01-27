@@ -38,6 +38,7 @@ const client = new Client({
   puppeteer: {
     headless: true,
     executablePath: executablePath,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   },
 });
 
@@ -62,25 +63,28 @@ client.on('authenticated', () => {
 
 client.on('ready', async () => {
   console.info('\nConfigurando grupos e canais...');
-  const allChats = await client.getChats();
-  await Promise.all(allChats
-    .filter((group) => !group.isReadOnly && group.isGroup)
-    .map(async (group) => {
-      console.log('✔️', group.name, '[' + group.id._serialized + ']');
-      await group.clearMessages();
-      if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
-      config.grupos[group.id._serialized] = { "palpiteiros": [] };
-    }));
-  console.log('Gravando grupos em tigrebot.json...')
-  fs.writeFileSync(
-    './data/tigrebot.json',
-    JSON.stringify(config, null, 4),
-    'utf-8',
-    (err) => console.error(err),
-  );
-  const today = new Date()
-  console.info('\n### TigreBot rodando -', today.toLocaleString('pt-br') + '! ###');
-  return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
+  setTimeout(async () => {
+    const allChats = await client.getChats();
+    await Promise.all(allChats
+      .filter((group) => !group.isReadOnly && group.isGroup)
+      .map(async (group) => {
+        console.log('✔️', group.name, '[' + group.id._serialized + ']');
+        await group.clearMessages();
+        if (Object.hasOwn(config.grupos, group.id_serialized) && config.groups[group.id_serialized]?.palpiteiros.length > 0) return '';
+        config.grupos[group.id._serialized] = { "palpiteiros": [] };
+      }));
+    console.log('Gravando grupos em tigrebot.json...')
+    fs.writeFileSync(
+      './data/tigrebot.json',
+      JSON.stringify(config, null, 4),
+      'utf-8',
+      (err) => console.error(err),
+    );
+    const today = new Date()
+    console.info('\n### TigreBot rodando -', today.toLocaleString('pt-br') + '! ###');
+    return await client.sendMessage(process.env.BOT_OWNER, 'O pai tá on');
+
+  }, 1500)
 });
 
 client.initialize();
