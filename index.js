@@ -22,6 +22,7 @@ let grupoQuiz = '';
   try {
     if (!process.env.BOT_OWNER) throw Error(prompts.admin.no_owner);
     console.info('\n✔ Admin configurado');
+    console.info("Conectando MongoDB...")
     mongoclient.connect();
     mongoclient
       .db('tigrebot')
